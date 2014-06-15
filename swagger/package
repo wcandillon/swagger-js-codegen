@@ -1,0 +1,107 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://api.xbrl.io",
+    "resourcePath": "/packages",
+    "produces": [
+        "application/json"
+    ],
+    "apis": [
+        {
+            "path": "/package",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists available packages",
+                    "notes": "This method requires no authentication.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Package"
+                    },
+                    "nickname": "listPackages",
+                    "parameters": [],
+                    "responseMessages": [
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+       "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "code",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The XQuery error code of the error"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The error description"
+                },
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error column number"
+                }
+            }
+        },
+       "Package": {
+            "id": "Package",
+            "description": "A package",
+            "required": [
+                "id",
+                "name",
+                "demo",
+                "description"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The package id"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The package name"
+                },
+                "demo": {
+                    "type": "boolean",
+                    "description": "Whether the package is a demo package or not"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The package description"
+                },
+                "price": {
+                    "type": "string",
+                    "description": "The package price"
+                },                
+                "details" : {
+                    "type": "object",
+                    "description": "The package details"
+                }
+            }
+        }
+    }
+}

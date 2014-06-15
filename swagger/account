@@ -1,0 +1,1868 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://api.xbrl.io",
+    "resourcePath": "/account",
+    "produces": [
+        "application/json"
+    ],
+    "apis": [
+        {
+            "path": "/account",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Creates a new account",
+                    "notes": "The provided password must be at least 5 characters long. After the account is created a confirmation email is sent to the specified email. The email contains an URL which can be used to confirm the account. This method requires no authentication.",
+                    "type": "Success",
+                    "nickname": "createAccount",
+                    "parameters": [
+                        {
+                            "name": "firstname",
+                            "description": "The account first name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "lastname",
+                            "description": "The account last name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "company",
+                            "description": "The account company.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "password",
+                            "description": "The account password.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "Account already exists.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}",
+            "operations": [
+                {
+                    "method": "HEAD",
+                    "summary": "Checks if an account exists",
+                    "notes": "This method requires no authentication.",
+                    "type": "void",
+                    "nickname": "checkAccount",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "The specified account cannot be found."
+                        }
+                    ]
+                },
+                {
+                    "method": "GET",
+                    "summary": "Retrieves an account metadata",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Account",
+                    "nickname": "getAccountMetadata",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified account cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "PATCH",
+                    "summary": "Updates an account",
+                    "notes": "This method allows to change the firstname, lastname, company or password of an account. At least one change, that is, one of the optional parameters, must be specified. The provided password, if any, must be at least 5 characters long. This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Success",
+                    "nickname": "updateAccount",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "firstname",
+                            "description": "The account new first name. If not specified the account firstname is not modified.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "lastname",
+                            "description": "The account new last name. If not specified the account lastname is not modified.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "company",
+                            "description": "The account new company. If not specified the account company is not modified.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "password",
+                            "description": "The account new password. If not specified the account password is not modified.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified account cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/confirm",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Resends the confirmation email",
+                    "notes": "This method requires no authentication.",
+                    "type": "Success",
+                    "nickname": "resendConfirmation",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "Forbidden: the account has already been confirmed.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Confirms an account",
+                    "notes": "This method requires the confirmation token sent via email when the account is created. If the account is successfully confirmed the account is logged in and the associated account and project metadata are returned.",
+                    "type": "AccountExtendedData",
+                    "nickname": "confirmAccount",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "confirmation-token",
+                            "description": "The account confirmation token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified confirmation token is invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "Forbidden: the account has already been confirmed.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/reset",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Checks if a reset token is valid",
+                    "notes": "",
+                    "type": "Success",
+                    "nickname": "checkResetToken",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "reset-token",
+                            "description": "The reset token to check.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "The specified reset token is invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Changes an account password using a reset token",
+                    "notes": "This method requires the latest reset token sent via email. If the account is successfully reset the account is logged in and the associated account and project metadata are returned. The new account password must be at least 5 characters long.",
+                    "type": "AccountExtendedData",
+                    "nickname": "resetPassword",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "reset-token",
+                            "description": "The latest account reset token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "password",
+                            "description": "The new account password.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "The specified reset token is invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "PUT",
+                    "summary": "Sends a reset token",
+                    "notes": "This method does not require authentication. Any previous sent but unused reset token is invalidated.",
+                    "type": "Success",
+                    "nickname": "sendResetToken",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "portal-url",
+                            "description": "The Portal URL",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified account cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/billing",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves the user billing data and the data required to update it",
+                    "notes": "This method returns the account billing data, if any, along with the data required to update it. This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "BillingData",
+                    "nickname": "getBillingData",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/invoices",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists the account invoices",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "InvoicesList",
+                    "nickname": "listInvoices",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "cursor",
+                            "description": "Used to control which page is returned. Leave empty for the first page. Use the cursor returned in a reply to fetch the next page.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "limit",
+                            "description": "The number of records to return per page up to a maximum of 200. Default is 50.",
+                            "required": false,
+                            "type": "integer",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/invoices/{invoice}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves the user billing information",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Invoice",
+                    "nickname": "getInvoice",
+                    "produces": [
+                        "application/json",
+                        "application/pdf"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "Accept",
+                            "description": "The format of the response. Default is \"application/pdf\"",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "application/json",
+                                "application/pdf"
+                            ],
+                            "paramType": "header"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user or invoice cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/subscriptions",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists the account subscriptions",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Subscription"
+                    },
+                    "nickname": "listSubscriptions",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Creates a new subscription",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Subscription",
+                    "nickname": "createSubscription",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "plan",
+                            "description": "The plan to subscribe to.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "quantity",
+                            "description": "The quantity for the chosen plan.",
+                            "required": true,
+                            "type": "integer",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 402,
+                            "message": "Recurly refused to complete the operation. The error depends on the specified parameters or on the billing information.",
+                            "responseModel": "RecurlyError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user cannot be found.",
+                            "responseModel": "Error"
+                        },                        
+                        {
+                            "code": 424,
+                            "message": "The specified user has no billing data.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/account/{email}/subscriptions/{subscription}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves the subscription details",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Subscription",
+                    "nickname": "getSubscription",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "subscription",
+                            "description": "The subscription uuid.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified account or subscription cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "PUT",
+                    "summary": "Updates a subscription",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Subscription",
+                    "nickname": "updateSubscription",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "subscription",
+                            "description": "The subscription uuid.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "quantity",
+                            "description": "The new quantity.",
+                            "required": true,
+                            "type": "integer",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 402,
+                            "message": "Recurly refused to complete the operation. The error depends on the specified parameters or on the billing information.",
+                            "responseModel": "RecurlyError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user or subscription cannot be found.",
+                            "responseModel": "Error"
+                        },                        
+                        {
+                            "code": 424,
+                            "message": "The specified user has no billing information.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Terminates a subscription",
+                    "notes": "This method requires a valid API token which has been generated for the same account specified in the request.",
+                    "type": "Subscription",
+                    "nickname": "terminateSubscription",
+                    "parameters": [
+                        {
+                            "name": "email",
+                            "description": "The account email.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "subscription",
+                            "description": "The subscription uuid.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token generated for the specified account.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 402,
+                            "message": "Recurly refused to complete the operation. The error depends on the specified parameters or on the billing information.",
+                            "responseModel": "RecurlyError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified user or subscription cannot be found.",
+                            "responseModel": "Error"
+                        },                        
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Subscription": {
+            "id": "Subscription",
+            "description": "A subscription",
+            "required": [
+                "uuid",
+                "href",
+                "state",
+                "plan",
+                "unitAmountInCents",
+                "currency",
+                "quantity",
+                "activatedAt",
+                "subscriptionAddOns"
+            ],
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "description": "The URL relative to the API endpoint to fetch, modify or terminate the subscription"
+                },
+                "uuid": {
+                    "type": "string",
+                    "description": "The subscription UUID"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "The subscription state"
+                },
+                "plan": {
+                    "type": "Plan",
+                    "description": "The subscription plan"
+                },
+                "unitAmountInCents": {
+                    "type": "integer",
+                    "description": "The subscription unit amount in cents"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "description": "The subscription quantity"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The subscription currency"
+                },
+                "activatedAt": {
+                    "type": "date-time",
+                    "description": "The subscription activation date"
+                },
+                "canceledAt": {
+                    "type": "date-time",
+                    "description": "The subscription cancellation date"
+                },
+                "expiresAt": {
+                    "type": "date-time",
+                    "description": "The subscription expiration date"
+                },
+                "currentPeriodStartedAt": {
+                    "type": "date-time",
+                    "description": "The subscription current period starting date"
+                },
+                "currentPeriodEndsAt": {
+                    "type": "date-time",
+                    "description": "The subscription current period ending date"
+                },
+                "trialStartedAt": {
+                    "type": "date-time",
+                    "description": "The subscription trial period starting date"
+                },
+                "trialEndsAt": {
+                    "type": "date-time",
+                    "description": "The subscription trial period ending date"
+                },
+                "taxInCents": {
+                    "type": "integer",
+                    "description": "The subscription tax amount in cents"
+                },
+                "taxType": {
+                    "type": "string",
+                    "description": "The subscription type of tax, e.g.: vat or usst"
+                },
+                "taxRate": {
+                    "type": "float",
+                    "description": "The subscription tax rate"
+                },
+                "poNumber": {
+                    "type": "string",
+                    "description": "The subscription PO number"
+                },
+                "netTerms": {
+                    "type": "integer",
+                    "description": "The subscription net terms in days"
+                },
+                "subscriptionAddOns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Addon"
+                    },
+                    "description": "The subscription addons"
+                },
+                "pendingSubscription": {
+                    "type": "Subscription",
+                    "description": "Nested information about a pending subscription change at renewal"
+                }
+            }
+        },
+        "Addon": {
+            "id": "Addon",
+            "description": "A subscription addon",
+            "required": [
+                "addOnCode",
+                "unitAmountInCents",
+                "quantity"
+            ],
+            "properties": {
+                "addOnCode": {
+                    "type": "string",
+                    "description": "The addon code"
+                },
+                "unitAmountInCents": {
+                    "type": "string",
+                    "description": "The unit amount in cents"
+                },
+                "quantity": {
+                    "type": "string",
+                    "description": "The addon quantity"
+                }
+            }
+        },
+        "Plan": {
+            "id": "Plan",
+            "description": "A plan",
+            "required": [
+                "planCode",
+                "name"
+            ],
+            "properties": {
+                "planCode": {
+                    "type": "string",
+                    "description": "The plan code"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The plan name"
+                }
+            }
+        },
+        "RecurlyError": {
+            "id": "RecurlyError",
+            "description": "Explains why recurly declined the execution of a request.",
+            "required": [
+                "errors"
+            ],
+            "properties": {
+                "invoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "ValidationError"
+                    },
+                    "description": "A recurly validation error"
+                },
+                "transactionError": {
+                    "type": "TransactionError",
+                    "description": "A recurly transaction error, if any."
+                }
+            }
+        },
+        "ValidationError": {
+            "id": "ValidationError",
+            "description": "A validation error",
+            "required": [
+                "field",
+                "symbol",
+                "description"
+            ],
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "description": "The field which failed the validation"
+                },
+                "symbol": {
+                    "type": "string",
+                    "description": "The error kind"
+                },
+                "lang": {
+                    "type": "string",
+                    "description": "The description language"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The error description"
+                }
+            }
+        },
+        "TransactionError": {
+            "id": "TransactionError",
+            "description": "A transaction error, see https://docs.recurly.com/api/transactions/error-codes",
+            "required": [
+                "errorCode",
+                "errorCategory",
+                "customerMessage"
+            ],
+            "properties": {
+                "errorCode": {
+                    "type": "string",
+                    "description": "The type of transaction error"
+                },
+                "errorCategory": {
+                    "type": "string",
+                    "description": "The error category"
+                },
+                "customerMessage": {
+                    "type": "string",
+                    "description": "The error description"
+                }
+            }
+        },
+        "InvoicesList": {
+            "id": "InvoicesList",
+            "description": "Invoices List",
+            "required": [
+                "count",
+                "invoices"
+            ],
+            "properties": {
+                "count": {
+                    "type": "integer",
+                    "description": "The total number of invoices"
+                },
+                "cursor": {
+                    "type": "string",
+                    "description": "The cursor to use to fetch the next page, if any"
+                },
+                "invoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Invoice"
+                    },
+                    "description": "The array of invoices"
+                }
+            }
+        },
+        "Invoice": {
+            "id": "Invoice",
+            "description": "An Invoice",
+            "required": [
+                "href",
+                "uuid",
+                "state",
+                "invoiceNumber",
+                "subtotalInCents",
+                "taxInCents",
+                "totalInCents",
+                "currency",
+                "createdAt",
+                "lineItems",
+                "transactions"
+            ],
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "description": "The URL relative to the API endpoint to fetch the invoice"
+                },
+                "uuid": {
+                    "type": "string",
+                    "description": "The invoice UUID"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": [
+                        "open",
+                        "collected",
+                        "failed",
+                        "past_due"
+                    ],
+                    "description": "The invoice state"
+                },
+                "invoiceNumber": {
+                    "type": "integer",
+                    "description": "The invoice number"
+                },
+                "poNumber": {
+                    "type": "string",
+                    "description": "The invoice PO number"
+                },
+                "vatNumber": {
+                    "type": "string",
+                    "description": "The invoice VAT number"
+                },
+                "subtotalInCents": {
+                    "type": "integer",
+                    "description": "The invoice subtotal in cents"
+                },
+                "taxInCents": {
+                    "type": "integer",
+                    "description": "The invoice tax in cents"
+                },
+                "totalInCents": {
+                    "type": "integer",
+                    "description": "The invoice total in cents"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The invoice currency"
+                },
+                "createdAt": {
+                    "type": "date-time",
+                    "description": "The invoice creation date"
+                },
+                "closedAt": {
+                    "type": "date-time",
+                    "description": "The invoice close date"
+                },
+                "taxType": {
+                    "type": "string",
+                    "description": "The type of tax"
+                },
+                "taxRate": {
+                    "type": "float",
+                    "description": "The tax rate"
+                },
+                "netTerms": {
+                    "type": "integer",
+                    "description": "The invoice net terms"
+                },
+                "collectionMethod": {
+                    "type": "string",
+                    "description": "The invoice collection method"
+                },
+                "lineItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Adjustment"
+                    },
+                    "description": "The invoice adjustments"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Transaction"
+                    },
+                    "description": "The invoice transactions"
+                }
+            }
+        },
+        "Adjustment": {
+            "id": "Adjustment",
+            "description": "An Adjustment",
+            "required": [
+                "type",
+                "uuid",
+                "state",
+                "description",
+                "origin",
+                "unitAmountInCents",
+                "quantity",
+                "discountInCents",
+                "taxInCents",
+                "totalInCents",
+                "currency",
+                "taxable",
+                "startDate",
+                "createdAt"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "charge",
+                        "credit"
+                    ],
+                    "description": "The invoice URL"
+                },
+                "uuid": {
+                    "type": "string",
+                    "description": "The adjustment UUID"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "invoiced"
+                    ],
+                    "description": "The adjustment state"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The adjustment description"
+                },
+                "accountingCode": {
+                    "type": "string",
+                    "description": "The adjustment accounting code"
+                },
+                "productCode": {
+                    "type": "string",
+                    "description": "The adjustment product code"
+                },
+                "origin": {
+                    "type": "string",
+                    "description": "The adjustment origin"
+                },
+                "unitAmountInCents": {
+                    "type": "integer",
+                    "description": "The adjustment unit amount in cents"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "description": "The adjustment quantity"
+                },
+                "discountInCents": {
+                    "type": "integer",
+                    "description": "The adjustment discount in cents"
+                },
+                "taxInCents": {
+                    "type": "integr",
+                    "description": "The adjustment tax in cents"
+                },
+                "totalInCents": {
+                    "type": "integer",
+                    "description": "The adjustment total in cents"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The adjustment currency"
+                },
+                "taxable": {
+                    "type": "boolean",
+                    "description": "Whether the adjustment is taxable or not"
+                },
+                "taxDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "TaxDetail"
+                    },
+                    "description": "The adjustment tax details"
+                },
+                "startDate": {
+                    "type": "date-time",
+                    "description": "The adjustment start date"
+                },
+                "endDate": {
+                    "type": "date-time",
+                    "description": "The adjustment end date"
+                },
+                "createdAt": {
+                    "type": "date-time",
+                    "description": "The adjustment creation date"
+                }
+            }
+        },
+        "TaxDetail": {
+            "id": "TaxDetail",
+            "description": "Tax Detail",
+            "required": [
+                "name",
+                "type",
+                "taxRate",
+                "taxInCents"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The tax name"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The tax type"
+                },
+                "taxRate": {
+                    "type": "float",
+                    "description": "The tax rate in centsL"
+                },
+                "taxInCents": {
+                    "type": "integer",
+                    "description": "The tax amount in cents"
+                }
+            }
+        },
+        "Transaction": {
+            "id": "Transaction",
+            "description": "An transaction",
+            "required": [
+                "type",
+                "uuid",
+                "action",
+                "amountInCents",
+                "taxInCents",
+                "currency",
+                "status",
+                "paymentMethod",
+                "reference",
+                "source",
+                "recurring",
+                "test",
+                "voidable",
+                "refundable",
+                "createdAt",
+                "details"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "The transaction type"
+                },
+                "uuid": {
+                    "type": "string",
+                    "description": "The transaction UUID"
+                },
+                "action": {
+                    "type": "string",
+                    "description": "The transaction action"
+                },
+                "amountInCents": {
+                    "type": "integer",
+                    "description": "The transaction amount in cents"
+                },
+                "taxInCents": {
+                    "type": "string",
+                    "description": "The transaction tax in cents"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The transaction currency"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "The transaction status"
+                },
+                "paymentMethod": {
+                    "type": "string",
+                    "description": "The transaction payment method"
+                },
+                "reference": {
+                    "type": "string",
+                    "description": "The transaction reference"
+                },
+                "source": {
+                    "type": "string",
+                    "description": "The transaction source"
+                },
+                "recurring": {
+                    "type": "boolean",
+                    "description": "Whether the transaction is recurring or not"
+                },
+                "test": {
+                    "type": "boolean",
+                    "description": "Whether the transaction is test or not"
+                },
+                "voidable": {
+                    "type": "boolean",
+                    "description": "Whether the transaction is voidable or not"
+                },
+                "refundable": {
+                    "type": "boolean",
+                    "description": "Whether the transaction is refundable or not"
+                },
+                "cvvResult": {
+                    "type": "string",
+                    "description": "The transaction CVV validation result"
+                },
+                "avsResult": {
+                    "type": "string",
+                    "description": "The transaction AVS validation result"
+                },
+                "avsResultStreet": {
+                    "type": "string",
+                    "description": "The transaction AVS street validation result"
+                },
+                "avsResultPostal": {
+                    "type": "string",
+                    "description": "The transaction AVS postal code validation result"
+                },
+                "createdAt": {
+                    "type": "date-time",
+                    "description": "The transaction creation date"
+                }
+            }
+        },
+        "Account": {
+            "id": "Account",
+            "description": "Account metadata",
+            "required": [
+                "id",
+                "email",
+                "firstname",
+                "lastname",
+                "company",
+                "createdAt",
+                "type"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The account unique identifier"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The account type",
+                    "enum": [
+                        "temporary",
+                        "anonymous",
+                        "free",
+                        "full",
+                        "28msec",
+                        "admin"
+                    ]
+                },
+                "email": {
+                    "type": "string",
+                    "description": "The account email"
+                },
+                "firstname": {
+                    "type": "string",
+                    "description": "The account firstname"
+                },
+                "lastname": {
+                    "type": "string",
+                    "description": "The account lastname"
+                },
+                "company": {
+                    "type": "string",
+                    "description": "The account company"
+                },
+                "createdAt": {
+                    "type": "date-time",
+                    "description": "The date and time on which the account has been created"
+                },
+                "confirmedAt": {
+                    "type": "date-time",
+                    "description": "The date and time on which the account has been confirmed"
+                }
+            }
+        },
+        "BillingData": {
+            "id": "BillingData",
+            "description": "Account and billing information",
+            "required": [
+                "recurlyAccount",
+                "recurlySignature",
+                "recurlySubdomain"
+            ],
+            "properties": {
+                "billingInfo": {
+                    "type": "BillingInfo",
+                    "description": "The accout billing information"
+                },
+                "recurlyAccount": {
+                    "type": "string",
+                    "description": "The Recurly account to use to update the billing information"
+                },
+                "recurlySignature": {
+                    "type": "string",
+                    "description": "The Recurly signature to use to update the billing information"
+                },
+                "recurlySubdomain": {
+                    "type": "string",
+                    "description": "The Recurly subdomain to use to update the billing information"
+                }
+            }
+        },
+        "BillingInfo": {
+            "id": "BillingInfo",
+            "description": "Billing Information",
+            "required": [
+                "firstName",
+                "lastName",
+                "address1",
+                "city",
+                "country",
+                "zip",
+                "cardType",
+                "lastFour",
+                "month",
+                "year"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string",
+                    "description": "First name"
+                },
+                "lastName": {
+                    "type": "string",
+                    "description": "Last name"
+                },
+                "address1": {
+                    "type": "string",
+                    "description": "Address line 1"
+                },
+                "address2": {
+                    "type": "string",
+                    "description": "Address line 2"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "City"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "State"
+                },
+                "country": {
+                    "type": "string",
+                    "description": "Country, 2-letter ISO code"
+                },
+                "zip": {
+                    "type": "string",
+                    "description": "Zip or postal code"
+                },
+                "phone": {
+                    "type": "string",
+                    "description": "Phone number"
+                },
+                "vatNumber": {
+                    "type": "string",
+                    "description": "VAT number"
+                },
+                "ipAddress": {
+                    "type": "string",
+                    "description": "IP address of the machine which made the last change to the billing data"
+                },
+                "ipAddressCountry": {
+                    "type": "string",
+                    "description": "IP address country when updating their billing data"
+                },
+                "lastFour": {
+                    "type": "string",
+                    "description": "Credit card number, last four digits"
+                },
+                "cardType": {
+                    "type": "string",
+                    "description": "Visa, MasterCard, American Express, Discover, JCB, etc."
+                },
+                "month": {
+                    "type": "integer",
+                    "description": "Expiration month"
+                },
+                "year": {
+                    "type": "integer",
+                    "description": "Expiration year"
+                },
+                "verificationValue": {
+                    "type": "string",
+                    "description": "Security code or CVV, 3-4 digits"
+                },
+                "paypalBillingAgreementId": {
+                    "type": "string",
+                    "description": "PayPal Billing Agreement ID"
+                }
+            }
+        },
+        "Success": {
+            "id": "Success",
+            "description": "Default success response",
+            "required": [
+                "success"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                }
+            }
+        },
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "code",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The XQuery error code of the error"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The error description"
+                },
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error column number"
+                }
+            }
+        },
+        "AccountExtendedData": {
+            "id": "AccountExtendedData",
+            "description": "Account extended data",
+            "required": [
+                "token_type",
+                "expiration_date",
+                "access_token",
+                "refresh_token",
+                "project_tokens",
+                "accountMetadata",
+                "projectsMetadata"
+            ],
+            "properties": {
+                "token_type": {
+                    "type": "string",
+                    "description": "The API token type",
+                    "enum": [
+                        "bearer"
+                    ]
+                },
+                "expiration_date": {
+                    "type": "date-time",
+                    "description": "The expiration date of all the tokens in the response"
+                },
+                "access_token": {
+                    "type": "string",
+                    "description": "The API token"
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "description": "The refresh token which can be used to refresh both the API and project tokens"
+                },
+                "project_tokens": {
+                    "type": "ProjectTokens",
+                    "description": "The project tokens which can be used to make request to the APIs on the project endpoints"
+                },
+                "accountMetadata": {
+                    "type": "Account",
+                    "description": "The account data."
+                },
+                "projectsMetadata": {
+                    "type": "Projects",
+                    "description": "The account projects data."
+                }
+            }
+        },
+        "ProjectTokens": {
+            "id": "ProjectTokens",
+            "description": "An object containing zero or more project tokens. Each project token is stored in a different field project_{name}, where {name} is the project name, (e.g.: portal).",
+            "properties": {
+                "project_{name}": {
+                    "type": "string",
+                    "description": "The token for the project {name}. One field for each project owned by the account will be present"
+                }
+            }
+        },
+        "NewProject": {
+            "id": "NewProject",
+            "required": [
+                "projectMetadata",
+                "projectToken"
+            ],
+            "properties": {
+                "projectMetadata": {
+                    "type": "Project",
+                    "description": "The project metadata of the newly created project"
+                },
+                "projectToken": {
+                    "type": "string",
+                    "description": "A project token for the newly created project. It is guaranteed to expire no sooner than the tokens already obtained for the account in the current session."
+                }
+            }
+        },
+        "Project": {
+            "id": "Project",
+            "description": "Project data",
+            "required": [
+                "name",
+                "created",
+                "package",
+                "status",
+                "avatarKey"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The project name"
+                },
+                "created": {
+                    "type": "date-time",
+                    "description": "The date time on which the project was created"
+                },
+                "package": {
+                    "type": "string",
+                    "description": "The project package"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "The project status"
+                },
+                "avatarKey": {
+                    "type": "integer",
+                    "description": "An integer in the range [1..8] randomly chosen on project creation",
+                    "minimum": 1,
+                    "maximum": 8
+                },
+                "version": {
+                    "type": "string",
+                    "description": "The project version"
+                },
+                "sausaVersion": {
+                    "type": "string",
+                    "description": "The sausalito version used by the project"
+                },
+                "lastUpdated": {
+                    "type": "date-time",
+                    "description": "The date on which the project was last updated"
+                },
+                "browserUpdated": {
+                    "type": "date-time",
+                    "description": "The date on which the project browser was last updated"
+                },
+                "lastModified": {
+                    "type": "date-time",
+                    "description": "The date on which the project was last modified"
+                },
+                "compilerLiving": {
+                    "type": "date-time",
+                    "description": "The last date and time in which the compiler has been started, provided it is still running"
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": "The project namespace"
+                },
+                "databaseType": {
+                    "type": "string",
+                    "description": "The database type of the project default MongoDB database.",
+                    "enum": [
+                        "user",
+                        "mongolab",
+                        "28msec",
+                        "local",
+                        "none"
+                    ]
+                }
+            }
+        }
+    }
+}

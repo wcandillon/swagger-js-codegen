@@ -1,0 +1,1066 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://api.xbrl.io",
+    "resourcePath": "/project",
+    "produces": [
+        "application/json"
+    ],
+    "apis": [
+        {
+            "path": "/project",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves the project metadata for all projects owned by an account",
+                    "notes": "This method requires a valid API token. The metadata of the projects owned by the account corresponding to the given API token will be returned.",
+                    "type": "array",
+                    "items": {
+		        "$ref": "Project"
+                    },
+                    "nickname": "listProjects",
+                    "parameters": [
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Creates a new project",
+                    "notes": "<p>The project name must be between 3 and 40 characters long. It can contain only letter, numerical digits and dashes (-). A dash cannot appear as the first character.</p><p>If the specified package is payed, the account must have billing information and a new recurly subscription will be created.</p><p>This method requires a valid API token. If the project is created successfully, the owner of the project is the account associated with the specified API token.</p>",
+                    "type": "NewProject",
+                    "nickname": "createProject",
+                    "parameters": [
+                        {
+                            "name": "project-name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "template",
+                            "description": "A template name. If not specified the 'default' template will be used.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "package",
+                            "description": "A package name. If not specified the 'free' package will be used.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },                        
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 402,
+                            "message": "Recurly refused to complete the operation, due to errors in the billing information.",
+                            "responseModel": "RecurlyError"
+                        },
+                        {
+                            "code": 409,
+                            "message": "A project with the same name already exists.",
+                            "responseModel": "Error"
+                        },                        
+                        {
+                            "code": 424,
+                            "message": "The specified user has no billing data.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }                
+            ]
+        },
+        {
+            "path": "/project/{name}",
+            "operations": [
+                {
+                    "method": "HEAD",
+                    "summary": "Checks if a project exists",
+                    "notes": "This method requires no authentication.",
+                    "type": "void",
+                    "nickname": "checkProject",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "The specified project cannot be found."
+                        }
+                    ]
+                },
+                {
+                    "method": "GET",
+                    "summary": "Retrieves a project metadata",
+                    "notes": "This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "Project",
+                    "nickname": "getProjectMetadata",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "PUT",
+                    "summary": "Upgrades a project to the last Sausalito version",
+                    "notes": "This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "Success",
+                    "nickname": "upgradeProject",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "PATCH",
+                    "summary": "Changes a project metadata",
+                    "notes": "<p>This method allows to rename or change the package of a project. Only one of the two modifications can be performed at the same time.</p><p>If renaming, the new project name must be between 3 and 40 characters long. It can contain only letter, numerical digits and dashes (-). A dash cannot appear as the first character. This method requires a valid API token generated for the account which owns the specified project.<p><p>If changing the project package, the following conditions must be satisfied: <ul><li>the used account must have billing information;</li><li>the current project package must be free</li><li>the specified package type must be payed</li></ul></p>",
+                    "type": "Success",
+                    "nickname": "updateProject",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "new-name",
+                            "description": "The new project name.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "package",
+                            "description": "The project package.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 402,
+                            "message": "Recurly refused to complete the operation, due to errors in the billing information.",
+                            "responseModel": "RecurlyError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },                       
+                        
+                        {
+                            "code": 424,
+                            "message": "The specified user has no billing data.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a project",
+                    "notes": "<p>If the project package is payed, the corresponding recurly subscription will be terminated.</p><p>This method requires a valid API token generated for the account which owns the specified project.</p>",
+                    "type": "Success",
+                    "nickname": "deleteProject",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/project/{name}/default-mongodb",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves the default MongoDB credentials",
+                    "notes": "For \"28msec\", \"local\" and \"none\" databases the response will only contain the \"db-type\" field. This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "MongoDBCredentials",
+                    "nickname": "getDefaultMongoDBCredentials",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },                
+                {
+                    "method": "PUT",
+                    "summary": "Updates a project default MongoDB credentials",
+                    "notes": "The specified credentials can be of the following kinds: \"user\", \"mongolab\", \"28msec\", \"local\", \"none\". For all database kinds except \"user\" no credentials have to be specified. For \"user\" databases, at least the \"conn-string\" and the \"dbname\" parameter have to be specified. This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "Success",
+                    "nickname": "updateDefaultMongoDBCredentials",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "db-type",
+                            "description": "The database type.",
+                            "required": true,
+                            "type": "string",
+                            "enum": ["user", "mongolab", "28msec", "local", "none"],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "conn-string",
+                            "description": "The database connection string. Only for \"user\" databases.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "db",
+                            "description": "The database name. Only for \"user\" databases.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "user",
+                            "description": "The database user. Only for \"user\" databases.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "pass",
+                            "description": "The database password. Only for \"user\" databases.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "pre-digested",
+                            "description": "Whether the specified password is pre-digested or not. Only for \"user\" databases. Default is false.",
+                            "required": false,
+                            "type": "boolean",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 422,
+                            "message": "The test of the specified credentials failed.",
+                            "responseModel": "Tests"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/project/{name}/test-mongodb",
+            "operations": [
+            {
+                    "method": "GET",
+                    "summary": "Tests MongoDB credentials",
+                    "notes": "This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "MongoDBTests",
+                    "nickname": "testDefaultMongoDB",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "conn-string",
+                            "description": "The database connection string.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "db",
+                            "description": "The database name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "user",
+                            "description": "The database user.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "pass",
+                            "description": "The database password.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "pre-digested",
+                            "description": "Whether the specified password is pre-digested or not. Default is false.",
+                            "required": false,
+                            "type": "boolean",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/project/{name}/domains",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists all custom domains of a project",
+                    "notes": "This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "array",
+                    "items": {
+		        "type": "string"
+                    },
+                    "nickname": "listCustomDomains",
+                    "parameters": [
+                       {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },                        
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a custom domain to a project",
+                    "notes": "The custom domain name must be at least 3 characters long. It consists of two or more groups of characters separated by a single dot (.). The last group consists of 2 to 6 lowercase letters. Any other group consists of one or more lowercase letters, numerical digits and dashes (-). A dash cannot appear as the first character of the group. Morever, the custom domain name cannot end with: '.my28msec.com', '.28.io', '.xbrl.io' or '.devel.28msec.us'. This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "Success",
+                    "nickname": "addCustomDomain",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "domain-name",
+                            "description": "The name of the new custom domain.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "A custom domain with the same name already exists.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }                
+            ]
+        },
+        {
+            "path": "/project/{name}/domains/{domain-name}",
+            "operations": [
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a project custom domain",
+                    "notes": "This method requires a valid API token generated for the account which owns the specified project.",
+                    "type": "Success",
+                    "nickname": "deleteCustomDomain",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "domain-name",
+                            "description": "The project name.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "An API token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified API token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified project or custom domain does not exist.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ]
+                }                
+            ]
+        }
+    ],
+    "models": {
+        "Success": {
+            "id": "Success",
+            "description": "Default success response",
+            "required": ["success"],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                }
+            }
+        },
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "code",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The XQuery error code of the error"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The error description"
+                },
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error column number"
+                }
+            }
+        },
+        "Account": {
+            "id": "Account",
+            "description": "Account metadata",
+            "required": [
+                "id",
+                "email",
+                "firstname",
+                "lastname",
+                "company",
+                "createdAt",
+                "type"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The account unique identifier"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The account type",
+                    "enum": [
+                        "temporary",
+                        "anonymous",
+                        "free",
+                        "full",
+                        "28msec",
+                        "admin"
+                    ]
+                },
+                "email": {
+                    "type": "string",
+                    "description": "The account email"
+                },
+                "firstname": {
+                    "type": "string",
+                    "description": "The account firstname"
+                },
+                "lastname": {
+                    "type": "string",
+                    "description": "The account lastname"
+                },
+                "company": {
+                    "type": "string",
+                    "description": "The account company"
+                },
+                "createdAt": {
+                    "type": "date-time",
+                    "description": "The date and time on which the account has been created"
+                },
+                "confirmedAt": {
+                    "type": "date-time",
+                    "description": "The date and time on which the account has been confirmed"
+                },
+                "billingAccount": {
+                    "type": "string",
+                    "description": "The account billing account"
+                }
+            }
+        },
+        "AccountExtendedData": {
+            "id": "AccountExtendedData",
+            "description": "Account extended data",
+            "required": [
+                "token_type",
+                "expiration_date",
+                "access_token",
+                "refresh_token",
+                "project_tokens",
+                "accountMetadata",
+                "projectsMetadata"
+            ],
+            "properties": {
+                "token_type": {
+                    "type": "string",
+                    "description": "The API token type",
+                    "enum": [
+                        "bearer"
+                    ]
+                },
+                "expiration_date": {
+                    "type": "date-time",
+                    "description": "The expiration date of all the tokens in the response"
+                },
+                "access_token": {
+                    "type": "string",
+                    "description": "The API token"
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "description": "The refresh token which can be used to refresh both the API and project tokens"
+                },
+                "project_tokens": {
+                    "type": "ProjectTokens",
+                    "description": "The project tokens which can be used to make request to the APIs on the project endpoints"
+                },
+                "accountMetadata": {
+                    "type": "Account",
+                    "description": "The account data."
+                },
+                "projectsMetadata": {
+                    "type": "Projects",
+                    "description": "The account projects data."
+                }
+            }
+        },
+        "ProjectTokens": {
+            "id": "ProjectTokens",
+            "description": "An object containing zero or more project tokens. Each project token is stored in a different field project_{name}, where {name} is the project name, (e.g.: portal).",
+            "properties": {
+                "project_{name}": {
+                    "type": "string",
+                    "description": "The token for the project {name}. One field for each project owned by the account will be present"
+                }
+            }
+        },
+        "NewProject": {
+            "id": "NewProject",
+            "required": ["projectMetadata", "projectToken"],
+            "properties": {
+                "projectMetadata": {
+                    "type": "Project",
+                    "description": "The project metadata of the newly created project"
+                },
+                "projectToken": {
+                    "type": "string",
+                    "description": "A project token for the newly created project. It is guaranteed to expire no sooner than the tokens already obtained for the account in the current session."
+                }
+            }
+        },
+        "Project": {
+            "id": "Project",
+            "description": "Project data",
+            "required": [
+                "name",
+                "created",
+                "packageName",
+                "status"                
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The project name"
+                },
+                "created": {
+                    "type": "date-time",
+                    "description": "The date time on which the project was created"
+                },
+                "packageName": {
+                    "type": "string",
+                    "description": "The project package"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "The project status"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "The project version"
+                },
+                "sausaVersion": {
+                    "type": "string",
+                    "description": "The sausalito version used by the project"
+                },
+                "updateableTo": {
+                    "type": "string",
+                    "description": "The sausalito version to which the project can be updated, if any"
+                },
+                "lastUpdated": {
+                    "type": "date-time",
+                    "description": "The date on which the project was last updated"
+                },
+                "browserUpdated": {
+                    "type": "date-time",
+                    "description": "The date on which the project browser was last updated"
+                },
+                "lastModified": {
+                    "type": "date-time",
+                    "description": "The date on which the project was last modified"
+                },
+                "compilerLiving": {
+                    "type": "date-time",
+                    "description": "The last date and time in which the compiler has been started, provided it is still running"
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": "The project namespace"
+                },
+                "databaseType": {
+                    "type": "string",
+                    "description": "The database type of the project default MongoDB database.",
+                    "enum": [
+                        "user",
+                        "mongolab",
+                        "28msec",
+                        "local",
+                        "none"
+                    ]
+                }
+            }
+        },
+        "MongoDBCredentials": {
+            "id": "MongoDBCredentials",
+            "description": "MongoDB credentials for the default MongoDB database",
+            "required": ["db-type"],
+            "properties": {
+                "db-type": {
+                    "type": "string",
+                    "description": "The database type",
+                    "enum": ["user", "mongolab", "28msec", "local", "none"]
+                },
+                "conn-string": {
+                    "type": "string",
+                    "description": "The connection string"
+                },
+                "db": {
+                    "type": "string",
+                    "description": "The database name"
+                },
+                "user": {
+                    "type": "string",
+                    "description": "The username"
+                },
+                "pass": {
+                    "type": "string",
+                    "description": "The password"
+                },
+                "pre-digested": {
+                    "type": "boolean",
+                    "description": "Whether the credentials are pre-digested or not. Default is false."                    
+                }
+            }
+        },
+        "Tests": {
+            "id": "Tests",
+            "description": "Credentials tests result",
+            "required": ["success", "tests"],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "description": "Whether all tests passed or not"
+                },
+                "tests": {
+                    "type": "array",
+                    "description": "The array containing the results of each run test",
+                    "items": {"$ref": "MongoDBTest"}
+                }
+            }
+        },
+        "Test": {
+            "id": "Test",
+            "description": "Credentials test result",
+            "required": ["name","success", "message"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the test",
+                    "enum": ["connection","writeable"]
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "Whether the test passed or not"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A description of the test result"
+                }
+            }
+        }
+    }
+}

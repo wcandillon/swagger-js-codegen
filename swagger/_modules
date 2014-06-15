@@ -1,0 +1,688 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://portal.28.io/v1",
+    "resourcePath": "/_modules",
+    "produces": [
+        "application/json"
+    ],
+    "description": "<p>These resources can be used to manage JSONiq and XQuery <a href=\"http://www.w3.org/TR/xquery-30/#dt-library-module\" target=\"_blank\">library modules</a>. The endpoint of these resources is based on your project name. For instance, if your 28.io project is named <code>myproject</code>, your endpoint for this API will be: <code>http://myproject.28.io/v1/_modules</code>.</p><p class='callout-warning'>This API does not allow to retrieve the source code, modify or delete system modules.</p>",
+    "apis": [
+        {
+            "path": "/_modules",
+            "description": "Module Listing",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists available modules",
+                    "nickname": "listModules",
+                    "notes": "<p>This method retrieves the list of modules which can be imported by a project.</p><p>By default, only modules defined in the project will be listed. To also list system-provided modules, you can set the <code>include-system</code> query parameter to <code>true</code>.</p><p>To include module source codes, you can set the <code>include-src</code> query parameter to <code>true</code>. Regardless of the value of the <code>include-src</code> parameter, the source code of system modules will not be returned.</p><p>To perform namespace analysis and report for each module whether it has a namespace, the evenutal namespace URI and whether the module can be imported without location hints, set the <code>include-ns</code> query parameter to <code>true</code>.</p><p>To filter the returned modules you can use the <code>starts-with</code> query parameter. In this case, only the modules which path starts with the specified string will be returned.</p><p>If two or more module have the same namespace and thus the same path, the details of the module which would be imported by a query are shown.</p>",
+                    "type": "ModuleListing",
+                    "parameters": [
+                        {
+                            "name": "starts-with",
+                            "description": "Filter the available module by their module path.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "include-system",
+                            "description": "Include modules provided by the platform.",
+                            "required": false,
+                            "type": "boolean",
+                            "default": false,
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "include-ns",
+                            "description": "Include each module's namespace in the listing.",
+                            "required": false,
+                            "type": "boolean",
+                            "default": false,
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "include-src",
+                            "description": "Include each module's source code in the listing.",
+                            "required": false,
+                            "type": "boolean",
+                            "default": false,
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 403,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns available module listing."
+                        }
+                    ],
+                    "examples": [
+                    {
+                            "title": "Listing all project modules",
+                            "description": "The following request retrieves the list of all modules defined in the project <code>myproject</code>.",
+                            "request": "curl -X GET \"http://myproject.28.io/v1/_modules?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                            "response": "< 200 OK\n{\"/io/myproject/module\": {\n  \"system\": false,\n  \"language\": \"jsoniq\",\n  \"lastModified\": \"2013-12-16T15:41:15Z\"\n}}"
+                    }]
+                }
+            ]
+        }
+        ,
+        {
+            "path": "/_modules/{module-path}",
+            "description": "Module Management",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves the source code of the specified project module",
+                    "notes": "<p>This method retrieves the source code of a project module. The response content type is set according to the query language of the module. If the query does not <a href=\"http://www.w3.org/TR/xquery-30/#id-version-declaration\" target=\"_blank\">declare its own dialect</a> or cannot be parsed, the query language is considered to be <code>XQuery</code>.</p><p>This operation cannot be used to retrieve the source code of system modules.</p>",
+                    "type": "string",
+                    "produces": [
+                        "text/x-jsoniq;charset=UTF-8",
+                        "text/x-xquery;charset=UTF-8"
+                    ],
+                    "nickname": "getModule",
+                    "parameters": [
+                        {
+                            "name": "module-path",
+                            "description": "The module path.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 403,
+                            "message": "Unauthorized: the specified project token is invalid or expired or the module path corresponds to a system module.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified module cannot be found.",
+                            "responseModel": "Error"
+                        },     
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns module source code."
+                        }
+                    ],
+                    "examples": [
+                    {
+                        "title": "Retrieving a project module source code",
+                        "description": "The following request retrieves the source code of the \"/io/myproject/module\" module defined in the <code>myproject</code> project.",
+                        "request": "curl -X GET \"http://myproject.28.io/v1/_modules/io/myproject/module?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                        "response": "< 200 OK\nmodule namespace m = \"http://myproject.io/module\"; declare function m:one() {1};"
+                    }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Creates a new project module",
+                    "notes": "<p>This method creates a new project module. If the <code>compile</code> option is <code>none</code>, the module will not be compiled, if it is <code>lax</code> it will be compiled and any potential compilation error reported. In this case, compilation errors will not prevent the module to be created. To only create the module if no compilation errors are present, set the <code>compile</code> option to <code>strict</code>. The default is <code>lax</code>.</p><p>It is not allowed to create a project module with the same path of an existing system or project module, even if the existing module has a different extension. If the operation succeeds any precompiled query depending on the updated module will be deleted.</p>",
+                    "type": "ModuleUpdate",
+                    "nickname": "createModule",
+                    "parameters": [
+                        {
+                            "name": "module-path",
+                            "description": "The module path.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "compile",
+                            "description": "The kind of compilation to perform. The default is \"lax\".",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "strict",
+                                "lax",
+                                "none"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "extension",
+                            "description": "The new module extension. The default is \"jq\".",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                              "jq",
+                              "xq",
+                              "module"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "module-body",
+                            "description": "The source code of the module.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "body"
+                        },
+                        {
+                           "name": "Content-Type",
+                           "paramType": "header",
+                           "enum": [
+                              "text/plain; charset=utf-8"
+                           ],
+                           "type": "string"
+                        }
+                        
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 403,
+                            "message": "Unauthorized: the specified project token is invalid or expired or the module path corresponds to a system module.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "The specified module already exists.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 422,
+                            "message": "A compilation error occurred in strict mode.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 201,
+                            "message": "The module has been created."
+                        }
+                    ],
+                    "examples": [
+                    {
+                        "title": "Creating a new module",
+                        "description": "The following request retrieves the source code of the \"/io/myproject/module\" module of the <code>myproject</code> project.",
+                        "request": "curl -X POST -H \"Content-Type: text/plain\" -d \"module namespace m = \\\"http://myproject.io/module\\\"; declare function m:one() {1};\" \"http://myproject.28.io/v1/_modules/io/myproject/module?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                        "response": "< 201 Created"
+                    }   
+                    ]
+                },
+                {
+                    "method": "PUT",
+                    "summary": "Creates or updates the specified project module",
+                    "notes": "<p>This method creates or updates a project module. If the <code>compile</code> option is <code>none</code>, the module will not be compiled, if it is <code>lax</code> it will be compiled and any potential compilation error reported. In this case, compilation errors will not prevent the module to be created or updated. To only create the module if no compilation errors are present, set the <code>compile</code> option to <code>strict</code>. The default is <code>lax</code>.</p><p>It is not allowed to update system modules. If the operation succeeds all existing modules with the same path, even with different extensions, are removed. Moreover, all precompiled queries depending on the updated module will be become non precompiled.</p>",                    
+                    "type": "ModuleUpdate",
+                    "nickname": "saveModule",
+                    "parameters": [
+                        {
+                            "name": "module-path",
+                            "description": "The module path.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "compile",
+                            "description": "The kind of compilation to perform. The default is \"lax\".",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "strict",
+                                "lax",
+                                "none"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "extension",
+                            "description": "The new module extension. The default is \"jq\".",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                              "jq",
+                              "xq",
+                              "module"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "module-body",
+                            "description": "The module source code",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "body"
+                        },                        
+                        {
+                            "name": "Content-Type",
+                            "type": "string",
+                            "paramType": "header",
+                            "enum": [
+                              "text/plain; charset=utf-8"
+                            ]
+                        }
+
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 403,
+                            "message": "Unauthorized: the specified project token is invalid or expired or the module path corresponds to a system module.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified module cannot be found.",
+                            "responseModel": "Error"
+                        },                        
+                        {
+                            "code": 422,
+                            "message": "A compilation error occurred in strict mode.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "The module has been saved."
+                        }
+                    ],
+                    "examples": [
+                    {
+                        "title": "Saving a module",
+                        "description": "The following request saves the \"/io/myproject/module\" module in the <code>myproject</code> project.",
+                        "request": "curl -X POST -H \"Content-Type: text/plain\" -d \"module namespace m = \\\"http://myproject.io/module\\\"; declare function m:one() {1};\" \"http://myproject.28.io/_modules/io/myproject/module?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                        "response": "< 201 Created"
+                    }]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes the specified project module",
+                    "notes": "<p>This method removes the specified project module. If the operation succeeds any precompiled query depending on the updated module will be deleted.</p>",
+                    "type": "ModuleDelete",
+                    "nickname": "removeModule",
+                    "parameters": [
+                        {
+                            "name": "module-path",
+                            "description": "The module path.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 403,
+                            "message": "Unauthorized: the specified project token is invalid or expired or the module path corresponds to a system module.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified module cannot be found.",
+                            "responseModel": "Error"
+                        },     
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "The module has been deleted."
+                        }
+                    ],
+                    "examples": [
+                    {
+                        "title": "Deleting a module",
+                        "description": "The following request deletes the \"/io/myproject/module\" module from the <code>myproject</code> project.",
+                        "request": "curl -X DELETE \"http://myproject.28.io/v1/_modules/io/myproject/module?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                        "response": "< 200 OK"
+                    }  
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+       "ModuleListing": {
+            "id": "ModuleListing",
+            "description": "A list of modules",
+            "required": [],
+            "properties": {
+                "modulePath": {
+                    "type": "Module",
+                    "description": "A different field is present for each listed module. The name of the field is the module path"
+                }
+            }
+        },
+        "Module": {
+            "id": "Module",
+            "description": "Module metadata",
+            "required": [
+                "system"
+            ],            
+            "properties": {
+                "system": {
+                    "type": "boolean",
+                    "description": "Whether the module is provided by the system or defined in the project"
+                },
+                "language": {
+                    "type": "string",
+                    "enum": [
+                                "jsoniq",
+                                "xquery"
+                            ],
+                    "description": "The module language. This field is only present for non-system modules. If no language definition is contained in the module, \"xquery\" is assumed"
+                },
+                "extension": {
+                    "type": "string",
+                    "enum": [
+                                "jq",
+                                "xq",
+                                "module"
+                            ],
+                    "description": "The module extension. This field is only present for non-system modules."
+                },
+                "lastModified": {
+                    "type": "date-time",
+                    "description": "The date and time the module was last modified. This field is only present for non-system modules"
+                },
+                "hasNamespace": {
+                    "type": "boolean",
+                    "description": "Whether the module can be parsed without errors and contains a namespace declaration. This field is only present if the \"include-ns\" parameter has been set to true in the request"
+                },
+                "namespace": {
+                    "type": "string",
+                    "description": "The module namespace, provided that the module can be parsed without errors and contains a namespace declaration. This field is only present if the \"include-ns\" parameter has been set to true in the request"
+                },
+                "autoResolution": {
+                    "type": "boolean",
+                    "description": "Whether the module can be imported without location hints. This field is only present if the \"include-ns\" parameter has been set to true in the request"
+                },
+                "source": {
+                    "type": "string",
+                    "description": "The module source code. This field is only present for non-system modules and if the \"include-src\" parameter has been set to true in the request"
+                }
+            }
+        },
+        "ModuleUpdate": {
+            "id": "ModuleUpdate",
+            "description": "The result of the module compilation",
+            "required": [
+                "success",
+                "autoResolution",
+                "removedCompiledQueries"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                },
+                "request_id": {
+                    "type": "string",
+                    "description": "The request identifier. Present only if the compilation fails"
+                },
+                "autoResolution": {
+                    "type": "boolean",
+                    "description": "Whether the module can be imported without location hints"
+                },
+                "compilationError" : {
+                  "type": "CompilationError",
+                  "description": "The compilation error occurred during the module compilation, if any"
+                },
+                "removedCompiledQueries" : {
+                  "type": "array",
+                  "items": { "$ref": "string" },
+                  "description": "The list of compiled queries which have been removed"
+                }
+            }
+        },
+        "ModuleDelete": {
+            "id": "ModuleDelete",
+            "description": "The result of the module compilation",
+            "required": [
+                "success"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                },
+                "removedCompiledQueries" : {
+                  "type": "array",
+                  "items": { "$ref": "string" },
+                  "description": "The list of compiled queries which have been removed"
+                }
+            }
+        },
+        "CompilationError": {
+            "id": "CompilationError",
+            "description": "Compilation error information",
+            "required": [
+                "context",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "context": {
+                    "type": "string",
+                    "description": "The complete domain name of the project"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "For XQuery errors, the type of the error (e.g. static)"
+                },
+                "code": {
+                    "type": "string",
+                    "description": "For XQuery errors, the error code"
+                },
+                "location": {
+                    "type": "Location",
+                    "description": "For XQuery errors, the error location (if available)"
+                }
+            }
+        },
+        "Success": {
+            "id": "Success",
+            "description": "Default success response",
+            "required": [
+                "success"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                }
+            }
+        },
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "request_id",
+                "context",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "request_id": {
+                    "type": "string",
+                    "description": "The request identifier"
+                },
+                "context": {
+                    "type": "string",
+                    "description": "The complete domain name of the project"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "For XQuery errors, the type of the error (e.g. static)"
+                },
+                "code": {
+                    "type": "string",
+                    "description": "For XQuery errors, the error code"
+                },
+                "location": {
+                    "type": "Location",
+                    "description": "For XQuery errors, the error location (if available)"
+                },
+                "stack-trace": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "StackEntry"
+                    },
+                    "description": "For XQuery errors, the error stack trace (if available)"
+                }
+            }
+        },
+        "Location": {
+            "id": "Location",
+            "description": "Error information",
+            "required": [
+                "module",
+                "line-number",
+                "line-number-end",
+                "column-number",
+                "column-number-end"
+            ],
+            "properties": {
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error first line number"
+                },
+                "line-number-end": {
+                    "type": "string",
+                    "description": "The error last line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error first column number"
+                },
+                "column-number-end": {
+                    "type": "string",
+                    "description": "The error last column number"
+                }
+            }
+        },
+        "StackEntry": {
+            "id": "StackEntry",
+            "description": "A stack entry",
+            "required": [
+                "function",
+                "location"
+            ],
+            "properties": {
+                "function": {
+                    "type": "Function",
+                    "description": "The function of the call"
+                },
+                "type": {
+                    "type": "Location",
+                    "description": "The location of the call"
+                }
+            }
+        }                        
+    }
+}

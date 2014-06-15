@@ -1,0 +1,296 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://portal.28.io/v1",
+    "resourcePath": "/_batch",
+    "produces": [
+        "application/json"
+    ],
+    "description": "<p>These resources can be used to perform batch operations. The endpoint of these resources is based on your project name. For instance, if your 28.io project is named <code>myproject</code>, your endpoint for this API will be will be: <code>http://myproject.28.io/v1/_batch</code>.</p>",
+    "apis": [
+        {
+            "path": "/_batch/project",
+            "description": "Import project contents from an archive",
+            "operations": [
+                {
+                    "method": "PUT",
+                    "summary": "Import project contents from an archive",
+                    "notes": "<p>This method imports modules and public/private queries from an archive. The archive can either be specified through the <code>url</code> query parameter or through the request body.</p><p>The following archive formats and compression algorithms are supported: <ul><li>ZIP (with compression DEFLATE or STORE)</li><li>TAR (with compression GZIP)</li></ul></p><p>When importing, modules will be loaded from the <code>lib</code> and <code>modules</code> folders (if any), whereas public and private queries will loaded from the <code>public</code> and <code>private</code> folders, respectively. These folders will be first searched in the root of the archive. If none of these folders is found and the archive root contains a single folder, the search will be repeated in that folder. If the archive has a different structure you can specify the path inside the archive where the modules and queries folders are located through the root parameter.</p><p>The subfolder structure will be preserved during the import.</p><p>The behaviour of the import can be controlled through the <code>overwrite</code> and <code>delete-orphaned</code> parameters. By default, orphaned file are removed and existing modules and queries are overwritten. To see the changes that will be performed by a request before they are made, you can use the <code>simulate</code> query parameter.</p><p>The response contains the list of queries and modules of the project along with the taken action. Additionally a list of the files contained in the archive which have been ignored is returned. If the operation succeeds any precompiled query which source has been updated or depending on an updated module will be deleted.</p>",
+                    "type": "ProjectImport",
+                    "nickname": "importProject",
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "description": "The archive url.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "archive",
+                            "description": "The archive contents.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "body"
+                        },
+                        {
+                            "name": "root",
+                            "description": "The path inside the archive that contains the modules and queries folders. Use '/' as folder separator.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "overwrite",
+                            "description": "Whether to overwrite current project queries and modules. Default is true.",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "yes",
+                                "if-newer",
+                                "no"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "delete-orphaned",
+                            "description": "Whether to delete orphaned file or not. Default is false.",
+                            "required": false,
+                            "type": "boolean",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "simulate",
+                            "description": "Whether to simulate the operation or not. Default is false.",
+                            "required": false,
+                            "type": "boolean",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "type": "string",
+                            "paramType": "header",
+                            "enum": [
+                              "application/zip",
+                              "application/x-gzip"
+                            ]
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "The specified archive contains the same module in the lib and modules folder.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 422,
+                            "message": "The specified archive cannot be downloaded or is corrupted.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "The project contents have been imported."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "description": "The following request imports the project contents from an archive accessible through an URL.",
+                            "title": "Importing the project contents from an archive",
+                            "request": "curl -X PUT \"http://myproject.28.io/v1/_batch/project?url=http%3A%2F%2Fexample.com%2Farchive.zip&token=Rldtayt1YzV5a05FYlRvUFdqc0d4aGcveHJjPToyMDEzLTExLTA2VDA1OjM1OjUzLjk4Njg3N1o%3D\"",
+                            "response": "{ \"removedCompiledQueries\" : [], \"created\": [\"public/query.jq\", \"lib/module.jq\"], \"updated\": [], \"deleted\": [], \"not-updated\": [], \"kept\": [], \"root\": \"/\", \"ignored\": [] }"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "request_id",
+                "context",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "request_id": {
+                    "type": "string",
+                    "description": "The request identifier"
+                },
+                "context": {
+                    "type": "string",
+                    "description": "The complete domain name of the project"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "For XQuery errors, the type of the error (e.g. static)"
+                },
+                "code": {
+                    "type": "string",
+                    "description": "For XQuery errors, the error code"
+                },
+                "location": {
+                    "type": "Location",
+                    "description": "For XQuery errors, the error location (if available)"
+                },
+                "stack-trace": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "StackEntry"
+                    },
+                    "description": "For XQuery errors, the error stack trace (if available)"
+                }
+            }
+        },
+        "Location": {
+            "id": "Location",
+            "description": "Error information",
+            "required": [
+                "module",
+                "line-number",
+                "line-number-end",
+                "column-number",
+                "column-number-end"
+            ],
+            "properties": {
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error first line number"
+                },
+                "line-number-end": {
+                    "type": "string",
+                    "description": "The error last line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error first column number"
+                },
+                "column-number-end": {
+                    "type": "string",
+                    "description": "The error last column number"
+                }
+            }
+        },
+        "StackEntry": {
+            "id": "StackEntry",
+            "description": "A stack entry",
+            "required": [
+                "function",
+                "location"
+            ],
+            "properties": {
+                "function": {
+                    "type": "Function",
+                    "description": "The function of the call"
+                },
+                "type": {
+                    "type": "Location",
+                    "description": "The location of the call"
+                }
+            }
+        },
+        "ProjectImport": {
+            "id": "ProjectImport",
+            "description": "A project import results",
+            "required": [
+              "removedCompiledQueries",
+              "created",
+              "updated",
+              "not-updated",
+              "deleted",
+              "kept",
+              "root",
+              "ignored"
+            ],
+            "properties": {
+                "removedCompiledQueries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of precompiled queries that have been removed"
+                },
+                "created": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of files that existed only in the archive that have been created"
+                },
+                "updated": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of files that existed both in the project and in the archive that have been updated"
+                },
+                "not-updated": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of files that existed both in the project and in the archive that have not been updated"
+                },
+                "deleted": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of files that existed only in the project that have been deleted"
+                },
+                "kept": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of files that existed only in the project that have been kept"
+                },
+                "root" : {
+                    "type": "string",
+                    "description": "The autodetected or specified path to the folder in which the queries and modules have been searched"
+                },
+                "ignored": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The list of files in the archive that have been ignored. This happens if the file has an unsupported extension or is a system module"
+                }
+            }
+        }
+    }
+}

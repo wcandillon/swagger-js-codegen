@@ -1,0 +1,184 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://portal.28.io",
+    "resourcePath": "/auth",
+    "produces": ["application/json"],
+    "description": "<p>This OAuth2 compliant API can be used to authorize requests. The endpoint for these methods is <code>http://portal.28.io/auth</code>.</p>",
+    "apis": [
+        {
+            "path": "/auth",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Creates or refreshes authorization tokens",
+                    "notes": "<p>This <a href=\"http://oauth.net/2/\" target=\"_blank\">OAuth2</a> compliant endpoint can be used both create new authorization tokens or to refresh an existing ones. There are three types of authorization tokens provided by this endpoint.</p><dl class=\"dl-horizontal\"><dt>Access token</dt><dd>The access token is used to authorize requests on your 28.io account. These methods are currently unstable and are not documented yet.</dd><dt>Refresh Token</dt><dd>This token is used to renew the validity of your current authorization tokens.</dd><dt>Project token</dt><dd>This token is used to authorize requests to a 28.io project. For instance, the project token named <code>myproject</code> can be used to authorize any request to the <code>http://myproject.28.io</code> endpoint.</dd></dl><p>Any successful request to this endpoint will return the access, refresh, and project tokens.</p><p>To create new authorization tokens, the <code>grant_type</code> parameter must be set to <code>client_credentials</code> and the <code>email</code>. The <code>password</code> parameters must be specified as well.</p><p>To refresh the validity of your authorized tokens, the <code>grant_type</code> parameter must be set to <code>refresh_token</code> and the <code>refresh_token</code> parameter must be specified. In this scenario, new authorization tokens will be granted.</p><p>The format of the expiration date of a token is <a href=\"http://www.w3.org/TR/xmlschema-2/#isoformats\" target=\"_blank\">ISO 8601 compliant</a>.</p>",
+                    "type": "Authentication",
+                    "nickname": "authenticate",
+                    "parameters": [
+                        {
+                            "name": "grant_type",
+                            "description": "Authorization grant type. Use <code>client_credentials</code> to create a token or <code>refresh_token</code> to refresh a token",
+                            "required": true,
+                            "type": "string",
+                            "enum": ["client_credentials", "refresh_token"],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "email",
+                            "description": "The account email. Mandatory if <code>grant_type=client_credentials</code>.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "password",
+                            "description": "The account password. Mandatory if <code>grant_type=client_credentials</code>.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "refresh_token",
+                            "description": "The <code>refresh_token</code> obtained in the last successful request to this endpoint.  Mandatory if <code>grant_type=refresh_token</code>.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "New authorization tokens have been granted.",
+                            "responseModel": "Authentication" 
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 403,
+                            "message": "The specified password or refresh token is invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "The specified user has not been confirmed.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified account cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Granting a new authorization token",
+                            "description": "The following request creates a new authorization token.",
+                            "request": "curl -X POST http://portal.28.io/auth?email=my@email.com&password=mypassword&grant_type=client_credentials",
+                            "response": "< 200 OK\n{\n  \"token_type\" : \"bearer\",\n   \"expiration_date\" : \"2013-11-06T01:54:29.83945Z\",\n   \"access_token\" : \"dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\",\n   \"refresh_token\" : \"dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\",\n   \"project_tokens\" : {\n    \"project_zurich\" : \"QllXcXM3OHV4N2IweitabGZKeExkZVBreGZJPToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"  },\n   \"accountMetadata\" : {\n    \"id\" : \"1\",\n     \"email\" : \"my@email.com\",\n     \"firstname\" : \"John\",\n     \"lastname\" : \"Smith\",\n     \"company\" : \"Acme\",\n     \"createdAt\" : \"2013-10-31T15:26:12.702226Z\",\n     \"type\" : \"free\",\n     \"confirmedAt\" : \"2013-10-31T15:26:31.081456Z\"\n  },\n   \"projectsMetadata\" : [{\n    \"name\" : \"zurich\",\n     \"created\" : \"2013-10-31T15:59:55.117077Z\",\n     \"package\" : \"free\",\n     \"status\" : \"active\",\n     \"avatarKey\" : 8,\n     \"version\" : \"1.0\",\n     \"sausaVesion\" : \"2.8.0\",\n     \"lastUpdated\" : \"2013-10-31T15:59:55.117077Z\",\n     \"lastModified\" : \"2013-10-31T15:59:55.117077Z\",\n     \"databaseType\" : \"28msec\"\n  }]\n}"
+                        }
+                        ,
+                        {
+                            "title": "Refreshing an authorization token",
+                            "description": "The following request refreshes the validity of an authorization token.",
+                            "request": "curl -X POST http://portal.28.io/auth?refresh_token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==&grant_type=refresh_token",
+                            "response": "< 200 OK\n{\n  \"token_type\" : \"bearer\",\n   \"expiration_date\" : \"2013-11-06T02:17:50.769451Z\",\n   \"access_token\" : \"ejRISUlaY2FFNUs2dGZOQ0FrTnRRY2hRVkNnPToyMDEzLTExLTA2VDAyOjE3OjUwLjc2OTQ1MVo=\",\n   \"refresh_token\" : \"ejRISUlaY2FFNUs2dGZOQ0FrTnRRY2hRVkNnPToyMDEzLTExLTA2VDAyOjE3OjUwLjc2OTQ1MVo=\",\n   \"project_tokens\" : {\n    \"project_zurich\" : \"aUhxKzRJRU1VbHhwWS9OWGNsS2lDdXpKVXNrPToyMDEzLTExLTA2VDAyOjE3OjUwLjc2OTQ1MVo=\"\n  }\n}"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The XQuery error code of the error"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The error description"
+                },
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error column number"
+                }
+            }
+        },
+        "Authentication": {
+            "id": "Authentication",
+            "description": "Authentication data",
+            "required": [
+                "token_type",
+                "expiration_date",
+                "access_token",
+                "refresh_token",
+                "project_tokens"
+            ],
+            "properties": {
+                "token_type": {
+                    "type": "string",
+                    "description": "The API token type",
+                    "enum": [
+                        "bearer"
+                    ]
+                },
+                "expiration_date": {
+                    "type": "date-time",
+                    "description": "The expiration date of all the tokens in the response"
+                },
+                "access_token": {
+                    "type": "string",
+                    "description": "The API token"
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "description": "The refresh token which can be used to refresh both the API and project tokens"
+                },
+                "project_tokens": {
+                    "type": "ProjectTokens",
+                    "description": "The project tokens which can be used to make request to the APIs on the project endpoints"
+                }
+            }
+        },
+        "ProjectTokens": {
+            "id": "ProjectTokens",
+            "description": "An object containing zero or more project tokens. Each project token is stored in a different field project_{name}, where {name} is the project name, (e.g.: portal).",
+            "properties": {
+                "project_{name}": {
+                    "type": "string",
+                    "description": "The token for the project {name}. One field for each project owned by the account will be present"
+                }
+            }
+        }
+    }
+}

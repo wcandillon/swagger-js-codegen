@@ -1,0 +1,35 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://api.xbrl.io",
+    "resourcePath": "/ping",
+    "produces": ["application/json"],
+    "apis": [
+        {
+            "path": "/ping",
+            "operations":[
+                {
+                    "method": "GET",
+                    "summary": "Checks if the service is available.",
+                    "type": "Success",
+                    "nickname": "ping" 
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Success": {
+            "id": "Success",
+            "description": "Default success response",
+            "required": ["success"],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                }
+            }
+        }
+    }
+}

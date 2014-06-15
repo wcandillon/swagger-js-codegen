@@ -1,0 +1,826 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://portal.28.io/v1",
+    "resourcePath": "/_jobs",
+    "produces": [
+        "application/json"
+    ],
+    "description": "<p>These resources can be used to manage jobs. Jobs are of three kinds: <code>execute</code>, <code>map</code> and <code>shuffle</code>. Each job has one of the following statuses: <code>pending</code>, <code>failed</code>, <code>in-progress</code>, <code>completed</code>, <code>timed-out</code>. To use this API, a default MongoDB database must be configured. The endpoint of these resources is based on your project name. For instance, if your 28.io project is named <code>myproject</code>, your endpoint for this API will be: <code>http://myproject.28.io/v1/_jobs</code>.</p>",
+    "apis": [
+        {
+            "path": "/_jobs",
+            "description": "Jobs Listing",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists jobs",
+                    "notes": "<p>This method retrieves a list of all jobs that belong to a project. By default all jobs are listed, regardless of their status or date.</p><p>To only list jobs with one or more given statuses, you can specify them through the <code>status</code> parameter. To specify more than one status, specify the parameter multiple times, for instance: <code>?status=in-progress&amp;status=pending</code>.</p><p>To filter the jobs by date or date and time you can specify either the <code>from</code> or <code>to</code> (inclusive) parameters. Their values must be valid <a href=\"http://www.w3.org/TR/NOTE-datetime\">ISO 8601:2004</a> date or date and time values, for instance \"2014-01-30\", \"2014-01-30T16:21:41.152\" or \"2014-01-30T16:21:41.152Z\".</p>",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Job"
+                    },
+                    "nickname": "listJobs",
+                    "parameters": [
+                        {
+                            "name": "status",
+                            "description": "One or more project statuses.",
+                            "required": false,
+                            "type": "array",
+                            "items": {
+                                "$ref": "JobStatus"
+                            },
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "from",
+                            "description": "The starting date for filtering the listed jobs.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "to",
+                            "description": "The ending date for filtering the listed jobs.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "No default MongoDB database is configured.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns jobs listing.",
+                            "responseModel": "JobsList"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Listing all jobs",
+                            "description": "The following request retrieves the list of all queries associated with the project named <code>myproject</code>.",
+                            "request": "curl -X GET \"http://myproject.28.io/v1/_jobs?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                            "response": "< 200 OK\n[\n  {\n    \"id\": \"fe4d7e6c-cfce-4d1b-a693-d840ea926714\",\n    \"href\": \"/v1/_jobs/fe4d7e6c-cfce-4d1b-a693-d840ea926714\",\n    \"created\": \"2014-01-30T16:21:41.152Z\",\n    \"status\": \"completed\",\n    \"query\": \"/public/query.xq\"\n  }\n]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/_jobs/{job-uuid}",
+            "description": "Job Management",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Retrieves a job details",
+                    "notes": "<p>This method retrieves the details of a job.</p>",
+                    "type": "JobDetails",
+                    "nickname": "getJob",
+                    "parameters": [
+                        {
+                            "name": "job-uuid",
+                            "description": "The job UUID.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified job cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "No default MongoDB database is configured.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns query source code."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Retrieving a job details",
+                            "description": "The following request retrieves the details of a job.",
+                            "request": "curl -X GET \"http://myproject.28.io/v1/_jobs/fe4d7e6c-cfce-4d1b-a693-d840ea926714?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                            "response": "< 200 OK\n{\n  \"id\": \"fe4d7e6c-cfce-4d1b-a693-d840ea926714\",\n  \"kind\": \"execute\",\n  \"query\": \"/public/query.xq\",\n  \"collection\": \"_28.temporary.2014-1-30.4a315571-b5fa-4da5-8381-75c34c55b47d\",\n  \"status\": \"completed\",\n  \"created\": \"2014-01-30T19:43:21.582Z\",\n  \"accessed\": \"2014-01-30T19:43:22Z\",\n  \"lock-acquired\": \"2014-01-30T19:43:22Z\",\n  \"completed\": \"2014-01-30T19:43:22Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a job",
+                    "notes": "<p>This method removes a completed, failed or timed out job.</p>",
+                    "type": "Success",
+                    "nickname": "removeJob",
+                    "parameters": [
+                        {
+                            "name": "job-uuid",
+                            "description": "The job UUID.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified job cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "No default MongoDB database is configured.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 422,
+                            "message": "The specified job is not completed, failed or timed out.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "The query has been deleted."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "description": "The following request deletes a job.",
+                            "request": "curl -X DELETE \"http://myproject.28.io/v1/_jobs/fe4d7e6c-cfce-4d1b-a693-d840ea926714?token=dGZKZ0VYT1VWV2l1R1BLQ1NBTjVmcEJlWU04PToyMDEzLTExLTA2VDAxOjU0OjI5LjgzOTQ1Wg==\"",
+                            "response": "< 200 OK\n{\n  \"success\": true\n}",
+                            "title": "Deleting a job"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/_jobs/{job-uuid}/results",
+            "description": "Job Results",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Lists the results of a job",
+                    "notes": "<p>This method retrieves the results of a job.</p><p>By default only the results of completed jobs can be retrieved. To return the partial results of a non-completed job specify the <code>allow-partial</code> parameter.</p><p>The following serialization methods are available: <a href=\"http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/#section-json-serialization\" target=\"_blank\">JSON-XML-hybrid</a>, <a href=\"http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/#section-json-serialization\" target=\"_blank\">JSON</a>, <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#xml-output\" target=\"_blank\">XML</a>, <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#text-output\" target=\"_blank\">Text</a>, <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#html-output\" target=\"_blank\">HTML</a>, and <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#xhtml-output\" target=\"_blank\">XHTML</a>.</p><p>It is also possible to use the 28.io serialization method. The 28.io serialization produces a JSON object with metadata about the items produced by the query. This serialization method format is unstable and will be documented as soon we are ready to commit to backward compatibility.</p><p>If the Accept header is specified and it contains at least one supported mime-type, the preferred supported mime-type is used to choose the serialization method, according to the following mapping: <ul><li><code>application/mixed-json-xml</code>: <a href=\"http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/#section-json-serialization\" target=\"_blank\">JSON-XML-hybrid Serialization</a></li><li><code>application/json</code> or any mime-type which ends with <code>+json</code>: <a href=\"http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/#section-json-serialization\" target=\"_blank\">JSON Serialization</a></li><li><code>text/xml</code>, <code>application/xml</code> or any mime-type which ends with <code>+xml</code>: <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#xml-output\" target=\"_blank\">XML Serialization</a></li><li><code>text/html</code>: <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#html-output\" target=\"_blank\">HTML Serialization</a></li><li><code>application/xhtml+xml</code>: <a href=\"http://www.w3.org/TR/xslt-xquery-serialization/#xhtml-output\" target=\"_blank\">XHTML Serialization</a></li><li><code>application/28io+json</code>: 28.io Serialization (format definition unstable)</li><li><code>* / *</code>: 28.io Serialization (format definition unstable).</li></ul>If the <code>Accept</code> header is not specified, the 28.io Serialization (format definition unstable) will be used.  In case no charset has been specified in the <code>Accept</code> header, <code>UTF-8</code> is used. Otherwise, the specified charset is used.<p class=\"callout-warning\">Any mime-type not matching one of the conditions listed above is not supported by this resource.</p></p>",
+                    "type": "CollectionList28IO",
+                    "produces": [
+                        "*/*",
+                        "application/xml",
+                        "application/xhtml+xml",
+                        "text/html",
+                        "text/plain",
+                        "application/json",
+                        "application/28.io+json"
+                    ],
+                    "nickname": "listResults",
+                    "parameters": [
+                        {
+                            "name": "job-uuid",
+                            "description": "The job UUID.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "offset",
+                            "description": "The index of the first item from which to start listing the collection items. Default is 1.",
+                            "required": false,
+                            "type": "integer",
+                            "minimum": 1,
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "limit",
+                            "description": "The number of collection items to list. Default is 10.",
+                            "required": false,
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 500,
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "expand",
+                            "description": "Whether to include the serialized item in the listing. The default value is false.",
+                            "required": false,
+                            "type": "boolean",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "allow-partial",
+                            "description": "Whether to allow to retrieve partial results for in progress or failed jobs. The default value is false.",
+                            "required": false,
+                            "type": "boolean",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "Accept",
+                            "description": "Specifies the serialization of the produced objects",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "header",
+                            "enum": [
+                                "*/*",
+                                "application/xml",
+                                "application/xhtml+xml",
+                                "text/html",
+                                "text/plain",
+                                "application/json",
+                                "application/28.io+json"
+                            ]
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified job cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 406,
+                            "message": "The job results cannot be serialized as specified by the Accept header.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "No default MongoDB database is configured.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 422,
+                            "message": "The specified job is not completed, failed or timed out or it is not an execute or map job.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns job results."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Retrieving the results of a job",
+                            "description": "The following request retrieves the results of a job.",
+                            "request": "curl -X GET http://myproject.28.io/v1/_jobs/fe4d7e6c-cfce-4d1b-a693-d840ea926714/results?offset=1&limit=10&token=MUVSek1XU2c5aVJCeENRcUgyV2ZlbkFKbytnPToyMDEzLTExLTA2VDIwOjI2OjQ5LjgzNzMzNFo=",
+                            "response": "< 200 OK\n{\n  \"href\" : \"/v1/_jobs/<>?offset=1&limit=10\",\n   \"offset\" : 1,\n   \"limit\" : 10,\n   \"count\" : 1,\n   \"items\" : [ {\n \"content\" : \"{\n  \\\"_id\\\" : \\\"5269BC91D6F9B3D9DBA775DE\\\", \n  \\\"name\\\" : \\\"FundamentalAccountingConcepts\\\", \n  \\\"version\\\" : \\\"1.0\\\", \n  \\\"namespaces\\\" : {\n    \\\"fac\\\" : \\\"http://www.xbrlsite.com/2013/FundamentalAccountingConcepts\\\"\n  }, \n  \\\"mappings\\\" : {\n    \\\"fac:Assets\\\" : [ \\\"us-gaap:Assets\\\", \\\"us-gaap:AssetsCurrent\\\" ]\n  }\n}\",\n     \"contentType\" : \"application/json\"\n} ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a job results",
+                    "notes": "<p>This method removes the results of a completed job.</p>",
+                    "type": "JobResultsRemove",
+                    "nickname": "removeResults",
+                    "parameters": [
+                        {
+                            "name": "job-uuid",
+                            "description": "The job UUID.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "path"
+                        },
+                        {
+                            "name": "token",
+                            "description": "A project token.",
+                            "required": true,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid or expired.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 404,
+                            "message": "The specified job cannot be found.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 409,
+                            "message": "No default MongoDB database is configured.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 422,
+                            "message": "The specified job is not completed, failed or timed out or it is not an execute or map job.",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "The job results, if any, have been deleted."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Removing the results of a job",
+                            "description": "The following request removes the results of a job.",
+                            "request": "curl -X DELETE http://myproject.28.io/v1/_jobs/fe4d7e6c-cfce-4d1b-a693-d840ea926714/results?token=MUVSek1XU2c5aVJCeENRcUgyV2ZlbkFKbytnPToyMDEzLTExLTA2VDIwOjI2OjQ5LjgzNzMzNFo=",
+                            "response": "< 200 OK\n{\n  \"success\" : true\n}"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "JobStatus": {
+            "id": "JobStatus",
+            "description": "Status of a Job",
+            "type": "string",
+            "enum": [
+                "pending",
+                "failed",
+                "in-progress",
+                "completed",
+                "timed-out"
+            ]
+        },
+        "Success": {
+            "id": "Success",
+            "description": "Default success response",
+            "required": [
+                "success"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                }
+            }
+        },
+        "JobResultsRemove": {
+            "id": "JobResultsRemove",
+            "description": "Job Removal Results",
+            "required": [
+                "success",
+                "deleted"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                },
+                "deleted": {
+                    "type": "boolean",
+                    "description": "Whether the job result collection existed before the command invocation."
+                }
+            }
+        },
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "request_id",
+                "context",
+                "message",
+                "description"
+            ],
+            "properties": {
+                "request_id": {
+                    "type": "string",
+                    "description": "The request identifier"
+                },
+                "context": {
+                    "type": "string",
+                    "description": "The complete domain name of the project"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "For XQuery errors, the type of the error (e.g. static)"
+                },
+                "code": {
+                    "type": "string",
+                    "description": "For XQuery errors, the error code"
+                },
+                "location": {
+                    "type": "Location",
+                    "description": "For XQuery errors, the error location (if available)"
+                },
+                "stack-trace": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "StackEntry"
+                    },
+                    "description": "For XQuery errors, the error stack trace (if available)"
+                }
+            }
+        },
+        "Location": {
+            "id": "Location",
+            "description": "Error information",
+            "required": [
+                "module",
+                "line-number",
+                "line-number-end",
+                "column-number",
+                "column-number-end"
+            ],
+            "properties": {
+                "module": {
+                    "type": "string",
+                    "description": "The error module"
+                },
+                "line-number": {
+                    "type": "string",
+                    "description": "The error first line number"
+                },
+                "line-number-end": {
+                    "type": "string",
+                    "description": "The error last line number"
+                },
+                "column-number": {
+                    "type": "string",
+                    "description": "The error first column number"
+                },
+                "column-number-end": {
+                    "type": "string",
+                    "description": "The error last column number"
+                }
+            }
+        },
+        "StackEntry": {
+            "id": "StackEntry",
+            "description": "A stack entry",
+            "required": [
+                "function",
+                "location"
+            ],
+            "properties": {
+                "function": {
+                    "type": "Function",
+                    "description": "The function of the call"
+                },
+                "type": {
+                    "type": "Location",
+                    "description": "The location of the call"
+                }
+            }
+        },
+        "ModuleUpdate": {
+            "id": "ModuleUpdate",
+            "description": "The result of the module compilation",
+            "required": [
+                "success"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "enum": [
+                        "true"
+                    ]
+                },
+                "compilationError": {
+                    "type": "Error",
+                    "description": "The compilation error occurred during the module compilation, if any"
+                }
+            }
+        },
+        "Job": {
+            "id": "Job",
+            "description": "A job metadata",
+            "required": [
+                "id",
+                "href",
+                "created",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The list of public queries. It is always present when listing all queries or public queries"
+                },
+                "href": {
+                    "type": "string",
+                    "description": "The job URL which can be used to manage the job"
+                },
+                "created": {
+                    "type": "date",
+                    "description": "The job creation date and time, as a JSONiq dateTime relative to the UTC timezone"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "failed",
+                        "in-progress",
+                        "completed",
+                        "timed-out"
+                    ],
+                    "description": "The job status"
+                },
+                "query": {
+                    "type": "string",
+                    "description": "The query run by the job, for execute jobs"
+                },
+                "function": {
+                    "type": "string",
+                    "description": "The function run by the job, for map and shuffle jobs"
+                }
+            }
+        },
+        "JobDetails": {
+            "id": "JobDetails",
+            "description": "A job metadata",
+            "required": [
+                "id",
+                "kind",
+                "created",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The list of public queries. It is always present when listing all queries or public queries"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "shuffle",
+                        "map",
+                        "execute"
+                    ],
+                    "description": "The job kind"
+                },
+                "query": {
+                    "type": "string",
+                    "description": "The query run by the job, for execute jobs"
+                },
+                "function": {
+                    "type": "string",
+                    "description": "The function run by the job, for map and shuffle jobs"
+                },
+                "collection": {
+                    "type": "string",
+                    "description": "The job output collection, for execute and map jobs"
+                },
+                "collections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "string"
+                    },
+                    "description": "The job output collections, for shuffle jobs"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "failed",
+                        "in-progress",
+                        "completed",
+                        "timed-out"
+                    ],
+                    "description": "The job status"
+                },
+                "created": {
+                    "type": "date",
+                    "description": "The job creation date and time, as a JSONiq dateTime relative to the UTC timezone"
+                },
+                "accessed": {
+                    "type": "date",
+                    "description": "The job last access date and time, as a JSONiq dateTime relative to the UTC timezone"
+                },
+                "lock-acquired": {
+                    "type": "date",
+                    "description": "The date and time a lock was acquired for the job, as a JSONiq dateTime relative to the UTC timezone"
+                },
+                "completed": {
+                    "type": "date",
+                    "description": "The job completition date and time, as a JSONiq dateTime relative to the UTC timezone"
+                },
+                "error": {
+                    "type": "string",
+                    "description": "The error raised during job execution, if any"
+                }
+            }
+        },
+        "QueryResult28IO": {
+            "id": "QueryResult28IO",
+            "description": "Query results serialized using the 28io+json serialization method",
+            "required": [
+                "defaultContentType",
+                "items",
+                "count"
+            ],
+            "properties": {
+                "defaultContentType": {
+                    "type": "string",
+                    "description": "The default content-type. All serialized items that do not contains a \"content_type\" field have this content-type"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Item28IO"
+                    },
+                    "description": "The serialized query result items"
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "",
+                    "minimum": 1
+                }
+            }
+        },
+        "Item28IO": {
+            "id": "Item28IO",
+            "description": "An item serialized using the 28io+json serialization method",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "contentType": {
+                    "type": "string",
+                    "description": "The item content-type, if different from the default one"
+                },
+                "href": {
+                    "type": "string",
+                    "description": "A link that can be used to refer to the item. It is present only for items which are stored in a MongoDB collection"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The item serialized using the \"json+xml hybrid\" serialization method"
+                }
+            }
+        },
+        "CollectionList28IO": {
+            "id": "CollectionList28IO",
+            "description": "Collection listing in 28.io+json formt",
+            "required": [
+                "href",
+                "offset",
+                "limit",
+                "count",
+                "items"
+            ],
+            "properties": {
+                "first": {
+                    "type": "string",
+                    "description": "The link to the first page of this collection item listing. Its offset is always 1, its limit is the same as the current request. It is present only if the the current offset is greater than 1"
+                },
+                "previous": {
+                    "type": "string",
+                    "description": "The link to the previous page of this collection item listing. Its offset is the maximum among 1 and the current offset minus the current limit. It is present only if the the current offset is greater than 1"
+                },
+                "href": {
+                    "type": "string",
+                    "description": "The link to this collection item listing, with the same offset and limit"
+                },
+                "next": {
+                    "type": "string",
+                    "description": "The link to the next page of this collection item listing.  Its offset is the sum of the current offset and the current limit. It is present only if the last item contained in the response is not the last one in the collection"
+                },
+                "last": {
+                    "type": "string",
+                    "description": "The link to the last page of this collection item listing. Its offset is the biggest number smaller or equal to the number of items in the collection which can be obtained adding one or more times the current limit to the current offset. The limit is the same as the current page. It is present only if the last item contained in the response is not the last one in the collection"
+                },
+                "offset": {
+                    "type": "integer",
+                    "description": "The requested offset",
+                    "minimum": "1"
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "The requested limit",
+                    "minimum": "1",
+                    "maximum": "500"
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "The declared type of the items in the collection",
+                    "minimum": "1"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Item28IO"
+                    },
+                    "description": "The list of item starting whose position (starting from 1) in the collection is between offset(included) and offset+limit (excluded)"
+                }
+            }
+        }
+    }
+}

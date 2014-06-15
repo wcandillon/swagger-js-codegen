@@ -1,0 +1,38 @@
+{
+  "name": "swagger-js-codegen",
+  "version": "0.0.1",
+  "description": "A Swagger codegen for JavaScript",
+  "scripts": {
+    "test": "grunt"
+  },
+  "bugs": {
+    "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wcandillon/swagger-js-codegen.git"
+  },
+  "keywords": [
+    "swagger",
+    "rest"
+  ],
+  "author": {
+    "name": "William Candillon",
+    "email": "w@28.io",
+    "url": "http://28.io"
+  },
+  "licenses": [
+    {
+      "type": "Apache 2",
+      "url": "https://github.com/wcandillon/swagger-js-codegen/blob/master/LICENSE"
+    }
+  ],
+  "homepage": "https://github.com/wcandillon/swagger-js-codegen",
+  "dependencies": {
+    "js-beautify": "~1.5.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.9.2"
+  }
+}

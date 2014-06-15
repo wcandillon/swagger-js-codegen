@@ -13,5 +13,3 @@ deploy:
     branch: master
     repo: wcandillon/swagger-js-codegen
     node: 0.11
-dd:
-  secure: hW1GBxGDYcGnv0Bk1L9SCWBCcQFHrFYFvIpjWD1xv+L29+085TMDXOJA82dvbUZ2xCKRMsdXYrqg/luiOB92gXZrt/ZcEIk0EICI3rr9/2a3GqKThv0jR4V6wKkzFphgnDFSsMGAqxiHG+JE3K8F4MfMcb9IoBkfeUZDBHZ4gPA=

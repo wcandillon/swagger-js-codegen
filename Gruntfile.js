@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         jshint: {
-            all: ['Gruntfile.js', 'lib/**/*.js'],
+            all: ['Gruntfile.js', 'lib/**/*.js', 'tests/**/*.js'],
             options: {
                 jshintrc: '.jshintrc'
             }
@@ -23,11 +23,16 @@ module.exports = function (grunt) {
                 // String or array of strings
                 // determining which files to include.
                 // This option is grunt's "full" file format.
-                src: ['test/*.js', 'spec/*']
+                src: ['test/generation.js', 'spec/*']
+            }
+        },
+        jsonlint: {
+            all: {
+                src: ['package.json', '.jshintrc']
             }
         }
     });
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'vows']);
+    grunt.registerTask('default', ['jsonlint', 'jshint', 'vows']);
 };

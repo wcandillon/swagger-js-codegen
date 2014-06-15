@@ -1,5 +1,10 @@
 module.exports = function (grunt) {
     'use strict';
+
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+    // Load local tasks.
+    //grunt.loadTasks('tasks');
+ 
     // Project configuration.
     grunt.initConfig({
         jshint: {
@@ -7,13 +12,22 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: '.jshintrc'
             }
+        },
+        vows: {
+            all: {
+                options: {
+                    verbose: true,
+                    colors: true,
+                    coverage: 'json'
+                },
+                // String or array of strings
+                // determining which files to include.
+                // This option is grunt's "full" file format.
+                src: ['test/*.js', 'spec/*']
+            }
         }
     });
 
-    // Load local tasks.
-    grunt.loadTasks('tasks');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-
     // Default task.
-    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', ['jshint', 'vows']);
 };

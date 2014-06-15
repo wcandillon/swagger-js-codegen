@@ -1,5 +1,6 @@
 {
   "name": "swagger-js-codegen",
+  "main": "./lib/codegen.js",
   "version": "0.0.2",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
@@ -40,6 +41,7 @@
     "final-fs": "~1.6.0",
     "matchdep": "~0.3.0",
     "vows": "~0.7.0",
-    "grunt-jsonlint": "~1.0.4"
+    "grunt-jsonlint": "~1.0.4",
+    "request": "~2.36.0"
   }
 }

@@ -25,9 +25,14 @@ module.exports = function (grunt) {
                 // This option is grunt's "full" file format.
                 src: ['test/*.js', 'spec/*']
             }
+        },
+        jsonlint: {
+            all: {
+                src: ['package.json', '.jshintrc']
+            }
         }
     });
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'vows']);
+    grunt.registerTask('default', ['jsonlint', 'jshint', 'vows']);
 };

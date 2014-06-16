@@ -50,7 +50,7 @@ vows.describe('Test Generated API').addBatch({
             },
             'Should have invalid password': function(error){
                 assert.equal(
-                    JSON.parse(error.body).message.substring(0, '[errors:wrong-password]'.length),
+                    error.body.message.substring(0, '[errors:wrong-password]'.length),
                     '[errors:wrong-password]'
                 );
             }
@@ -70,8 +70,7 @@ vows.describe('Test Generated API').addBatch({
                 return promise;
             },
             'Should have valid password': function(success){
-                var response = JSON.parse(success.body);
-                assert.equal(response.token_type, 'bearer');
+                assert.equal(success.body.token_type, 'bearer');
             }
         }
     }

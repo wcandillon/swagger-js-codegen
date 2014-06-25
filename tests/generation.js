@@ -12,9 +12,15 @@ var list = ffs.readdirSync('swagger');
 list.forEach(function(file){
     file = 'swagger/' + file;
     batch[file] = function(){
-        var swagger = fs.readFileSync(file, 'UTF-8');
-        var result = CodeGen.getCode({
-            swagger: JSON.parse(swagger)
+        var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
+        var result = CodeGen.getNodeCode({
+            className: 'Test',
+            swagger: swagger
+        });
+        assert(typeof(result), 'string');
+        result = CodeGen.getAngularCode({
+            className: 'Test',
+            swagger: swagger
         });
         assert(typeof(result), 'string');
     };

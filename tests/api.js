@@ -12,7 +12,7 @@ vows.describe('Test Generated API').addBatch({
         topic: function(){
             var swagger = JSON.parse(fs.readFileSync('swagger/auth', 'UTF-8'));
             /*jshint evil:true*/
-            var Auth = eval(CodeGen.getCode({ swagger: swagger }));
+            var Auth = eval(CodeGen.getNodeCode({ className: 'Auth', swagger: swagger }));
             return new Auth('http://portal.28.io/api');
         },
         'Should have authenticate method': function(auth){

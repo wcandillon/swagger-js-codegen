@@ -1,7 +1,7 @@
 'use strict';
 
-var vows = require('vows');
 var assert = require('assert');
+var vows = require('vows');
 var fs = require('fs');
 var ffs = require('final-fs');
 
@@ -13,8 +13,10 @@ list.forEach(function(file){
     file = 'swagger/' + file;
     batch[file] = function(){
         var swagger = fs.readFileSync(file, 'UTF-8');
-        var gen = new CodeGen('Queries', JSON.parse(swagger));
-        gen.getCode();
+        var result = CodeGen.getCode({
+            swagger: JSON.parse(swagger)
+        });
+        assert(typeof(result), 'string');
     };
 });
 vows.describe('Test Generation').addBatch(batch).export(module);

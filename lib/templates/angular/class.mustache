@@ -1,4 +1,8 @@
-angular.module({{&moduleName}}, [])
+/*global angular:false */
+/**
+ * {{&description}}
+ */
+angular.module('{{&moduleName}}', [])
 .factory('{{&className}}', function($q, $http, $rootScope){
     'use strict';
     
@@ -28,6 +32,8 @@ angular.module({{&moduleName}}, [])
             return this;
         };
         
-        {{&source}}
+        {{#methods}}
+        {{> method}}
+        {{/methods}}
     };
 });

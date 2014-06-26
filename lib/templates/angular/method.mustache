@@ -23,8 +23,8 @@
 
     {{#parameters}}
         {{#required}}
-        if(parameter.{{&camelCaseName}} === undefined){
-            deferred.reject(new Error('The {{&camelCaseName}} parameter is required'));
+        if(parameters.{{&camelCaseName}} === undefined){
+            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
             return deferred.promise;
         }
         {{/required}}
@@ -56,7 +56,7 @@
     {{/isGET}}
     $http({
         timeout: parameters.$timeout,
-        method: {{method}},
+        method: '{{method}}',
         url: url,
         params: queryParameters,
         body: body,

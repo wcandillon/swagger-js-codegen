@@ -23,7 +23,7 @@ module.exports = function (grunt) {
                 // String or array of strings
                 // determining which files to include.
                 // This option is grunt's "full" file format.
-                src: ['tests/generation.js', 'tests/api.js', 'spec/*']
+                src: ['tests/*']
             }
         },
         jsonlint: {

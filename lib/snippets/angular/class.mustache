@@ -1,0 +1,33 @@
+angular.module({{&moduleName}}, [])
+.factory('{{&className}}', function($q, $http, $rootScope){
+    'use strict';
+    
+    /**
+     * @class " || {{&className}} || "
+     * @param {string} domain - The project domain
+     * @param {string} cache - An angularjs cache implementation
+     */
+    return function(domain, cache) {
+
+        if(typeof(domain) !== 'string') {
+            throw new Error('Domain parameter must be specified as a string.'); 
+        }
+
+        this.$on = function($scope, path, handler) {
+            var url = domain + path;
+            $scope.$on(url, function(){
+                handler();
+            });
+            return this;
+        };
+
+        this.$broadcast = function(path){
+            var url = domain + path;
+            //cache.remove(url);
+            $rootScope.$broadcast(url);
+            return this;
+        };
+        
+        {{&source}}
+    };
+});

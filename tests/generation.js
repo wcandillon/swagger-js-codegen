@@ -19,6 +19,7 @@ list.forEach(function(file){
         });
         assert(typeof(result), 'string');
         result = CodeGen.getAngularCode({
+            moduleName: 'Test',
             className: 'Test',
             swagger: swagger
         });

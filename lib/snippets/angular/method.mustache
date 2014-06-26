@@ -1,0 +1,76 @@
+/*
+ * {{&summary}}
+ * @method
+ * @name {{&className}}#{{&methodName}}
+{{#parameters}}
+ * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}
+{{/parameters}}
+ * 
+ */
+ this.{{&methodName}} = function(parameters){
+    var deferred = $q.defer();
+    var that = this;
+    
+    var path = '{{&path}}';
+
+    {{#singletons}}
+    var {{&name}} = '{{&value}}';
+    {{/singletons}}
+    
+    var body;
+    var queryParameters = {};
+    var headers = {};
+
+    {{#parameters}}
+        {{#required}}
+        if(parameter.{{&camelCaseName}} === undefined){
+            deferred.reject(new Error('The {{&camelCaseName}} parameter is required'));
+            return deferred.promise;
+        }
+        {{/required}}
+        
+        {{#isQueryParameter}}
+            queryParameters['{{&name}}'] = parameters.{{&camelCaseName}};
+        {{/isQueryParameter}}
+        
+        {{#isPathParameter}}
+            path = path.replace('{' + {{&name}} + '}', parameters.{{&camelCaseName}});
+        {{/isPathParameter}}
+        
+        {{#isHeaderParameter}}
+            headers[{{&name}}] = parameters.{{&camelCaseName}};
+        {{/isHeaderParameter}}
+        
+        {{#isBodyParameter}}
+            body = parameters.{{&camelCaseName}};
+        {{/isBodyParameter}}
+    {{/parameters}}
+
+    var url = domain + path;
+    var cached = parameters.$cache && parameters.$cache.get(url);
+    {{#isGET}}
+    if(cached !== undefined && parameters.$refresh !== true) {
+        deferred.resolve(cached);
+        return deferred.promise;
+    }
+    {{/isGET}}
+    $http({
+        timeout: parameters.$timeout,
+        method: {{method}},
+        url: url,
+        params: queryParameters,
+        body: body,
+        headers: headers
+    })
+    .success(function(data, status, headers, config){
+        deferred.resolve(data);
+        if(parameters.$cache !== undefined) {
+            parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+        }
+    })
+    .error(function(data, status, headers, config){
+        deferred.reject(data);
+    });
+    
+    return deferred.promise; 
+ };

@@ -33,7 +33,7 @@
         {{/isQueryParameter}}
         
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{{<%&name%>}}<%={{ }}=%>', parameters.{{&camelCaseName}});
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters.{{&camelCaseName}});
         {{/isPathParameter}}
         
         {{#isHeaderParameter}}

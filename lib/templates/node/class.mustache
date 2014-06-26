@@ -1,0 +1,15 @@
+/**
+ * {{&description}}
+ * @class {{&className}}
+ * @param {string} domain - The project domain
+ */
+module.exports.{{&className}} = function(domain) {
+    'use strict';
+
+    var request = require('request');
+    var Q = require('q');
+    
+    {{#methods}}
+    {{> method}}
+    {{/methods}}
+};

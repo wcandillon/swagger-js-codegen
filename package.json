@@ -1,7 +1,7 @@
 {
   "name": "swagger-js-codegen",
   "main": "./lib/codegen.js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
     "test": "grunt"
@@ -31,7 +31,8 @@
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
     "js-beautify": "~1.5.1",
-    "jshint": "~2.5.1"
+    "jshint": "~2.5.1",
+    "mustache": "~0.8.2"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

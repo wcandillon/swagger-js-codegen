@@ -3,13 +3,12 @@
  * @method
  * @name {{&className}}#{{&methodName}}
 {{#parameters}}
- * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}
+{{^isSingleton}} * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
  * 
  */
  this.{{&methodName}} = function(parameters){
     var deferred = $q.defer();
-    var that = this;
     
     var path = '{{&path}}';
     
@@ -26,7 +25,7 @@
         {{/required}}
         
         {{#isQueryParameter}}
-            queryParameters['{{&name}}'] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};
+            queryParameters['{{&name}}'] = {{#isSingleton}}'{{&singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};
         {{/isQueryParameter}}
         
         {{#isPathParameter}}
@@ -34,7 +33,7 @@
         {{/isPathParameter}}
         
         {{#isHeaderParameter}}
-            headers[{{&name}}] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};;
+            headers[{{&name}}] = {{#isSingleton}}'{{&singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};
         {{/isHeaderParameter}}
         
         {{#isBodyParameter}}
@@ -43,8 +42,8 @@
     {{/parameters}}
 
     var url = domain + path;
-    var cached = parameters.$cache && parameters.$cache.get(url);
     {{#isGET}}
+    var cached = parameters.$cache && parameters.$cache.get(url);
     if(cached !== undefined && parameters.$refresh !== true) {
         deferred.resolve(cached);
         return deferred.promise;

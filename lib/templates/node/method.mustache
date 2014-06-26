@@ -3,7 +3,7 @@
  * @method
  * @name {{&className}}#{{&methodName}}
 {{#parameters}}
- * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}
+{{^isSingleton}} * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
  * 
  */

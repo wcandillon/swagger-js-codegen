@@ -11,10 +11,6 @@
     var deferred = Q.defer();
 
     var path = '{{&path}}';
-
-    {{#singletons}}
-    var {{&name}} = '{{&value}}';
-    {{/singletons}}
     
     var body;
     var queryParameters = {};
@@ -27,9 +23,9 @@
             return deferred.promise;
         }
         {{/required}}
-        
+
         {{#isQueryParameter}}
-            queryParameters['{{&name}}'] = parameters.{{&camelCaseName}};
+            queryParameters['{{&name}}'] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};
         {{/isQueryParameter}}
         
         {{#isPathParameter}}
@@ -37,12 +33,13 @@
         {{/isPathParameter}}
         
         {{#isHeaderParameter}}
-            headers[{{&name}}] = parameters.{{&camelCaseName}};
+            headers[{{&name}}] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};;
         {{/isHeaderParameter}}
-        
+
         {{#isBodyParameter}}
             body = parameters.{{&camelCaseName}};
         {{/isBodyParameter}}
+        
     {{/parameters}}
 
     request({

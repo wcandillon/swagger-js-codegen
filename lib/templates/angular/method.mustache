@@ -12,10 +12,6 @@
     var that = this;
     
     var path = '{{&path}}';
-
-    {{#singletons}}
-    var {{&name}} = '{{&value}}';
-    {{/singletons}}
     
     var body;
     var queryParameters = {};
@@ -30,7 +26,7 @@
         {{/required}}
         
         {{#isQueryParameter}}
-            queryParameters['{{&name}}'] = parameters.{{&camelCaseName}};
+            queryParameters['{{&name}}'] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};
         {{/isQueryParameter}}
         
         {{#isPathParameter}}
@@ -38,7 +34,7 @@
         {{/isPathParameter}}
         
         {{#isHeaderParameter}}
-            headers[{{&name}}] = parameters.{{&camelCaseName}};
+            headers[{{&name}}] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};;
         {{/isHeaderParameter}}
         
         {{#isBodyParameter}}

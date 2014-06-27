@@ -47,7 +47,8 @@
         uri: domain + path,
         qs: queryParameters,
         headers: headers,
-        body: body
+        body: body,
+        rejectUnauthorized: false
     }, function(error, response, body){
         if(error) {
             deferred.reject(error);

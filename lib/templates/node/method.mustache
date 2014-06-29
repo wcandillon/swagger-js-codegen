@@ -33,7 +33,7 @@
         {{/isPathParameter}}
         
         {{#isHeaderParameter}}
-            headers[{{&name}}] = {{#isSingleton}}'{{singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};;
+            headers['{{&name}}'] = {{#isSingleton}}'{{&singleton}}'{{/isSingleton}} {{^isSingleton}}parameters.{{&camelCaseName}}{{/isSingleton}};;
         {{/isHeaderParameter}}
 
         {{#isBodyParameter}}

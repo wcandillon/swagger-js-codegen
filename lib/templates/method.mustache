@@ -1,0 +1,63 @@
+/**
+ * {{&summary}}
+ * @method
+ * @name {{&className}}#{{&methodName}}
+{{#parameters}}
+{{^isSingleton}} * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
+{{/parameters}}
+ * 
+ */
+ this.{{&methodName}} = function(parameters){
+    var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
+    
+    var path = '{{&path}}';
+    
+    var body;
+    var queryParameters = {};
+    var headers = {};
+
+    {{#parameters}}
+        {{#required}}
+        if(parameters.{{&camelCaseName}} === undefined){
+            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
+            return deferred.promise;
+        }
+        {{/required}}
+        
+        {{#isQueryParameter}}
+            {{#isSingleton}}
+                queryParameters['{{&name}}'] = '{{&singleton}}';
+            {{/isSingleton}}
+            {{^isSingleton}}
+                if(parameters.{{&camelCaseName}} !== undefined){
+                    queryParameters['{{&name}}'] = parameters.{{&camelCaseName}};
+                }
+            {{/isSingleton}}
+        {{/isQueryParameter}}
+        
+        {{#isPathParameter}}
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters.{{&camelCaseName}});
+        {{/isPathParameter}}
+        
+        {{#isHeaderParameter}}
+            {{#isSingleton}}
+                headers['{{&name}}'] = '{{&singleton}}';
+            {{/isSingleton}}
+            {{^isSingleton}}
+                if(parameters.{{&camelCaseName}} !== undefined){
+                    headers['{{&name}}'] = parameters.{{&camelCaseName}};
+                }
+            {{/isSingleton}}
+        {{/isHeaderParameter}}
+        
+        {{#isBodyParameter}}
+            if(parameters.{{&camelCaseName}} !== undefined){
+                body = parameters.{{&camelCaseName}};
+            }
+        {{/isBodyParameter}}
+    {{/parameters}}
+
+    {{> request}}
+    
+    return deferred.promise; 
+ };

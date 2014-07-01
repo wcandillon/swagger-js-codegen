@@ -8,9 +8,9 @@ var ffs = require('final-fs');
 var CodeGen = require('../lib/codegen').CodeGen;
 
 var batch = {};
-var list = ffs.readdirSync('swagger');
+var list = ffs.readdirSync('tests/apis');
 list.forEach(function(file){
-    file = 'swagger/' + file;
+    file = 'tests/apis/' + file;
     batch[file] = function(){
         var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
         var result = CodeGen.getNodeCode({

@@ -1,0 +1,30 @@
+var url = domain + path;
+{{#isGET}}
+var cached = parameters.$cache && parameters.$cache.get(url);
+if(cached !== undefined && parameters.$refresh !== true) {
+    deferred.resolve(cached);
+    return deferred.promise;
+}
+{{/isGET}}
+$http({
+    timeout: parameters.$timeout,
+    method: '{{method}}',
+    url: url,
+    params: queryParameters,
+    data: body,
+    headers: headers
+})
+.success(function(data, status, headers, config){
+    deferred.resolve(data);
+    if(parameters.$cache !== undefined) {
+        parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+    }
+})
+.error(function(data, status, headers, config){
+    deferred.reject({
+        status: status,
+        headers: headers,
+        config: config,
+        body: data
+    });
+});

@@ -28,7 +28,7 @@ module.exports = function (grunt) {
         },
         jsonlint: {
             all: {
-                src: ['package.json', '.jshintrc']
+                src: ['package.json', 'tests/apis/*.json', '.jshintrc']
             }
         }
     });

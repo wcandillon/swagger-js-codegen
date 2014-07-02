@@ -10,7 +10,7 @@ var CodeGen = require('../lib/codegen').CodeGen;
 vows.describe('Test Generated API').addBatch({
     'Test Generated code for the 28.io Auth API': {
         topic: function(){
-            var swagger = JSON.parse(fs.readFileSync('tests/apis/auth', 'UTF-8'));
+            var swagger = JSON.parse(fs.readFileSync('tests/apis/auth.json', 'UTF-8'));
             /*jshint evil:true*/
             var Auth = eval(CodeGen.getNodeCode({ className: 'Auth', swagger: swagger }));
             return new Auth('https://portal.28.io/api');

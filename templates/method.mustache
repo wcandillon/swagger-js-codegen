@@ -18,7 +18,7 @@
 
     {{#parameters}}
         {{#required}}
-        if(parameters.{{&camelCaseName}} === undefined){
+        if(parameters['{{&camelCaseName}}'] === undefined){
             deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
             return deferred.promise;
         }
@@ -29,14 +29,14 @@
                 queryParameters['{{&name}}'] = '{{&singleton}}';
             {{/isSingleton}}
             {{^isSingleton}}
-                if(parameters.{{&camelCaseName}} !== undefined){
-                    queryParameters['{{&name}}'] = parameters.{{&camelCaseName}};
+                if(parameters['{{&camelCaseName}}'] !== undefined){
+                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
             {{/isSingleton}}
         {{/isQueryParameter}}
         
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters.{{&camelCaseName}});
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
         {{/isPathParameter}}
         
         {{#isHeaderParameter}}
@@ -45,14 +45,14 @@
             {{/isSingleton}}
             {{^isSingleton}}
                 if(parameters.{{&camelCaseName}} !== undefined){
-                    headers['{{&name}}'] = parameters.{{&camelCaseName}};
+                    headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
             {{/isSingleton}}
         {{/isHeaderParameter}}
         
         {{#isBodyParameter}}
             if(parameters.{{&camelCaseName}} !== undefined){
-                body = parameters.{{&camelCaseName}};
+                body = parameters['{{&camelCaseName}}'];
             }
         {{/isBodyParameter}}
     {{/parameters}}

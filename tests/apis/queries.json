@@ -1,0 +1,1167 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://secxbrl.alpha.xbrl.io/v1/_queries/public/api",
+    "resourcePath": "",
+    "produces": [
+        "application/json"
+    ],
+    "description": "<p>This API allows its users to retrieve financial information provided to the US Securities and Exchange Commission (SEC) by public companies using the XBRL global standard technical syntax. Submitted XBRL information is read by the system, converted to a format which is optimized for query (as opposed to XBRL which is optimized for information exchange), and stored in a database in that queriable format. Additional metadata is added to the system which is commonly used when querying this financial information. Please note that only financial information provided within SEC forms 10-Q and 10-K is provided via this system.</p> <p>Information can be retrieved about entities, the submissions made by those entities, the components contained within those submissions, the model structure of a component, or the facts reported within a component.  All information is provided in the following formats:  JSON (the default), XML, CSV, and Excel.</p> <p>For more information about using this system, you can download this Excel spreadsheet which contains working examples.  Also, this getting started guide is helpful in understanding the information provided by this system.</p> <p>Please note that information outside of the DOW30 can only be accessed using a valid token that can be retrieved by creating an account on http://www.secxbrl.info and login is done using the Session API.</p> <p>Also note, that the POST method can be simulated by using GET and adding the _method=POST parameter to the HTTP request.</p><p>Please keep in mind that URLs are case sensitive. That is, all parameters need to be provided as shown in the documentation.</p>",
+    "apis": [
+        {
+            "path": "/entities.jq",
+            "description": "Entities",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve information about all or a selection of entities",
+                    "nickname": "listEntities",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "A tag to filter",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "A CIK number",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "A ticker symbols",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns query listing."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Retrieve a specific entity",
+                            "description": "Retrieve information about a specific entity identified by its CIK. Return the result as JSON.",
+                            "request": "[API_URL]/_queries/public/api/entities.jq?_method=POST&cik=1412090",
+                            "response": ""
+                        },
+                        {
+                            "title": "Retrieve all entities",
+                            "description": "Retrieve information about all entities. Return the result as XML.",
+                            "request": "[API_URL]/_queries/public/api/entities.jq?_method=POST&format=xml",
+                            "response": ""
+                        },
+                        {
+                            "title": "Retrieve information about all DOW30 entities",
+                            "description": "Retrieve information about all DOW30 entities. Return the result as CSV.",
+                            "request": "[API_URL]/_queries/public/api/entities.jq?_method=POST&tag=DOW30&format=csv",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/filings.jq",
+            "description": "Filings",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve the filings of a particular entity",
+                    "nickname": "listFilings",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "A tag to filter",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "A CIK number",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "A ticker symbols",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "aid",
+                            "description": "The id of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the fact to retrieve (default: LATEST)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query",
+                            "enum": [
+                                "year (e.g. 2011)",
+                                "LATEST",
+                                "ALL"
+                            ]
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the fact to retrieve (default: FY)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "Q1",
+                                "Q2",
+                                "Q3",
+                                "FY",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns all filings for the given entity."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Retrieve the filings of a specific entity",
+                            "description": "Retrieve information about the filings of an entity identified by its CIK. Return the result as XML.",
+                            "request": "[API_URL]/_queries/public/api/filings.jq?_method=POST&cik=66740&format=xml",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/components.jq",
+            "description": "Components",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve a summary for all components of a given filing",
+                    "nickname": "listComponents",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "The ticker of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "The tag to filter entities",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "The CIK of an entity. This parameter needs to be used together with the fiscalYear, fiscalPeriod, and disclosure parameters to identify a component.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the fact to retrieve (default: ALL)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query",
+                            "enum": [
+                                "year (e.g. 2011)",
+                                "LATEST",
+                                "ALL"
+                            ]
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the fact to retrieve (default: ALL)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "Q1",
+                                "Q2",
+                                "Q3",
+                                "FY",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "aid",
+                            "description": "The id of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cid",
+                            "description": "The id of a particular component",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "networkIdentifier",
+                            "description": "The network identifier of a particular component",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "disclosure",
+                            "description": "The disclosure to search for (e.g. BalanceSheet)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "reportElement",
+                            "description": "The name of the report element to search for (e.g. us-gaap:Goodwill)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "label",
+                            "description": "A search term to search in the labels of components (e.g. stock)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns all components for the given filing"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title" : "Retrieve information about all components of a filing",
+                            "description": "Retrieve information about all components of a particular filing which is identified by its accession number. Return the result as JSON.",
+                            "request": "[API_URL]/_queries/public/api/components.jq?_method=POST&aid=0000021344-13-000039",
+                            "response": ""
+                        },
+                        {
+                            "title" : "Retrieve information about all components of COCA COLA's latest 10-K",
+                            "description": "Retrieve information about all components of a particular filing which is identified by its accession number. Return the result as JSON.",
+                            "request": "[API_URL]/_queries/public/api/components.jq?_method=POST&ticker=ko",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/facttable-for-component.jq",
+            "description": "Retrieve a Fact Table for a Component",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve the fact table for a given component. A component can be selected in three ways. (1) by component id (cid), (2) by accession number and disclosure (aid and disclosure), or (3) by CIK, fiscal year, fiscal period, and disclosure (cik, fiscalYear, fiscalPeriod, and disclosure).",
+                    "nickname": "listFactTable",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cid",
+                            "description": "The id of the component",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "aid",
+                            "description": "The accession number of the filing. This parameter needs to be used together with the disclosure parameter to identify a component.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "The CIK of an entity. This parameter needs to be used together with the fiscalYear, fiscalPeriod, and disclosure parameters to identify a component.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "The ticker of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "A tag to filter",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "networkIdentifier",
+                            "description": "The network identifier of a particular component",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "disclosure",
+                            "description": "The disclosure of the component (e.g. BalanceSheet)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Return the fact table for the given component"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Fact Table as CSV",
+                            "description": "Retrieve the fact table for a particular component. Return the result as CSV.",
+                            "request": "[API_URL]/_queries/public/api/facttable-for-component.jq?_method=POST&aid=0000021344-14-000008&networkIdentifier=http://www.thecocacolacompany.com/role/ConsolidatedBalanceSheets&format=csv",
+                            "response": ""
+                        },
+                        {
+                            "title": "Fact Table of Coca Cola's Q3/2013 Balance Sheet",
+                            "description": "Retrieve the fact table for the Balance Sheet of Coca Cola filing identified with accession number 0000021344-13-000050. Return the result as XML.",
+                            "request": "[API_URL]/_queries/public/api/facttable-for-component.jq?_method=POST&format=xml&aid=0000021344-13-000050&disclosure=BalanceSheet",
+                            "response": ""
+                        }
+
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/modelstructure-for-component.jq",
+            "description": "Retrieve a Model structure for a Component.",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve the model structure for a given component. A component can be selected in three ways. (1) by component id (cid), (2) by accession number and disclosure (aid and disclosure), or (3) by CIK, fiscal year, fiscal period, and disclosure (cik, fiscalYear, fiscalPeriod, and disclosure).",
+                    "nickname": "listModelStructure",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cid",
+                            "description": "The id of the component",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "aid",
+                            "description": "The accession number of the filing. This parameter needs to be used together with the disclosure parameter to identify a component.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "The CIK of an entity. This parameter needs to be used together with the fiscalYear, fiscalPeriod, and disclosure parameters to identify a component.",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "The ticker of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "The tag to filter entities",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "networkIdentifier",
+                            "description": "The network identifier of a particular component",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "disclosure",
+                            "description": "The disclosure of the component (e.g. BalanceSheet)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Return the model structure for the given component"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Model Structure as XML",
+                            "description": "Retrieve the model structure for a particular component. Return the result as XML.",
+                            "request": "[API_URL]/_queries/public/api/modelstructure-for-component.jq?_method=POST&aid=0000021344-14-000008&networkIdentifier=http://www.thecocacolacompany.com/role/ConsolidatedBalanceSheets&format=xml",
+                            "response": ""
+                        },
+                        {
+                            "title": "Model Structure of Coca Cola's Q3/2013 Balance Sheet",
+                            "description": "Retrieve the model structure for a the Balance Sheet of Coca Cola filing identified with accession number 0000021344-13-000050. Return the result as XML.",
+                            "request": "[API_URL]/_queries/public/api/modelstructure-for-component.jq?_method=POST&format=xml&aid=0000021344-13-000050&disclosure=BalanceSheet",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/facttable-for-report.jq",
+            "description": "Retrieve a Fact Table for a Report",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve the fact table for a given set of filings and a report.",
+                    "nickname": "listFactTableForReport",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "The CIK of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "The ticker of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "The tag to filter entities",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the fact to retrieve (default: LATEST)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query",
+                            "enum": [
+                                "year (e.g. 2011)",
+                                "LATEST",
+                                "ALL"
+                            ]
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the fact to retrieve (default: FY)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "Q1",
+                                "Q2",
+                                "Q3",
+                                "FY",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "report",
+                            "description": "The name of the report to be used (e.g. FundamentalAccountingConcepts)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "FundamentalAccountingConcepts  <a href=\"/concept-map/FundamentalAccountingConcepts\"><i class=\"fa fa-question\"></i>"
+                              ],
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Return the fact table for the given component"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Fact Table for the Fundamental Accounting Concepts of COCA COLA's 2010..2013 10-K filings as CSV.",
+                            "description": "Retrieve the fact table for a particular component. Return the result as CSV.",
+                            "request": "[API_URL]/_queries/public/api/facttable-for-report.jq?_method=POST&report=FundamentalAccountingConcepts&ticker=ko&fiscalYear=2013&fiscalYear=2012&fiscalYear=2011&fiscalYear=2010&fiscalPeriod=FY&format=csv",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/facts.jq",
+            "description": "Retrieve Facts",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve one or more facts for a combination of filings.",
+                    "nickname": "listFacts",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "The CIK of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "The ticker of the entity",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "The tag to filter entities",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the fact to retrieve (default: LATEST)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query",
+                            "enum": [
+                                "year (e.g. 2011)",
+                                "LATEST",
+                                "ALL"
+                            ]
+                        },
+                        {
+                            "name": "concept",
+                            "description": "The name of the concept to retrieve the fact for (alternatively, a parameter with name xbrl:Concept can be used).",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the fact to retrieve (default: FY)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "Q1",
+                                "Q2",
+                                "Q3",
+                                "FY",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "map",
+                            "description": "The concept map that should be used to resolve the concept (default: none)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "FundamentalAccountingConcepts  <a href=\"/concept-map/FundamentalAccountingConcepts\"><i class=\"fa fa-question\"></i>"
+                              ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "rules",
+                            "description": "The rules that should be used to resolve the concept (default: none)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "FundamentalAccountingConcepts"
+                              ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "prefix:dimension",
+                            "pattern": "[^:]+:[^:]+",
+                            "description": "The name of a dimension used for filtering. Accepted format: prefix:dimension. As a value, the value of the dimension or ALL can be provided if all facts with this dimension should be retrieved",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "prefix:dimension::default",
+                            "pattern": "[^:]+:[^:]+::default",
+                            "description": "The default value of the dimension [prefix:dimension] that should be returned if the dimension was not provided explicitly for a fact. Accepted format: prefix:dimension::default",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "Bad request: a parameter is missing or invalid or total is used together with csv or excel serialization",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns the fact listing",
+                            "responseModel": "FactListing"
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Retrieve us-gaap:Assets for DOW30",
+                            "description": "Retrieve the value of us-gaap:Assets for all DOW30 entities for the latest reported year. Bring in all data regardless of which characteristic. Return the result as JSON.",
+                            "request": "[API_URL]/_queries/public/api/facts.jq?_method=POST&concept=us-gaap:Assets&tag=dow30",
+                            "response": ""
+                        },
+                        {
+                            "title": "Retrieve us-gaap:Assets for DOW30 which relates to the root reporting entity only.",
+                            "description": "Retrieve the value of us-gaap:Assets for all DOW30 entities for the latest reported year which relates to the root reporting entity only. Return the result as JSON.",
+                            "request": "[API_URL]/_queries/public/api/facts.jq?_method=POST&concept=us-gaap:Assets&dei:LegalEntityAxis=sec:DefaultLegalEntity&tag=dow30",
+                            "response": ""
+                        },
+                        {
+                            "title": "Retrieve fac:NetCashFlow for DOW30",
+                            "description": "Retrieve the value of fac:NetCashFlow (using the FundamentalAccountingConcepts map) for the DOW30 entities for the year 2011. Return the result as CSV.",
+                            "request": "[API_URL]/_queries/public/api/facts.jq?_method=POST&concept=fac:NetCashFlow&tag=dow30&map=FundamentalAccountingConcepts&fiscalYear=2011&format=csv",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/report-elements.jq",
+            "description": "Report Elements",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Retrieve the report elements contained in a set of filings.",
+                    "nickname": "listReportElements",
+                    "parameters": [
+                        {
+                            "name": "format",
+                            "description": "The result format",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv",
+                                "xml",
+                                "excel"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "A tag to filter",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "DOW30",
+                                "SP500",
+                                "FORTUNE100",
+                                "PJI",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "cik",
+                            "description": "A CIK number",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "ticker",
+                            "description": "A ticker symbols",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "sic",
+                            "description": "The industry group",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "fiscalYear",
+                            "description": "The fiscal year of the fact to retrieve (default: ALL)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query",
+                            "enum": [
+                                "year (e.g. 2011)",
+                                "LATEST",
+                                "ALL"
+                            ]
+                        },
+                        {
+                            "name": "fiscalPeriod",
+                            "description": "The fiscal period of the fact to retrieve (default: FY)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "Q1",
+                                "Q2",
+                                "Q3",
+                                "FY",
+                                "ALL"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "aid",
+                            "description": "The id of the filing",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "onlyNames",
+                            "description": "Whether only the names of the report elements should be returned. If so, the values don't contain duplicates. (default: false)",
+                            "required": false,
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ],
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "name",
+                            "description": "The name of the report element to return (e.g. us-gaap:Assets).",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "label",
+                            "description": "A search term to search in the labels of report elements (e.g. stock)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        },
+                        {
+                            "name": "token",
+                            "description": "The token of the current session (if accessing entities beyond DOW30)",
+                            "required": false,
+                            "type": "string",
+                            "paramType": "query"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 401,
+                            "message": "Unauthorized: the specified project token is invalid, expired, or has insufficient privileges",
+                            "responseModel": "Error"
+                        },
+                        {
+                            "code": 500,
+                            "message": "An internal error occurred during the processing of the request.",
+                            "responseModel": "Error"
+                        }
+                    ],
+                    "successMessages": [
+                        {
+                            "code": 200,
+                            "message": "Returns all names of the report elements in the selected filings."
+                        }
+                    ],
+                    "examples": [
+                        {
+                            "title": "Retrieve the the names of all report elements of COCA COLA's latest FY filing",
+                            "description": "Retrieve a set of names of report elements of COCA COLA's latest FY filing.  Return the result as CSV.",
+                            "request": "[API_URL]/_queries/public/api/report-elements.jq?_method=POST&ticker=ko&onlyNames=true&format=csv",
+                            "response": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Error": {
+            "id": "Error",
+            "description": "Error information",
+            "required": [
+                "success",
+                "description"
+            ],
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "description": "Whether the requests succeeded or failed."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A description of the error."
+                }
+            }
+        }
+    }
+}

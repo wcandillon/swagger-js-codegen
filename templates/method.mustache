@@ -56,6 +56,14 @@
             }
         {{/isBodyParameter}}
     {{/parameters}}
+    
+    if(parameters.$queryParameters) {
+        Object.keys(parameters.$queryParameters)
+        .forEach(function(parameterName){
+            var parameter = parameters.$queryParameters[parameterName];
+            queryParameters[parameterName] = parameter;
+        });
+    }
 
     {{> request}}
     

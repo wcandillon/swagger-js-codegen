@@ -1,6 +1,6 @@
 /*global angular:false */
 angular.module('{{&moduleName}}', [])
-.factory('{{&className}}', function($q, $http, $rootScope){
+.factory('{{&className}}', ['$q', '$http', '$rootScope', function($q, $http, $rootScope){
     'use strict';
     
     /**
@@ -34,4 +34,4 @@ angular.module('{{&moduleName}}', [])
         {{> method}}
         {{/methods}}
     };
-});
+}]);

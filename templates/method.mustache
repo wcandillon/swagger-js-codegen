@@ -8,6 +8,9 @@
  * 
  */
  this.{{&methodName}} = function(parameters){
+    if(parameters === undefined) {
+        parameters = {};
+    }
     var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
     
     var path = '{{&path}}';

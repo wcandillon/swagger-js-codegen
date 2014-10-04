@@ -20,13 +20,7 @@
     var headers = {};
 
     {{#parameters}}
-        {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
-            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return deferred.promise;
-        }
-        {{/required}}
-        
+       
         {{#isQueryParameter}}
             {{#isSingleton}}
                 queryParameters['{{&name}}'] = '{{&singleton}}';
@@ -58,6 +52,14 @@
                 body = parameters['{{&camelCaseName}}'];
             }
         {{/isBodyParameter}}
+
+        {{#required}}
+        if(parameters['{{&camelCaseName}}'] === undefined){
+            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
+            return deferred.promise;
+        }
+        {{/required}}
+ 
     {{/parameters}}
     
     if(parameters.$queryParameters) {

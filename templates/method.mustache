@@ -18,6 +18,7 @@
     var body;
     var queryParameters = {};
     var headers = {};
+    var form = {};
 
     {{#parameters}}
        
@@ -52,6 +53,17 @@
                 body = parameters['{{&camelCaseName}}'];
             }
         {{/isBodyParameter}}
+
+         {{#isFormParameter}}
+            {{#isSingleton}}
+                form['{{&name}}'] = '{{&singleton}}';
+            {{/isSingleton}}
+            {{^isSingleton}}
+                if(parameters['{{&camelCaseName}}'] !== undefined){
+                    form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                }
+            {{/isSingleton}}
+        {{/isFormParameter}}
 
         {{#required}}
         if(parameters['{{&camelCaseName}}'] === undefined){

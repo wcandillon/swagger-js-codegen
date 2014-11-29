@@ -24,6 +24,17 @@ list.forEach(function(file){
             swagger: swagger
         });
         assert(typeof(result), 'string');
+        result = CodeGen.getCustomCode({
+            moduleName: 'Test',
+            className: 'Test',
+            swagger: swagger,
+            template: {
+                class: fs.readFileSync(__dirname + '/../templates/angular-class.mustache', 'utf-8'),
+                method: fs.readFileSync(__dirname + '/../templates/method.mustache', 'utf-8'),
+                request:fs.readFileSync(__dirname + '/../templates/angular-request.mustache', 'utf-8')
+            }
+        });
+        assert(typeof(result), 'string');
     };
 });
 vows.describe('Test Generation').addBatch(batch).export(module);

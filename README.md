@@ -21,6 +21,20 @@ console.log(nodejsSourceCode);
 console.log(angularjsSourceCode);
 ```
 
+##Custom template
+```javascript
+var source = CodeGen.getCustomCode({
+    moduleName: 'Test',
+    className: 'Test',
+    swagger: swaggerSpec, 
+    template: {
+        class: fs.readFileSync('my-class.mustache', 'utf-8'),
+        method: fs.readFileSync('my-method.mustache', 'utf-8'),
+        request:fs.readFileSync('my-request.mustache', 'utf-8') 
+    }
+});
+```
+
 ## Grunt task
 [There is a grunt task](https://github.com/wcandillon/grunt-swagger-js-codegen) that enables you to integrate the code generation in your development pipeline. This is extremely convenient if your application is using APIs which are documented/specified in the swagger format.
 

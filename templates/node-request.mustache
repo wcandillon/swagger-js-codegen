@@ -1,12 +1,18 @@
-request({
-    method: '{{method}}', 
+var req = {
+    method: '{{method}}',
     uri: domain + path,
     qs: queryParameters,
     headers: headers,
     body: body,
-    form: form,
     rejectUnauthorized: false
-}, function(error, response, body){
+};
+if(form) {
+    req.form = form;
+}
+if(typeof(body) === 'object') {
+    req.json = true;
+}
+request(req, function(error, response, body){
     if(error) {
         deferred.reject(error);
     } else {

@@ -4,13 +4,21 @@
  * @class {{&className}}
  * @param {string} domain - The project domain
  */
-module.exports.{{&className}} = function(domain) {
+var {{&className}} = (function(){
     'use strict';
 
     var request = require('request');
     var Q = require('q');
-    
+
+    function {{&className}}(domain){
+        this.domain = domain;
+    }
+
     {{#methods}}
-    {{> method}}
+        {{> method}}
     {{/methods}}
-};
+
+    return {{&className}};
+})();
+
+exports.{{&className}} = {{&className}};

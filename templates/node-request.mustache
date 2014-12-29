@@ -6,7 +6,7 @@ var req = {
     body: body,
     rejectUnauthorized: false
 };
-if(form) {
+if(Object.keys(form).length > 0) {
     req.form = form;
 }
 if(typeof(body) === 'object') {

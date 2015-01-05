@@ -13,6 +13,15 @@
     "produces": [
         "application/json"
     ],
+    "parameters": {
+        "id": {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+        }
+    },
     "paths": {
         "/products": {
             "get": {
@@ -64,11 +73,7 @@
                 "description": "The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order.",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "description": "A product",
-                        "required": true,
-                        "type": "string"
+                        "$ref": "id"
                     },
                     {
                         "name": "latitude",

@@ -21,7 +21,7 @@ function LatLong() {
 
 	/**
 	 * list of ids 
-	 * @type {List} 
+	 * @type {List.<Number>} 
 	 */
 	this.ids=[];
 

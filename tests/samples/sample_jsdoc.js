@@ -2,8 +2,12 @@
 
 /**
  * LatLong position in WSG86 coordinate system
- * @constructor LatLong
- * @swagger
+ * @constructor {LatLong,asa}
+ * @swagger {model}
+ * @swagger model
+ * @swagger api:{path:/task} function ass 
+ * @swagger operation {{method:get,test:as}} function ass 
+
  */
 function LatLong() {
 
@@ -32,5 +36,4 @@ function LatLong() {
 	this.foo=0;
 
 }
-
 

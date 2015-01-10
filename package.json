@@ -30,6 +30,9 @@
   ],
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
+    "doctrine": "^0.6.2",
+    "esprima": "^1.2.2",
+    "estraverse": "^1.9.1",
     "js-beautify": "~1.5.1",
     "jshint": "~2.5.1",
     "lodash": "^2.4.1",

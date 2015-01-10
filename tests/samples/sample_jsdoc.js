@@ -21,13 +21,13 @@ function LatLong() {
 
 	/**
 	 * list of ids 
-	 * @type {List.<Number>} 
+	 * @type {Array.<Number>} 
 	 */
 	this.ids=[];
 
 	/**
 	 * need to have a foo value
-	 * @type {integer} 
+	 * @type {Foo[]} 
 	 */
 	this.foo=0;
 

@@ -1,0 +1,41 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.0",
+        "title": "<enter your title>"
+    },
+    "parameters": {
+        "id": {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+        }
+    },
+    "paths": {
+        "/persons": {
+            "parameters": [
+                {
+                    "$ref": "#/parameters/id"
+                }
+            ],
+            "get": {
+                "description": "Gets `Person` object.",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

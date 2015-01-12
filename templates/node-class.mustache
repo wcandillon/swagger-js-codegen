@@ -1,8 +1,10 @@
 /*jshint -W069 */
+'use strict';
 /**
  * {{&description}}
  * @class {{&className}}
  * @param {string} domain - The project domain
+ * @param {integer} timeout - request timeout if not set defaults to 10seconds
  */
 var {{&className}} = (function(){
     'use strict';
@@ -10,8 +12,11 @@ var {{&className}} = (function(){
     var request = require('request');
     var Q = require('q');
 
-    function {{&className}}(domain){
+    var defaultTimeout = 10;
+
+    function {{&className}}(domain,timeout){
         this.domain = domain;
+        this.timeout = timeout!==undefined?timeout:defaultTimeout;
     }
 
     {{#methods}}

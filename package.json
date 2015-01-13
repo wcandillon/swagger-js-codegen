@@ -1,6 +1,6 @@
 {
   "name": "swagger-js-codegen",
-  "main": "./lib/codegen.js",
+  "main": "./lib/index.js",
   "version": "0.3.6",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {

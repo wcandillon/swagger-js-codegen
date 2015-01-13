@@ -9,8 +9,14 @@
  * @swagger model
  */
  function {{className}}() {
+
  		{{#vars}}
- 			{{&.}}
+			/**
+			 * {{description}}
+			 * @type { {{type}} {{#array}}[]{{/array}} }
+			 */
+			this.{{name}}={{initValue}} ;
+
  		{{/vars}}
  }
 

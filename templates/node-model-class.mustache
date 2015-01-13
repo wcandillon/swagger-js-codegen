@@ -1,0 +1,26 @@
+/*jshint -W069 */
+'use strict';
+
+(function() {
+	
+/**
+ * {{description}}
+ * @class {{className}}
+ * @swagger model
+ */
+ function {{className}}() {
+
+ 		{{#vars}}
+			/**
+			 * {{description}}
+			 * @type { {{type}} {{#array}}[]{{/array}} }
+			 */
+			this.{{name}}={{initValue}} ;
+
+ 		{{/vars}}
+ }
+
+
+ exports.module = {{className}};
+
+ })();

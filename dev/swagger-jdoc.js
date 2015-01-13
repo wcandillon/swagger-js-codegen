@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 var fs = require('fs'),
   esprima = require('esprima'),
   estraverse = require('estraverse'),
@@ -28,9 +30,9 @@ function SWModel(name) {
  * @type {Object}
  */
 var TypeMaps = {
-  number : 'double',
-  integer : 'int64',
-  date : 'date-time'
+  number: 'double',
+  integer: 'int64',
+  date: 'date-time'
 };
 
 /**
@@ -57,19 +59,22 @@ function SWProperty(name, type, description) {
  * Create a swagger array
  * @param {String} name        of the array
  * @param {String} type        of object held within array
- * @param {String} description 
+ * @param {String} description
  */
 function SWPropertyArray(name, type, description) {
   var ltype = type.toLowerCase();
   var swProperty = {
     type: 'Array',
-    items : {type:type},
+    items: {
+      type: type
+    },
     description: description
   };
 
 
-  if (TypeMaps.hasOwnProperty(ltype))
+  if (TypeMaps.hasOwnProperty(ltype)) {
     swProperty.items.format = TypeMaps[ltype];
+  }
 
   return swProperty;
 }
@@ -95,8 +100,8 @@ function swaggerModelParser(node) {
 
   params = [];
   data.tags.forEach(function(tag) {
-    console.log(tag)
-    if (tag.title === 'swagger' && tag.description==='model') {
+    console.log(tag);
+    if (tag.title === 'swagger' && tag.description === 'model') {
       swaggerModel = SWModel(node.id.name);
     }
   });
@@ -112,20 +117,20 @@ function swaggerModelParser(node) {
           unwrap: true
         });
         data.tags.forEach(function(tag) {
-          
+
           switch (tag.type.type) {
-            case 'NameExpression' :
-            console.log('NameExpression ' + name);
+            case 'NameExpression':
+              console.log('NameExpression ' + name);
               swaggerModel.properties[name] = SWProperty(name, tag.type.name, data.description);
               break;
             case 'TypeApplication':
-            console.log('TypeApplication ' + name);
-            console.log(tag);
-            tag.type.applications.forEach(function(a1) {
-            console.log(a1.name);
-              swaggerModel.properties[name] = SWPropertyArray(name, a1.name, data.description);
-            })
-            break;
+              console.log('TypeApplication ' + name);
+              console.log(tag);
+              tag.type.applications.forEach(function(a1) {
+                console.log(a1.name);
+                swaggerModel.properties[name] = SWPropertyArray(name, a1.name, data.description);
+              });
+              break;
           }
         });
 
@@ -169,11 +174,11 @@ function swaggerModelParser(node) {
   }
 }*/
 
- /**
-  * Look only for function declarations which we will assume
-  * @param  {[type]} node [description]
-  * @return {[type]}      [description]
-  */
+/**
+ * Look only for function declarations which we will assume
+ * @param  {[type]} node [description]
+ * @return {[type]}      [description]
+ */
 function verify(node) {
   switch (node.type) {
     case esprima.Syntax.FunctionDeclaration:

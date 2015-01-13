@@ -1,0 +1,23 @@
+/*jshint -W069 */
+'use strict';
+
+(function() {
+	
+/**
+ * {{description}}
+ * @class {{className}}
+ * @swagger model
+ */
+
+var {{className}} = (function() {
+	return {
+		{{#enums}}
+			{{value}}:'{{value}}' {{^last}}, {{/last}}
+		{{/enums}}
+	};
+})();
+
+ exports.module = {{className}};
+ })();
+
+

@@ -5,7 +5,7 @@ var vows = require('vows');
 var fs = require('fs');
 var ffs = require('final-fs');
 
-var CodeGen = require('../lib/codegen').CodeGen;
+var CodeGen = require('../lib').CodeGen;
 
 var batch = {};
 var list = ffs.readdirSync('tests/apis');
@@ -35,6 +35,17 @@ list.forEach(function(file){
             }
         });
         assert(typeof(result), 'string');
+        result = CodeGen.getNodeModelCode({
+            swagger : swagger
+        });
+        assert(result!==null);
+        var keys=[];
+        result.forEach(function(item) {
+            keys.push(item);
+            assert(typeof(result[item]),'string');
+        });
+        assert(keys.length>0);
     };
+
 });
 vows.describe('Test Generation').addBatch(batch).export(module);

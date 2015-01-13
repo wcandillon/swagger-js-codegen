@@ -14,6 +14,7 @@
     var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
     
     var domain = this.domain;
+    var timeout = this.timeout;
     var path = '{{&path}}';
     
     var body;

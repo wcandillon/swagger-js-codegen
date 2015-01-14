@@ -4,15 +4,16 @@
 (function() {
 	
 /**
- * {{description}}
- * @class {{className}}
- * @swagger model
+ * {{className}} {{description}}
+ * @readonly
+ * @enum { {{enumValueType}} } 
+ * @swagger enum [{{#enums}} {{enumValue}} {{^last}}, {{/last}} {{/enums}}]
  */
 
 var {{className}} = (function() {
 	return {
 		{{#enums}}
-			{{value}}:'{{value}}' {{^last}}, {{/last}}
+			{{enumType}}:'{{enumValue}}' {{^last}}, {{/last}}
 		{{/enums}}
 	};
 })();

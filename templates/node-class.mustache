@@ -11,7 +11,8 @@ var {{&className}} = (function(){
     var request = require('request');
     var Q = require('q');
 
-    var defaultTimeout = 10;
+    // default timeout is 10 seconds i.e. 10000 milliseconds
+    var defaultTimeout = 10000;
 
     function {{&className}}(domain,timeout){
         this.domain = domain;

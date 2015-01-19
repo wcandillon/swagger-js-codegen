@@ -22,8 +22,19 @@ function SWModel(name) {
   };
 
   return swModel;
-};
+}
 
+function SWEnum(name) {
+  var swModel = {
+    id: name,
+    allowableValues: {
+      enum:[]
+    },
+    type:'string'
+  };
+
+  return swModel;
+}
 
 /**
  * type mapping for swagger supported native formmats
@@ -100,43 +111,65 @@ function swaggerModelParser(node) {
 
   params = [];
   data.tags.forEach(function(tag) {
-    console.log(tag);
-    if (tag.title === 'swagger' && tag.description === 'model') {
-      swaggerModel = SWModel(node.id.name);
+//    console.log(tag);
+    if (tag.title === 'swagger') {
+      if (tag.description === 'model'){
+        swaggerModel = SWModel(node.id.name);        
+      }
+      else {
+        if (tag.description.indexOf('enum')>=0) {
+          swaggerModel = SWEnum(node.id.name);
+          // list of allowable enums are defined between 
+          var offset = tag.description.indexOf('[') + 1;
+          var len = tag.description.indexOf(']')-offset;
+          var enumList =tag.description.substr(offset,len).split('"').join('');
+          console.log('*** '+enumList);
+          var enumVals = enumList.split(',');
+          enumVals.forEach(function (enumVal) {
+            swaggerModel.allowableValues.enum.push(enumVal.trim());
+          });
+
+        }
+      }
     }
+
   });
 
   if (swaggerModel !== null) {
     swaggerModels[node.id.name] = swaggerModel;
-    node.body.body.forEach(function(item) {
-      if (item.type === 'ExpressionStatement') {
-        var name = item.expression.left.property.name;
-        console.log(name);
-        // console.log(item.leadingComments[0]);
-        var data = doctrine.parse(item.leadingComments[0].value, {
-          unwrap: true
-        });
-        data.tags.forEach(function(tag) {
+    if (node.body!==undefined) {
+      node.body.body.forEach(function(item) {
+        if (item.type === 'ExpressionStatement') {
+          var name = item.expression.left.property.name;
+          console.log(name);
+          // console.log(item.leadingComments[0]);
+          var data = doctrine.parse(item.leadingComments[0].value, {
+            unwrap: true
+          });
+          data.tags.forEach(function(tag) {
 
-          switch (tag.type.type) {
-            case 'NameExpression':
-              console.log('NameExpression ' + name);
-              swaggerModel.properties[name] = SWProperty(name, tag.type.name, data.description);
-              break;
-            case 'TypeApplication':
-              console.log('TypeApplication ' + name);
-              console.log(tag);
-              tag.type.applications.forEach(function(a1) {
-                console.log(a1.name);
-                swaggerModel.properties[name] = SWPropertyArray(name, a1.name, data.description);
-              });
-              break;
-          }
-        });
+            switch (tag.type.type) {
+              case 'NameExpression':
+                console.log('NameExpression ' + name);
+                swaggerModel.properties[name] = SWProperty(name, tag.type.name, data.description);
+                break;
+              case 'TypeApplication':
+                console.log('TypeApplication ' + name);
+                console.log(tag);
+                tag.type.applications.forEach(function(a1) {
+                  console.log(a1.name);
+                  swaggerModel.properties[name] = SWPropertyArray(name, a1.name, data.description);
+                });
+                break;
+            }
+          });        
+        }
+      });
+    }
+    else {
 
-      }
-    });
-    console.log(JSON.stringify(swaggerModels, null, 4));
+    }
+    console.log('= ' +JSON.stringify(swaggerModels, null, 4));
   }
 
 }
@@ -179,6 +212,44 @@ function swaggerModelParser(node) {
  * @param  {[type]} node [description]
  * @return {[type]}      [description]
  */
+var enumDef = null;
+
+function checkForEnum(comment) {
+  var isEnum=false;
+
+  var data = doctrine.parse(comment.value, {
+    unwrap: true
+  });
+
+  data.tags.forEach(function(tag) {
+    if (tag.title==='swagger' && tag.description==='enum') {
+      isEnum=true;
+    }
+  });
+
+  return isEnum;
+}
+
+function processEnum(node) {
+  var enumModel = null;
+  if (checkForEnum(node.leadingComments[0])) {
+    var left  = node.expression.left;
+    var right = node.expression.right;
+    console.log(left.type+' '+right.type);
+    if (left.type===esprima.Syntax.MemberExpression && 
+       right.type === esprima.Syntax.ObjectExpression) {
+      console.log(left.property);
+      enumModel = new SWEnum(left.property.name);
+      right.properties.forEach(function(prop) {
+        enumModel.allowableValues.enum.push(prop.value.value);
+      });
+      swaggerModels[left.property.name]=enumModel;
+
+    }
+  }
+  return enumModel!==null;
+}
+
 function verify(node) {
   switch (node.type) {
     case esprima.Syntax.FunctionDeclaration:
@@ -186,6 +257,29 @@ function verify(node) {
         swaggerModelParser(node);
       }
       break;
+    case esprima.Syntax.VariableDeclaration:
+      if (node.leadingComments.length === 1) {
+
+//        swaggerModelParser(node);
+        enumDef = node;
+      }
+    break;
+    case esprima.Syntax.ExpressionStatement:
+      if (node.leadingComments!==undefined && 
+        node.leadingComments.length===1){
+        processEnum(node);
+      }
+    break;
+    case esprima.Syntax.AssignmentExpression:
+
+    break;
+    case esprima.Syntax.VariableDeclarator : 
+      node.leadingComments = enumDef.leadingComments;
+      if (node.leadingComments.length === 1) {
+        swaggerModelParser(node);
+        enumDef = null;
+      }
+    break;
     default:
       break;
   }
@@ -212,6 +306,7 @@ function check(filename) {
     console.error(e.toString());
     process.exit(1);
   }
+  console.log('= ' +JSON.stringify(swaggerModels, null, 4));
 }
 
 if (process.argv.length === 2) {

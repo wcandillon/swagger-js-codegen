@@ -22,10 +22,6 @@
     "email": "w@28.io",
     "url": "http://28.io"
   },
-  "publishConfig": {
-    "registry": "http://localhost:8081/nexus/content/repositories/npm-internal/"
-  },
-
   "licenses": [
     {
       "type": "Apache 2",

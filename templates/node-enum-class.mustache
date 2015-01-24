@@ -1,7 +1,7 @@
 /*jshint -W069 */
 'use strict';
 
-(function(enum) {
+(function(enumType) {
 	
 /**
  * {{className}} {{description}}
@@ -9,7 +9,7 @@
  * @enum { {{enumValueType}} } 
  * @swagger enum [{{#enums}} "{{enumValue}}" {{^last}}, {{/last}} {{/enums}}]
  */
-enum.{{className}} = {
+enumType.{{className}} = {
 		{{#enums}}
 			{{enumType}}:'{{enumValue}}' {{^last}}, {{/last}}
 		{{/enums}}

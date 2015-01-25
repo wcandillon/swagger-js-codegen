@@ -17,7 +17,12 @@ var file = 'swagger/spec.json';
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
 var nodejsSourceCode = CodeGen.getNodeCode({ className: 'Test', swagger: swagger }); 
 var angularjsSourceCode = CodeGen.getAngularCode({ className: 'Test', swagger: swagger }); 
+
 // generate nodejs models
+// set cameCaseFileName to false (default) to create file name in lower case 
+//   e.g. testmodel.js or test_enum.js.
+// otherwise the file name follow the case convension defined in swagger file.
+
 var nodejsModel = CodeGen.getNodeModelCode( {swagger: swagger, camelCaseFileName : false });})
 
 console.log(nodejsSourceCode);

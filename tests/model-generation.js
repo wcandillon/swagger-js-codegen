@@ -18,13 +18,13 @@ list.forEach(function(file) {
             swagger: swagger
         });
 
-        var keys = _.keys(models);
-        keys.forEach(function(item) {
-            keys.push(item);
-            assert(typeof(models[item]),'string');
-        });
+        var propertyCoutner=0;
+        for (var model in models) {
+            propertyCoutner++;
+            assert(typeof(models[model]),'string');            
+        }
 
-        assert(modelsDefined.length <= keys.length);
+        assert(modelsDefined.length <= propertyCoutner);
     };
 
 });

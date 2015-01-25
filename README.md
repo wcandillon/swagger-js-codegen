@@ -17,8 +17,13 @@ var file = 'swagger/spec.json';
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
 var nodejsSourceCode = CodeGen.getNodeCode({ className: 'Test', swagger: swagger }); 
 var angularjsSourceCode = CodeGen.getAngularCode({ className: 'Test', swagger: swagger }); 
+var nodejsModel = CodeGen.getNodeModelCode( {swagger: swagger, camelCaseFileName : false });})
 console.log(nodejsSourceCode);
 console.log(angularjsSourceCode);
+for (var model in nodejsModel) {
+	console.log('source file name : '+ nodejsModel[model].fileName);
+	console.log('source code : '+ nodejsModel[model].sourceCode);
+});
 ```
 
 ##Custom template

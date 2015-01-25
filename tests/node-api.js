@@ -11,8 +11,11 @@ vows.describe('Test Generated API').addBatch({
     'Test Generated code for the 28.io Auth API': {
         topic: function(){
             var swagger = JSON.parse(fs.readFileSync('tests/apis/auth.json', 'UTF-8'));
+            var c = CodeGen.getNodeCode({ className: 'Auth', swagger: swagger });
+            console.log(c);
             /*jshint evil:true*/
-            var Auth = eval(CodeGen.getNodeCode({ className: 'Auth', swagger: swagger }));
+            var Auth = eval(c);
+
             return new Auth('https://portal.28.io/api');
         },
         'Should have authenticate method': function(auth){

@@ -52,14 +52,14 @@
                 headers['{{&name}}'] = '{{&singleton}}';
             {{/isSingleton}}
             {{^isSingleton}}
-                if(parameters.{{&camelCaseName}} !== undefined){
+                if(parameters['{{&camelCaseName}}'] !== undefined){
                     headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
             {{/isSingleton}}
         {{/isHeaderParameter}}
         
         {{#isBodyParameter}}
-            if(parameters.{{&camelCaseName}} !== undefined){
+            if(parameters['{{&camelCaseName}}'] !== undefined){
                 body = parameters['{{&camelCaseName}}'];
             }
         {{/isBodyParameter}}

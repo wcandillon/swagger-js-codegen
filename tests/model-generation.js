@@ -21,7 +21,7 @@ list.forEach(function(file) {
         var propertyCoutner=0;
         for (var model in models) {
             propertyCoutner++;
-            assert(typeof(models[model]),'string');            
+            assert(typeof(models[model]),'string');
         }
 
         assert(modelsDefined.length <= propertyCoutner);

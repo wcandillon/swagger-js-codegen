@@ -6,9 +6,9 @@ before_script:
 - npm install -g grunt-cli
 deploy:
   provider: npm
-  email: w@28.io
+  email: wcandillon@gmail.com
   api_key:
-    secure: ncww0mLUKiI0Ciu7raHvT5yEVfApmQRux1vUJggOA354I1l/jG19DOexjThnbZEtnxc9pTKsqmeTSrx+6ptymPENP3w/mhJeVJbknJ3pzgBhyxnuX8bbZNoGZI/c53y+8/FCJM+rtabVytT1UsYxIdp0MYDgPv4xgvKIzsdIveA=
+    secure: l4LEL/0daepsv4uekqok1gpBtzN5xNOus25fYEWG7zcHcIop2SotTZ5Exn1hxtGxfzBlEYQm/RhV+m0FQMLOE5Ywf68m6Lw+ZH1UUhT9ThfMD+7hjGsfQTQZ23SK1DQ3/68cU/JeuaPR++w5Snt+llZnDCG8UzWFbtjV5SyWFJ0=
   on:
     repo: wcandillon/swagger-js-codegen
     branch: master

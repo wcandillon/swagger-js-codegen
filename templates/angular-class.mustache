@@ -34,6 +34,13 @@ angular.module('{{&moduleName}}', [])
             return this;
         };
 
+        {{#isSecurity}}
+            var token;
+            {{&className}}.prototype.setToken = function(_token){
+                token = _token;
+            };
+        {{/isSecurity}}
+
         {{#methods}}
             {{> method}}
         {{/methods}}

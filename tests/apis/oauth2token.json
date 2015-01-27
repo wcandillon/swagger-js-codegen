@@ -1,0 +1,70 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.0",
+        "title": "<enter your title>"
+    },
+    "securityDefinitions": {
+        "oauth2": {
+            "type": "oauth2",
+            "scopes": {
+                "read": "allow read"
+            },
+            "flow": "password",
+            "tokenUrl": "http://localhost:3001/auth/token"
+        }
+    },
+    "paths": {
+        "/user": {
+            "get": {
+                "description": "Get user",
+                "operationId": "getUser",
+                "responses": {
+                    "200": {
+                        "description": "User returned",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/secure_user": {
+            "get": {
+                "description": "Get user",
+                "operationId": "getUserSecure",
+                "security": [
+                    {
+                        "oauth2": [
+                            "read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User returned",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        }
+    }
+}

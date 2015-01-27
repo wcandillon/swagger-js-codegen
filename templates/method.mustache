@@ -21,6 +21,10 @@
     var headers = {};
     var form = {};
 
+    {{#isSecurity}}
+        headers['authorization'] = 'Bearer ' + token;    
+    {{/isSecurity}}
+
     {{#parameters}}
        
         {{#isQueryParameter}}

@@ -1,0 +1,201 @@
+{
+	"apiVersion": "1.0",
+	"swaggerVersion": "1.2",
+	"basePath": "http://api.xbrl.io",
+	"resourcePath": "/project",
+	"produces": [
+		"application/json"
+	],
+	"apis": [],
+	"models": {
+		"BreakdownTaskHeader": {
+			"id": "BreakdownTaskHeader",
+			"description": "",
+			"extends": "",
+			"properties": {
+					"resourceArrivalActual": {
+						"$ref": "date-time"
+					},
+					"resourceArrivalActual": {
+						"$ref": "Subscription"
+					},
+					"breakdownSequenceNumber": {
+						"type": "integer",
+						"format": "int32"
+					}
+				}
+			},
+			"Subscription": {
+				"id": "Subscription",
+				"description": "A subscription",
+				"required": [
+					"uuid",
+					"href",
+					"state",
+					"plan",
+					"unitAmountInCents",
+					"currency",
+					"quantity",
+					"activatedAt",
+					"subscriptionAddOns"
+				],
+				"properties": {
+					"href": {
+						"type": "string",
+						"description": "The URL relative to the API endpoint to fetch, modify or terminate the subscription"
+					},
+					"uuid": {
+						"type": "string",
+						"description": "The subscription UUID"
+					},
+					"state": {
+						"type": "string",
+						"description": "The subscription state"
+					},
+					"plan": {
+						"type": "Plan",
+						"description": "The subscription plan"
+					},
+					"unitAmountInCents": {
+						"type": "integer",
+						"description": "The subscription unit amount in cents"
+					},
+					"quantity": {
+						"type": "integer",
+						"description": "The subscription quantity"
+					},
+					"currency": {
+						"type": "string",
+						"description": "The subscription currency"
+					},
+					"activatedAt": {
+						"type": "date-time",
+						"description": "The subscription activation date"
+					},
+					"canceledAt": {
+						"type": "date-time",
+						"description": "The subscription cancellation date"
+					},
+					"expiresAt": {
+						"type": "date-time",
+						"description": "The subscription expiration date"
+					},
+					"currentPeriodStartedAt": {
+						"type": "date-time",
+						"description": "The subscription current period starting date"
+					},
+					"currentPeriodEndsAt": {
+						"type": "date-time",
+						"description": "The subscription current period ending date"
+					},
+					"trialStartedAt": {
+						"type": "date-time",
+						"description": "The subscription trial period starting date"
+					},
+					"trialEndsAt": {
+						"type": "date-time",
+						"description": "The subscription trial period ending date"
+					},
+					"taxInCents": {
+						"type": "integer",
+						"description": "The subscription tax amount in cents"
+					},
+					"taxType": {
+						"type": "string",
+						"description": "The subscription type of tax, e.g.: vat or usst"
+					},
+					"taxRate": {
+						"type": "float",
+						"description": "The subscription tax rate"
+					},
+					"poNumber": {
+						"type": "string",
+						"description": "The subscription PO number"
+					},
+					"netTerms": {
+						"type": "integer",
+						"description": "The subscription net terms in days"
+					},
+					"subscriptionAddOns": {
+						"type": "array",
+						"items": {
+							"$ref": "Addon"
+						},
+						"description": "The subscription addons"
+					},
+					"pendingSubscription": {
+						"type": "Subscription",
+						"description": "Nested information about a pending subscription change at renewal"
+					}
+				}
+			},
+			"Success": {
+				"id": "Success",
+				"description": "Default success response",
+				"required": ["success"],
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							"true"
+						]
+					}
+				}
+			},
+			"Error": {
+				"id": "Error",
+				"description": "Error information",
+				"required": [
+					"code",
+					"message",
+					"description"
+				],
+				"properties": {
+					"code": {
+						"type": "string",
+						"description": "The XQuery error code of the error"
+					},
+					"message": {
+						"type": "string",
+						"description": "A formatted string which contain the error code (always) and the module name, line and column-number and error description (when available)"
+					},
+					"description": {
+						"type": "string",
+						"description": "The error description"
+					},
+					"module": {
+						"type": "string",
+						"description": "The error module"
+					},
+					"line-number": {
+						"type": "string",
+						"description": "The error line number"
+					},
+					"column-number": {
+						"type": "string",
+						"description": "The error column number"
+					}
+				}
+			},
+			"Test": {
+				"id": "Test",
+				"description": "Credentials test result",
+				"required": ["name", "success", "message"],
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "The name of the test",
+						"enum": ["connection", "writeable"]
+					},
+					"success": {
+						"type": "boolean",
+						"description": "Whether the test passed or not"
+					},
+					"message": {
+						"type": "string",
+						"description": "A description of the test result"
+					}
+				}
+			}
+		}
+	}

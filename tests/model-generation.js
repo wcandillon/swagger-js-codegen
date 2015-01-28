@@ -5,113 +5,57 @@ var assert = require('assert');
 var fs = require('fs');
 //var events = require('events');
 
-var CodeGen = require('../lib/codegen').CodeGen;
-console.log('goo');
-var swagger = JSON.parse(fs.readFileSync('tests/models/model-1.json', 'UTF-8'));
-console.log(swagger);
-var srcCode = CodeGen.getNodeModelCode({
-    nameSpace: 'proj',
-    swagger: swagger
-});
-fs.writeFileSync('./foo.js', srcCode);
+var CodeGen = require('../lib').CodeGen;
 
-console.log(srcCode);
-vows.describe('Test Generated API').addBatch({
+vows.describe('Test Generated Models').addBatch({
     'Test model generation for models/model-1.json': {
         topic: function() {
             var swagger = JSON.parse(fs.readFileSync('tests/models/model-1.json', 'UTF-8'));
-            /*jshint evil:true*/
+
             var srcCode = CodeGen.getNodeModelCode({
                 nameSpace: 'proj',
                 swagger: swagger
             });
-            fs.writeFileSync('./foo.js', srcCode);
-            //            console.log(srcCode);
-            var code = [];
+
+            var genModels = {};
+            // get out each defined model
             for (var item in srcCode) {
-                console.log(item.srcCode);
+                /*jshint evil:true*/
+                genModels[item] = eval(srcCode[item].code);
             }
-            return code; //new Auth('https://portal.28.io/api');
+
+            return genModels;
         },
-        'Should have an object ': function(code) {
-                assert.equal(code !== null, true);
+        'should have an object with some proporties': function(genModels) {
+            var propCounter = 0;
+            for (var propName in genModels) {
+                if (genModels.hasOwnProperty(propName)) {
+                    ++propCounter;
+                }
             }
-            // 'Calling Authenticate method with missing parameters': {
-            //     topic: function(auth){
-            //         var promise = new(events.EventEmitter)();
-            //         var callback = function(result){
-            //             promise.emit('success', result);
-            //         };
-            //         auth.authenticate({
-            //             email: 'w+test@28.io'
-            //         }).then(callback, callback);
-            //         return promise;
-            //     },
-            //     'Should have missing parameter error': function(error){
-            //         assert.equal(error.message, 'Missing required query parameter: grant_type');
-            //     }
-            // },
-            // 'Calling Authenticate method with wrong password': {
-            //     topic: function(auth){
-            //         var promise = new(events.EventEmitter)();
-            //         var callback = function(result){
-            //             promise.emit('success', result);
-            //         };
-            //         auth.authenticate({
-            //             email: 'w+test@28.io',
-            //             password: 'foobartest',
-            //             grant_type: 'client_credentials'
-            //         }).then(callback, callback);
-            //         return promise;
-            //     },
-            //     'Should have invalid password': function(error){
-            //         assert.equal(
-            //             error.body.message.substring(0, '[errors:wrong-password]'.length),
-            //             '[errors:wrong-password]'
-            //         );
-            //     }
-            // },
-            // 'Calling Authenticate method with correct password': {
-            //     topic: function(auth){
-            //         var promise = new(events.EventEmitter)();
-            //         auth.authenticate({
-            //             email: 'w+test@28.io',
-            //             password: 'foobar',
-            //             grant_type: 'client_credentials'
-            //         }).then(function(result){
-            //             promise.emit('success', result);
-            //         }, function(result){
-            //             promise.emit('error', result);
-            //         });
-            //         return promise;
-            //     },
-            //     'Should have valid password': function(success){
-            //         assert.equal(success.body.token_type, 'bearer');
-            //     }
-            // }
+            assert.equal(propCounter > 0, true);
+        },
+        'genModels should have an enum called ProjTestNameEnum ': function(genModels) {
+            assert.equal(genModels.ProjTestNameEnum !== null, true);
+        },
+        'ProjTestNameEnum should have a propert called ProjTestNameEnum.CONNECTION with value "connection"': function(genModels) {
+            assert.equal(genModels.ProjTestNameEnum.CONNECTION === 'connection', true);
+        },
+        'genModels should have an object called ProjSubscription ': function(genModels) {
+            assert.equal(genModels.ProjSubscription !== null, true);
+        },
+        'Should be able to create an instance of ProjSubscription ': {
+            topic: function(genModels) {
+                var sub = new genModels.ProjSubscription();
+                assert.equal(sub !== null, true);
+                return sub;
+            },
+            'sub should have a property called subscriptionAddOns': function(sub) {
+                assert.equal(sub.subscriptionAddOns !== null, true);
+            },
+            'sub.subscriptionAddOns should be of type array': function(sub) {
+                assert.equal(typeof(sub.subscriptionAddOns) === typeof([]), true);
+            }
+        }
     }
 }).export(module);
-
-
-/*var batch = {};
-var list = ffs.readdirSync('tests/apis');
-list.forEach(function(file) {
-    file = 'tests/models/m' + file;
-    batch['model_'+file] = function() {
-        var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-        var modelsDefined = swagger.swagger==='2.0' ? _.keys(swagger.definitions):_.keys(swagger.models);
-        var models = CodeGen.getNodeModelCode({
-            swagger: swagger
-        });
-
-        var propertyCoutner=0;
-        for (var model in models) {
-            propertyCoutner++;
-            assert(typeof(models[model]),'string');
-        }
-
-        assert(modelsDefined.length <= propertyCoutner);
-    };
-
-});
-vows.describe('Test Model Generation').addBatch(batch).export(module);*/

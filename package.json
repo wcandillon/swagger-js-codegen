@@ -1,7 +1,7 @@
 {
   "name": "swagger-js-codegen",
   "main": "./lib/index.js",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
     "test": "grunt"
@@ -45,5 +45,8 @@
     "vows": "~0.7.0",
     "grunt-jsonlint": "~1.0.4",
     "request": "~2.40.0"
+  },
+  "publishConfig": {
+    "registry": "http://localhost:8081/nexus/content/repositories/npmjs-internal/"
   }
 }

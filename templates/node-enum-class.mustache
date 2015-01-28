@@ -1,20 +1,17 @@
 /*jshint -W069 */
 'use strict';
 
-(function(enumType) {
-	
+
 /**
  * {{className}} {{description}}
  * @readonly
  * @enum { {{enumValueType}} } 
  * @swagger enum 
  */
-enumType.{{className}} = {
+exports.{{className}} = {
 		{{#enums}}
 			{{enumType}}:'{{enumValue}}' {{^last}}, {{/last}}
 		{{/enums}}
 	};
-
- })(exports.module);
 
 

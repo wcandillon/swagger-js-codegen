@@ -1,15 +1,12 @@
 /*jshint -W069 */
 'use strict';
 
-(function() {
-	
 /**
  * {{description}}
  * @class {{className}}
  * @swagger model
  */
- function {{className}}() {
-
+exports.{{className}} = function() {
  		{{#vars}}
 			/**
 			 * {{description}}
@@ -18,9 +15,4 @@
 			this.{{name}}={{initValue}} ;
 
  		{{/vars}}
- }
-
-
- exports.module = {{className}};
-
- })();
+};

@@ -147,6 +147,7 @@ var createModelProperties = function(swaggerModelProperties, className, nameSpac
 		var property = trimOOInheritance(rawPropertyName);
 		var varEntry = createVar(property, swaggerModelProperties[property],nameSpace);
 
+		console.log(varEntry);
 
 		// enum processing enums are defined in line
 		if (varEntry.hasOwnProperty('allowableValues')) {

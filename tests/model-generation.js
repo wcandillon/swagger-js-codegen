@@ -12,41 +12,50 @@ vows.describe('Test Generated Models').addBatch({
         topic: function() {
             var swagger = JSON.parse(fs.readFileSync('tests/models/model-1.json', 'UTF-8'));
 
-            var srcCode = CodeGen.getNodeModelCode({
+            var nameSpaceCode = CodeGen.getNodeModelCode({
                 nameSpace: 'proj',
                 swagger: swagger
             });
+            var srcCode = nameSpaceCode.modelCodeSet;
+            // pretend code generation ... 
+            // the indented generate file structure is 
+            
+            var mockIndex = {};
 
-            var genModels = {};
+            mockIndex[nameSpaceCode.nameSpace]={};
+
             // get out each defined model
             for (var item in srcCode) {
                 /*jshint evil:true*/
-                genModels[item] = eval(srcCode[item].code);
+                mockIndex.proj[item] = eval(srcCode[item].code);
             }
 
-            return genModels;
+            return mockIndex;
+        },
+        'should have an object called proj (pretend nameSpace)':function(genModels) {
+            assert(genModels.proj!==null,true);
         },
         'should have an object with some proporties': function(genModels) {
             var propCounter = 0;
-            for (var propName in genModels) {
-                if (genModels.hasOwnProperty(propName)) {
+            for (var propName in genModels.proj) {
+                if (genModels.proj.hasOwnProperty(propName)) {
                     ++propCounter;
                 }
             }
             assert.equal(propCounter > 0, true);
         },
         'genModels should have an enum called ProjTestNameEnum ': function(genModels) {
-            assert.equal(genModels.ProjTestNameEnum !== null, true);
+            assert.equal(genModels.proj.TestNameEnum !== null, true);
         },
         'ProjTestNameEnum should have a propert called ProjTestNameEnum.CONNECTION with value "connection"': function(genModels) {
-            assert.equal(genModels.ProjTestNameEnum.CONNECTION === 'connection', true);
+            assert.equal(genModels.proj.TestNameEnum.CONNECTION === 'connection', true);
         },
         'genModels should have an object called ProjSubscription ': function(genModels) {
-            assert.equal(genModels.ProjSubscription !== null, true);
+            assert.equal(genModels.proj.Subscription !== null, true);
         },
         'Should be able to create an instance of ProjSubscription ': {
             topic: function(genModels) {
-                var sub = new genModels.ProjSubscription();
+                var sub = new genModels.proj.Subscription();
                 assert.equal(sub !== null, true);
                 return sub;
             },

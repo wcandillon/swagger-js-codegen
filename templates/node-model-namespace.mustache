@@ -1,0 +1,13 @@
+/*jshint -W069 */
+'use strict';
+
+/**
+ * {{description}}
+ * @class {{nameSpace}}
+ * @swagger namespace
+ */
+exports.{{nameSapce}} = {
+ 		{{#vars}}
+			{{name}}:require('./{{fileName}}.js').{{name}}{{#notLast}},{{/notLast}}
+ 		{{/vars}}
+};

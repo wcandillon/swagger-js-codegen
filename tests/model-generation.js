@@ -33,7 +33,7 @@ vows.describe('Test Generated Models').addBatch({
             return mockIndex;
         },
         'should have an object called proj (pretend nameSpace)':function(genModels) {
-            assert(genModels.proj!==null,true);
+            assert.equal(genModels.proj!==null,true);
         },
         'should have an object with some proporties': function(genModels) {
             var propCounter = 0;

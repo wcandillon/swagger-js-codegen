@@ -25,6 +25,77 @@
 					}
 				}
 			},
+		"CoveredVehicleDetails": {
+			"id": "CoveredVehicleDetails",
+			"description": "",
+			"extends": "",
+			"properties": {
+				"address": {
+					"$ref": "Address"
+				},
+				"id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"type": {
+					"type": "string"
+				},
+				"options": {
+					"$ref": "VehicleOptions"
+				},
+				"model": {
+					"type": "string"
+				},
+				"startDate": {
+					"$ref": "date-time"
+				},
+				"endDate": {
+					"$ref": "date-time"
+				},
+				"dealer": {
+					"$ref": "Organisation"
+				},
+				"regNum": {
+					"type": "string"
+				},
+				"prevRegNum": {
+					"type": "string"
+				},
+				"make": {
+					"type": "string"
+				},
+				"colour": {
+					"type": "string"
+				},
+				"modelYear": {
+					"type": "string"
+				},
+				"regDate": {
+					"$ref": "date-time"
+				},
+				"oldVehicle": {
+					"type": "string"
+				},
+				"vin": {
+					"type": "string"
+				},
+				"axleNumber": {
+					"type": "string"
+				},
+				"maintenanceAgent": {
+					"$ref": "Organisation"
+				},
+				"additionalDetail": {
+					"type": "string"
+				},
+				"fleetMembershipNo": {
+					"type": "string"
+				},
+				"vehicleValidation": {
+					"type": "string"
+				}
+			}
+		},
 			"Subscription": {
 				"id": "Subscription",
 				"description": "A subscription",

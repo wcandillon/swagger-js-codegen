@@ -47,13 +47,13 @@ vows.describe('Test Generated Models').addBatch({
         'genModels should have an enum called ProjTestNameEnum ': function(genModels) {
             assert.equal(genModels.proj.TestNameEnum !== null, true);
         },
-        'ProjTestNameEnum should have a propert called ProjTestNameEnum.CONNECTION with value "connection"': function(genModels) {
+        'ProjTestNameEnum should have a property called ProjTestNameEnum.CONNECTION with value "connection"': function(genModels) {
             assert.equal(genModels.proj.TestNameEnum.CONNECTION === 'connection', true);
         },
         'genModels should have an object called ProjSubscription ': function(genModels) {
             assert.equal(genModels.proj.Subscription !== null, true);
         },
-        'Should be able to create an instance of ProjSubscription ': {
+        'Should be able to create an instance of ProjSubscription called sub': {
             topic: function(genModels) {
                 var sub = new genModels.proj.Subscription();
                 assert.equal(sub !== null, true);

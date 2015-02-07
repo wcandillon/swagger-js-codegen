@@ -1,7 +1,7 @@
 #Swagger to JS Codegen
 [![Build Status](http://img.shields.io/travis/wcandillon/swagger-js-codegen/master.svg?style=flat)](https://travis-ci.org/wcandillon/swagger-js-codegen) [![NPM version](http://img.shields.io/npm/v/swagger-js-codegen.svg?style=flat)](http://badge.fury.io/js/swagger-js-codegen) [![Code Climate](http://img.shields.io/codeclimate/github/wcandillon/swagger-js-codegen.svg?style=flat)](https://codeclimate.com/github/wcandillon/swagger-js-codegen)
 
-This package generates a nodejs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
+This package generates a nodejs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). Also for nodejs generates the models of the objects defined in [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
 ##Installation
 ```bash
@@ -17,8 +17,21 @@ var file = 'swagger/spec.json';
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
 var nodejsSourceCode = CodeGen.getNodeCode({ className: 'Test', swagger: swagger }); 
 var angularjsSourceCode = CodeGen.getAngularCode({ className: 'Test', swagger: swagger }); 
+
+// generate nodejs models
+// set cameCaseFileName to false (default) to create file name in lower case 
+//   e.g. testmodel.js or test-enum.js.
+// otherwise the file name will follow the case convension defined in swagger file.
+
+var nodejsModel = CodeGen.getNodeModelCode( {swagger: swagger, camelCaseFileName : false });})
+
 console.log(nodejsSourceCode);
 console.log(angularjsSourceCode);
+
+for (var model in nodejsModel) {
+	console.log('source file name : '+ nodejsModel[model].fileName);
+	console.log('source code : '+ nodejsModel[model].sourceCode);
+});
 ```
 
 ##Custom template

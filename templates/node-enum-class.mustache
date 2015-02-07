@@ -1,0 +1,17 @@
+/*jshint -W069 */
+'use strict';
+
+
+/**
+ * {{className}} {{description}}
+ * @readonly
+ * @enum { {{enumValueType}} } 
+ * @swagger enum 
+ */
+exports.{{className}} = {
+		{{#enums}}
+			{{enumType}}:'{{enumValue}}' {{^last}}, {{/last}}
+		{{/enums}}
+	};
+
+

@@ -17,8 +17,8 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     verbose: true,
-                    colors: true,
-                    coverage: 'json'
+                    colors: true
+//                    coverage: 'json'
                 },
                 // String or array of strings
                 // determining which files to include.

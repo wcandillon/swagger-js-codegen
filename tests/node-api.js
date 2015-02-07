@@ -5,7 +5,7 @@ var assert = require('assert');
 var fs = require('fs');
 var events = require('events');
 
-var CodeGen = require('../lib/codegen').CodeGen;
+var CodeGen = require('../lib').CodeGen;
 
 vows.describe('Test Generated API').addBatch({
     'Test Generated code for the 28.io Auth API': {
@@ -13,6 +13,7 @@ vows.describe('Test Generated API').addBatch({
             var swagger = JSON.parse(fs.readFileSync('tests/apis/auth.json', 'UTF-8'));
             /*jshint evil:true*/
             var Auth = eval(CodeGen.getNodeCode({ className: 'Auth', swagger: swagger }));
+
             return new Auth('https://portal.28.io/api');
         },
         'Should have authenticate method': function(auth){

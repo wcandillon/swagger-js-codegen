@@ -58,6 +58,7 @@ vows.describe('Test Token').addBatch({
                 },
                 'Should have unauthorized response': function (err, result) {
                     assert.equal(err.body.message, 'Unauthorized');
+                    assert.strictEqual(result, undefined);
                 }
             }
         }

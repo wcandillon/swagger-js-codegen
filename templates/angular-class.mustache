@@ -35,9 +35,11 @@ angular.module('{{&moduleName}}', [])
         };
 
         {{#isSecurity}}
-            var token;
-            {{&className}}.prototype.setToken = function(_token){
-                token = _token;
+            var token = {};
+            {{&className}}.prototype.setToken = function (_token, headerOrQueryName, isQuery) {
+                token.value = _token;
+                token.headerOrQueryName = headerOrQueryName;
+                token.isQuery = isQuery;
             };
         {{/isSecurity}}
 

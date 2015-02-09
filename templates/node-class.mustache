@@ -15,9 +15,11 @@ var {{&className}} = (function(){
     }
 
     {{#isSecurity}}
-        var token;
-        {{&className}}.prototype.setToken = function(_token){
-            token = _token;
+        var token = {};
+        {{&className}}.prototype.setToken = function (value, headerOrQueryName, isQuery) {
+            token.value = value;
+            token.headerOrQueryName = headerOrQueryName;
+            token.isQuery = isQuery;
         };
     {{/isSecurity}}
 

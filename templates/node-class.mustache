@@ -10,19 +10,22 @@ var {{&className}} = (function(){
     var request = require('request');
     var Q = require('q');
 
-    function {{&className}}(domain){
+    function {{&className}}(options){
+        var domain = (typeof options === 'object') ? options.domain : options;
         this.domain = domain ? domain : '{{&domain}}';
         if(this.domain.length === 0) {
             throw new Error('Domain parameter must be specified as a string.');
         }
+        {{#isSecure}}
+            this.token = (typeof options === 'object') ? options.token : {};
+        {{/isSecure}}
     }
 
     {{#isSecure}}
-        var token = {};
         {{&className}}.prototype.setToken = function (value, headerOrQueryName, isQuery) {
-            token.value = value;
-            token.headerOrQueryName = headerOrQueryName;
-            token.isQuery = isQuery;
+            this.token.value = value;
+            this.token.headerOrQueryName = headerOrQueryName;
+            this.token.isQuery = isQuery;
         };
     {{/isSecure}}
 

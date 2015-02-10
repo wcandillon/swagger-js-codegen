@@ -7,11 +7,11 @@ var events = require('events');
 
 var CodeGen = require('../lib/codegen').CodeGen;
 
-function createAPI () {
+function createAPI (options) {
     var swagger = JSON.parse(fs.readFileSync('tests/apis/protected.json', 'UTF-8'));
     /*jshint evil:true*/
     var ProtectedAPI = eval(CodeGen.getNodeCode({ className: 'Protected', swagger: swagger }));
-    return new ProtectedAPI();
+    return new ProtectedAPI(options);
 }
 
 vows.describe('Test Protected').addBatch({
@@ -77,7 +77,7 @@ vows.describe('Test Protected').addBatch({
                     assert.strictEqual(result, undefined);
                 }
             },
-            'Overiding bad token with good one on the operation call': {
+            'Overriding bad token with good one on the operation call': {
                 topic: function (result) {
                     var protectedAPI = createAPI();
 
@@ -95,7 +95,7 @@ vows.describe('Test Protected').addBatch({
                     assert.equal(result.response.statusCode, 200);
                 }
             },
-            'Overiding good token with bad one on the operation call': {
+            'Overriding good token with bad one on the operation call': {
                 topic: function (result) {
                     var protectedAPI = createAPI();
 
@@ -112,6 +112,55 @@ vows.describe('Test Protected').addBatch({
                 'Should have unauthorized response': function (err, result) {
                     assert.equal(err.response.statusCode, 401);
                     assert.strictEqual(result, undefined);
+                }
+            },
+            'Calling operation with good token set in the constructor': {
+                topic: function (result) {
+                    var protectedAPI = createAPI({token: {value: result.body.access_token, headerOrQueryName: 'token', isQuery: true}});
+
+                    var promise = new(events.EventEmitter)();
+                    protectedAPI.getSecure().then(function(result){
+                        promise.emit('success', result);
+                    }, function(result){
+                        promise.emit('error', result);
+                    });
+                    return promise;
+                },
+                'Should have unauthorized response': function (result) {
+                    assert.equal(result.response.statusCode, 200);
+                }
+            },
+            'Calling operation with bad token that overrides good token set in the constructor': {
+                topic: function (result) {
+                    var protectedAPI = createAPI({token: {value: result.body.access_token, headerOrQueryName: 'token', isQuery: true}});
+
+                    var promise = new(events.EventEmitter)();
+                    protectedAPI.getSecure({token: result.body.access_token.slice(1)}).then(function(result){
+                        promise.emit('success', result);
+                    }, function(result){
+                        promise.emit('error', result);
+                    });
+                    return promise;
+                },
+                'Should have unauthorized response': function (err, result) {
+                    assert.equal(err.response.statusCode, 401);
+                    assert.strictEqual(result, undefined);
+                }
+            },
+            'Calling operation with good token that overrides bad token set in the constructor': {
+                topic: function (result) {
+                    var protectedAPI = createAPI({token: {value: result.body.access_token.slice(1), headerOrQueryName: 'token', isQuery: true}});
+
+                    var promise = new(events.EventEmitter)();
+                    protectedAPI.getSecure({token: result.body.access_token}).then(function(result){
+                        promise.emit('success', result);
+                    }, function(result){
+                        promise.emit('error', result);
+                    });
+                    return promise;
+                },
+                'Should have unauthorized response': function (result) {
+                    assert.equal(result.response.statusCode, 200);
                 }
             }
         }

@@ -11,13 +11,17 @@ angular.module('{{&moduleName}}', [])
      * @param {string} cache - An angularjs cache implementation
      */
     var {{&className}} = (function(){
-        function {{&className}}(domain, cache){
+        function {{&className}}(options, cache){
+            var domain = (typeof options === 'object') ? options.domain : options;
             this.domain = typeof(domain) === 'string' ? domain : '{{&domain}}';
             if(this.domain.length === 0) {
                 throw new Error('Domain parameter must be specified as a string.');
             }
-            this.domain = domain;
+            cache = cache || ((typeof options === 'object') ? options.cache : cache);
             this.cache = cache;
+            {{#isSecure}}
+                this.token = (typeof options === 'object') ? options.token : {};
+            {{/isSecure}}
         }
 
         {{&className}}.prototype.$on = function($scope, path, handler){
@@ -36,11 +40,10 @@ angular.module('{{&moduleName}}', [])
         };
 
         {{#isSecure}}
-            var token = {};
-            {{&className}}.prototype.setToken = function (_token, headerOrQueryName, isQuery) {
-                token.value = _token;
-                token.headerOrQueryName = headerOrQueryName;
-                token.isQuery = isQuery;
+            {{&className}}.prototype.setToken = function (value, headerOrQueryName, isQuery) {
+                this.token.value = value;
+                this.token.headerOrQueryName = headerOrQueryName;
+                this.token.isQuery = isQuery;
             };
         {{/isSecure}}
 

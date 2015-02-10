@@ -22,12 +22,12 @@
     var form = {};
 
     {{#isSecure}}
-        if (token.isQuery) {
-            queryParameters[token.headerOrQueryName] = token.value;
-        } else if (token.headerOrQueryName) {
-            headers[token.headerOrQueryName] = token.value;    
+        if (this.token.isQuery) {
+            queryParameters[this.token.headerOrQueryName] = this.token.value;
+        } else if (this.token.headerOrQueryName) {
+            headers[this.token.headerOrQueryName] = this.token.value;    
         } else {
-            headers['Authorization'] = 'Bearer ' + token.value;
+            headers['Authorization'] = 'Bearer ' + this.token.value;
         }
     {{/isSecure}}
 

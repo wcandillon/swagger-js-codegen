@@ -11,7 +11,10 @@ var {{&className}} = (function(){
     var Q = require('q');
 
     function {{&className}}(domain){
-        this.domain = domain;
+        this.domain = domain ? domain : '{{&domain}}';
+        if(this.domain.length === 0) {
+            throw new Error('Domain parameter must be specified as a string.');
+        }
     }
 
     {{#isSecure}}

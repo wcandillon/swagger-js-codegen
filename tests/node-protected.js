@@ -7,13 +7,17 @@ var events = require('events');
 
 var CodeGen = require('../lib/codegen').CodeGen;
 
+function createAPI () {
+    var swagger = JSON.parse(fs.readFileSync('tests/apis/protected.json', 'UTF-8'));
+    /*jshint evil:true*/
+    var ProtectedAPI = eval(CodeGen.getNodeCode({ className: 'Protected', swagger: swagger }));
+    return new ProtectedAPI();
+}
+
 vows.describe('Test Protected').addBatch({
     'Test Automatic Auth Token Assignment': {
         topic: function(){
-            var swagger = JSON.parse(fs.readFileSync('tests/apis/protected.json', 'UTF-8'));
-            /*jshint evil:true*/
-            var ProtectedAPI = eval(CodeGen.getNodeCode({ className: 'Protected', swagger: swagger }));
-            return new ProtectedAPI();
+            return createAPI();
         },
         'Should have auth and getSecure methods': function(protectedAPI){
             assert.equal(protectedAPI.auth !== undefined, true);
@@ -27,21 +31,23 @@ vows.describe('Test Protected').addBatch({
                     password: 'foobar',
                     grant_type: 'client_credentials'
                 }).then(function(result){
-                    promise.emit('success', {retval: result, protectedAPI: protectedAPI});
+                    promise.emit('success', result);
                 }, function(result){
-                    promise.emit('error', {retval: result, protectedAPI: protectedAPI});
+                    promise.emit('error', result);
                 });
                 return promise;
             },
             'Should have valid password': function (result) {
-                assert.equal(result.retval.body.token_type, 'bearer');
+                assert.equal(result.body.token_type, 'bearer');
             },
             'Calling operation with good token': {
                 topic: function (result) {
-                    result.protectedAPI.setToken(result.retval.body.access_token, 'token', true);
+                    var protectedAPI = createAPI();
+
+                    protectedAPI.setToken(result.body.access_token, 'token', true);
 
                     var promise = new(events.EventEmitter)();
-                    result.protectedAPI.getSecure().then(function(result){
+                    protectedAPI.getSecure().then(function(result){
                         promise.emit('success', result);
                     }, function(result){
                         promise.emit('error', result);
@@ -54,10 +60,12 @@ vows.describe('Test Protected').addBatch({
             },
             'Calling operation with wrong token': {
                 topic: function (result) {
-                    result.protectedAPI.setToken(result.retval.body.access_token.slice(1), 'token', true);
+                    var protectedAPI = createAPI();
+
+                    protectedAPI.setToken(result.body.access_token.slice(1), 'token', true);
 
                     var promise = new(events.EventEmitter)();
-                    result.protectedAPI.getSecure().then(function(result){
+                    protectedAPI.getSecure().then(function(result){
                         promise.emit('success', result);
                     }, function(result){
                         promise.emit('error', result);

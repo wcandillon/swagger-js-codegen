@@ -4,6 +4,11 @@
         "version": "0.0.1",
         "title": "title"
     },
+    "host": "portal.28.io",
+    "basePath": "/api",
+    "schemes": [
+        "https"
+    ],
     "securityDefinitions": {
         "oauth2": {
             "type": "oauth2",
@@ -64,7 +69,7 @@
                 }
             }
         },
-        "/v1/_queries": {
+        "/project": {
             "get": {
                 "description": "Get secure",
                 "operationId": "getSecure",

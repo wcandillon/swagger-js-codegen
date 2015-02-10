@@ -34,14 +34,14 @@ angular.module('{{&moduleName}}', [])
             return this;
         };
 
-        {{#isSecurity}}
+        {{#isSecure}}
             var token = {};
             {{&className}}.prototype.setToken = function (_token, headerOrQueryName, isQuery) {
                 token.value = _token;
                 token.headerOrQueryName = headerOrQueryName;
                 token.isQuery = isQuery;
             };
-        {{/isSecurity}}
+        {{/isSecure}}
 
         {{#methods}}
             {{> method}}

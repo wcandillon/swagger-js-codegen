@@ -21,7 +21,7 @@
     var headers = {};
     var form = {};
 
-    {{#isSecurity}}
+    {{#isSecure}}
         if (token.isQuery) {
             queryParameters[token.headerOrQueryName] = token.value;
         } else if (token.headerOrQueryName) {
@@ -29,7 +29,7 @@
         } else {
             headers['Authorization'] = 'Bearer ' + token.value;
         }
-    {{/isSecurity}}
+    {{/isSecure}}
 
     {{#parameters}}
        

@@ -14,14 +14,14 @@ var {{&className}} = (function(){
         this.domain = domain;
     }
 
-    {{#isSecurity}}
+    {{#isSecure}}
         var token = {};
         {{&className}}.prototype.setToken = function (value, headerOrQueryName, isQuery) {
             token.value = value;
             token.headerOrQueryName = headerOrQueryName;
             token.isQuery = isQuery;
         };
-    {{/isSecurity}}
+    {{/isSecure}}
 
     {{#methods}}
         {{> method}}

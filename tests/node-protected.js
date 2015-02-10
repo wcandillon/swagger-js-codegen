@@ -13,7 +13,7 @@ vows.describe('Test Protected').addBatch({
             var swagger = JSON.parse(fs.readFileSync('tests/apis/protected.json', 'UTF-8'));
             /*jshint evil:true*/
             var ProtectedAPI = eval(CodeGen.getNodeCode({ className: 'Protected', swagger: swagger }));
-            return new ProtectedAPI('https://portal.28.io/api');
+            return new ProtectedAPI();
         },
         'Should have auth and getSecure methods': function(protectedAPI){
             assert.equal(protectedAPI.auth !== undefined, true);

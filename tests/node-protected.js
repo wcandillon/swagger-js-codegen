@@ -162,6 +162,24 @@ vows.describe('Test Protected').addBatch({
                 'Should have unauthorized response': function (result) {
                     assert.equal(result.response.statusCode, 200);
                 }
+            },
+            'Calling operation with good token that overrides empty options in the constructor': {
+                topic: function (result) {
+                    var protectedAPI = createAPI({});
+
+                    protectedAPI.setToken(result.body.access_token, 'token', true);
+
+                    var promise = new(events.EventEmitter)();
+                    protectedAPI.getSecure().then(function(result){
+                        promise.emit('success', result);
+                    }, function(result){
+                        promise.emit('error', result);
+                    });
+                    return promise;
+                },
+                'Should have unauthorized response': function (result) {
+                    assert.equal(result.response.statusCode, 200);
+                }
             }
         }
     }

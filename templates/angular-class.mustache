@@ -20,7 +20,7 @@ angular.module('{{&moduleName}}', [])
             cache = cache || ((typeof options === 'object') ? options.cache : cache);
             this.cache = cache;
             {{#isSecure}}
-                this.token = (typeof options === 'object') ? options.token : {};
+                this.token = (typeof options === 'object') ? (options.token ? options.token : {}) : {};
             {{/isSecure}}
         }
 

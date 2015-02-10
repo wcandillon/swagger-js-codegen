@@ -12,8 +12,8 @@ angular.module('{{&moduleName}}', [])
      */
     var {{&className}} = (function(){
         function {{&className}}(domain, cache){
-            this.domain = typeof(domain) === 'string' ? domain : {{&domain}};
-            if(typeof(this.domain) !== 'string') {
+            this.domain = typeof(domain) === 'string' ? domain : '{{&domain}}';
+            if(this.domain.length === 0) {
                 throw new Error('Domain parameter must be specified as a string.');
             }
             this.domain = domain;

@@ -73,6 +73,15 @@
             "get": {
                 "description": "Get secure",
                 "operationId": "getSecure",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "description": "Auth token",
+                        "required": false,
+                        "type": "string",
+                        "in": "query"
+                    }
+                ],
                 "security": [
                     {
                         "oauth2": []

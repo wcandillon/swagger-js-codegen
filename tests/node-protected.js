@@ -76,6 +76,43 @@ vows.describe('Test Protected').addBatch({
                     assert.equal(err.response.statusCode, 401);
                     assert.strictEqual(result, undefined);
                 }
+            },
+            'Overiding bad token with good one on the operation call': {
+                topic: function (result) {
+                    var protectedAPI = createAPI();
+
+                    protectedAPI.setToken(result.body.access_token.slice(1), 'token', true);
+
+                    var promise = new(events.EventEmitter)();
+                    protectedAPI.getSecure({token: result.body.access_token}).then(function(result){
+                        promise.emit('success', result);
+                    }, function(result){
+                        promise.emit('error', result);
+                    });
+                    return promise;
+                },
+                'Should have good response': function (result) {
+                    assert.equal(result.response.statusCode, 200);
+                }
+            },
+            'Overiding good token with bad one on the operation call': {
+                topic: function (result) {
+                    var protectedAPI = createAPI();
+
+                    protectedAPI.setToken(result.body.access_token, 'token', true);
+
+                    var promise = new(events.EventEmitter)();
+                    protectedAPI.getSecure({token: result.body.access_token.slice(1)}).then(function(result){
+                        promise.emit('success', result);
+                    }, function(result){
+                        promise.emit('error', result);
+                    });
+                    return promise;
+                },
+                'Should have unauthorized response': function (err, result) {
+                    assert.equal(err.response.statusCode, 401);
+                    assert.strictEqual(result, undefined);
+                }
             }
         }
     }

@@ -21,6 +21,16 @@
     var headers = {};
     var form = {};
 
+    {{#isSecure}}
+        if (this.token.isQuery) {
+            queryParameters[this.token.headerOrQueryName] = this.token.value;
+        } else if (this.token.headerOrQueryName) {
+            headers[this.token.headerOrQueryName] = this.token.value;    
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token.value;
+        }
+    {{/isSecure}}
+
     {{#parameters}}
        
         {{#isQueryParameter}}

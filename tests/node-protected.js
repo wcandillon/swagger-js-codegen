@@ -5,7 +5,7 @@ var assert = require('assert');
 var fs = require('fs');
 var events = require('events');
 
-var CodeGen = require('../lib/codegen').CodeGen;
+var CodeGen = require('../lib/codegen.js').CodeGen;
 
 function createAPI (options) {
     var swagger = JSON.parse(fs.readFileSync('tests/apis/protected.json', 'UTF-8'));

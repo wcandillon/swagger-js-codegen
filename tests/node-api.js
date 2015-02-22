@@ -5,7 +5,7 @@ var assert = require('assert');
 var fs = require('fs');
 var events = require('events');
 
-var CodeGen = require('../lib/codegen').CodeGen;
+var CodeGen = require('../lib/codegen.js').CodeGen;
 
 vows.describe('Test Generated API').addBatch({
     'Test Generated code for the 28.io Auth API': {

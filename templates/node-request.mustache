@@ -6,6 +6,11 @@ var req = {
     body: body,
     rejectUnauthorized: false
 };
+
+if (this.timeout!==undefined) {
+    req.timeout = this.timeout;
+}
+
 if(Object.keys(form).length > 0) {
     req.form = form;
 }

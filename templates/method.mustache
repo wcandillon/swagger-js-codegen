@@ -2,9 +2,12 @@
  * {{&summary}}
  * @method
  * @name {{&className}}#{{&methodName}}
+ * @param {object} parameters 
 {{#parameters}}
-{{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
+{{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> [parameters.{{&camelCaseName}}] - {{&description}}{{/isSingleton}}
 {{/parameters}}
+* @param {object} [parameters.$queryParameters] other parameters to be passed in he query string
+ * @return {external:Promise} On success the promise will be resolved with  {response:{Response}, body: {{=<% %>=}}{<%&responseModel%>}<%={{ }}=%>}
  * 
  */
  {{&className}}.prototype.{{&methodName}} = function(parameters){
@@ -14,8 +17,9 @@
     var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
     
     var domain = this.domain;
-    var path = '{{&path}}';
     
+    var path = '{{&path}}';
+
     var body;
     var queryParameters = {};
     var headers = {};
@@ -30,6 +34,8 @@
             headers['Authorization'] = 'Bearer ' + this.token.value;
         }
     {{/isSecure}}
+    
+    {{#contentTypes}}headers['content-type']='{{&contentTypes}}';{{/contentTypes}}
 
     {{#parameters}}
        

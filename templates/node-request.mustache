@@ -3,8 +3,7 @@ var req = {
     uri: domain + path,
     qs: queryParameters,
     headers: headers,
-    body: body,
-    rejectUnauthorized: false
+    body: body
 };
 if(Object.keys(form).length > 0) {
     req.form = form;

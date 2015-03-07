@@ -1,10 +1,19 @@
 /*jshint -W069 */
+'use strict';
+
+/**
+ * A promise object provided by the q promise library
+ * @external Promise
+ * @see {@link https://github.com/kriskowal/q/wiki/API-Reference}
+ */
+
 /**
  * {{&description}}
  * @class {{&className}}
  * @param {(string|object)} [domainOrOptions] - The project domain or options object. If object, see the object's optional properties.
  * @param {string} [domainOrOptions.domain] - The project domain
  * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
+ * @param {integer} [domainOrOptions.timeout] - timeout period for queries defaults to 10 seconds
  */
 var {{&className}} = (function(){
     'use strict';
@@ -14,6 +23,7 @@ var {{&className}} = (function(){
 
     function {{&className}}(options){
         var domain = (typeof options === 'object') ? options.domain : options;
+
         this.domain = domain ? domain : '{{&domain}}';
         if(this.domain.length === 0) {
             throw new Error('Domain parameter must be specified as a string.');
@@ -21,6 +31,9 @@ var {{&className}} = (function(){
         {{#isSecure}}
             this.token = (typeof options === 'object') ? (options.token ? options.token : {}) : {};
         {{/isSecure}}
+
+        this.timeout = (typeof options === 'object') ? options.timeout : undefined;
+
     }
 
     {{#isSecure}}

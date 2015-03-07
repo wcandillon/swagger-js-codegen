@@ -5,7 +5,7 @@ var vows = require('vows');
 var fs = require('fs');
 var ffs = require('final-fs');
 
-var CodeGen = require('../lib/codegen').CodeGen;
+var CodeGen = require('../lib/codegen.js').CodeGen;
 
 var batch = {};
 var list = ffs.readdirSync('tests/apis');

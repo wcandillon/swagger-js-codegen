@@ -3,7 +3,7 @@
 angular.module('{{&moduleName}}', [])
 .factory('{{&className}}', ['$q', '$http', '$rootScope', function($q, $http, $rootScope){
     'use strict';
-    
+
     /**
      * {{&description}}
      * @class {{&className}}
@@ -40,6 +40,21 @@ angular.module('{{&moduleName}}', [])
             //cache.remove(url);
             $rootScope.$broadcast(url);
             return this;
+        };
+
+        {{&className}}.transformRequest = function(obj) {
+            var str = [];
+            for(var p in obj) {
+                var val = obj[p];
+                if(angular.isArray(val)) {
+                   val.forEach(function(val){
+                     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
+                   });
+                } else {
+                   str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
+                }
+            }
+            return str.join("&");
         };
 
         {{#isSecure}}

@@ -17,20 +17,7 @@ var options = {
 if(Object.keys(form).length > 0) {
    options.data = form;
    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-   options.transformRequest = function(obj) {
-       var str = [];
-       for(var p in obj) {
-           var val = obj[p];
-           if(angular.isArray(val)) {
-              val.forEach(function(val){
-                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
-              });
-           } else {
-              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
-           }
-       }
-       return str.join("&");
-   }
+   options.transformRequest = {{&className}}.transformRequest;
 }
 $http(options)
 .success(function(data, status, headers, config){

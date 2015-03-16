@@ -1,6 +1,8 @@
 var url = domain + path;
 {{#isGET}}
-var cached = parameters.$cache && parameters.$cache.get(url);
+var cacheId = url + '?' + {{&className}}.transformRequest(queryParameters);
+var cached = parameters.$cache && parameters.$cache.get(cacheId);
+
 if(cached !== undefined && parameters.$refresh !== true) {
     deferred.resolve(cached);
     return deferred.promise;
@@ -20,17 +22,31 @@ if(Object.keys(form).length > 0) {
    options.transformRequest = {{&className}}.transformRequest;
 }
 $http(options)
-.success(function(data, status, headers, config){
-    deferred.resolve(data);
+.success(function(data, status, headers, config) {
+    var res = {
+        data: data,
+        status: status,
+        headers: headers,
+        config: config
+    };
+
+    deferred.resolve(res);
+
     if(parameters.$cache !== undefined) {
-        parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+        if('{{method}}' === 'GET') {
+            parameters.$cache.put(cacheId, res, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+        } else if ('{{method}}' === 'POST' || '{{method}}' === 'PUT' || '{{method}}' === 'DELETE' || '{{method}}' === 'PATCH') {
+          parameters.$cache.removeAll();
+        }
     }
 })
 .error(function(data, status, headers, config){
-    deferred.reject({
+    var res = {
+        data: data,
         status: status,
         headers: headers,
-        config: config,
-        body: data
-    });
+        config: config
+    };
+
+    deferred.reject(res);
 });

@@ -33,7 +33,7 @@
     "js-beautify": "~1.5.1",
     "jshint": "~2.5.1",
     "lodash": "^2.4.1",
-    "mustache": "~0.8.2"
+    "mustache": "^2.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

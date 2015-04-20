@@ -251,7 +251,30 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 
 And example of gulp task is available [here](https://github.com/28msec/cellstore/blob/master/tasks/swagger.js).
 
-##Who is using it?
+## Using the Generated Code
+### AngularJS
+
+The AngularJS services are implemented as a Factory Factory so that a base URL, cache & token can be configured differently for testing and production.
+
+```javascript
+angular.module('demo', ['MyAPI'])
+    .factory('API', function(MyAPI, API_URL) {
+        'use strict';
+        return {
+            MyAPI_A: new MyAPI(API_URL + '/a/demo'),
+            MyAPI_B: new MyAPI({
+                domain: API_URL + '/b/demo',
+                cache: cache,
+                token: token
+            })
+        };
+    })
+    .controller('myController', ['API', function (API) {
+        this.record = API.MyAPI_A.getRecordById(123);
+    }]);
+```
+
+## Who is using it?
 The [CellStore](https://github.com/28msec/cellstore) project.
 
 [28.io](http://28.io) is using this project to generate their [nodejs](https://github.com/28msec/28.io-nodejs) and [angularjs language bindings](https://github.com/28msec/28.io-angularjs).

@@ -93,6 +93,8 @@ var source = CodeGen.getCustomCode({
 
 ##Swagger Extensions
 
+The following custom fields can be used in the swagger schemas:
+
 - [`x-swagger-js-method-name`](docs/x-swagger-js-method-name.md)
 - [`x-proxy-header`](docs/x-proxy-header.md)
 

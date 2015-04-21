@@ -1,0 +1,132 @@
+module namespace ml = "http://28.io/modules/marklogic";
+
+import module namespace credentials =
+    "http://www.28msec.com/modules/credentials";
+import module namespace http =
+    "http://zorba.io/modules/http-client";
+
+declare %private variable $ml:category as string := "MarkLogic";
+
+declare %private variable $ml:UNSUPPORTED_BODY as QName :=
+    QName("ml:UNSUPPORTED_BODY");
+
+declare %an:nondeterministic %private function ml:send-request(
+      $name as string,
+      $queryParameters as object,
+      $headers as object,
+      $body as object?) as object {
+    let $request :=
+        ml:request($name, $queryParameters, $headers, $body)
+    return http:send-request($request)
+};
+
+declare %an:nondeterministic %private function ml:send-nondeterministic-request(
+      $name as string,
+      $queryParameters as object,
+      $headers as object,
+      $body as object?) as object {
+    let $request :=
+        ml:request($name, $queryParameters, $headers, $body)
+    return http:send-nondeterministic-request($request)
+};
+
+declare %private function ml:request(
+      $name as string,
+      $queryParameters as object,
+      $headers as object,
+      $body as object?
+      ) as object {
+    let $credentials := credentials:credentials($ml:category, $name)
+    return {|
+        {
+            href: "http://" ||
+                  $credentials.hostname || ":" ||
+                  $credentials.port || "/v1/" ||
+                  $endpoint ||
+                  (
+                      if(exists($url-parameters))
+                      then "?" ||
+                        string-join(for $parameter in keys($url-parameters)
+                                    for $value as string in
+                                        flatten($url-parameters.$parameter)
+                                    return $parameter || "=" ||
+                                           encode-for-uri($value),
+                                    "&")
+                      else ""
+                  ),
+            method: $method,
+            authentication: {
+                username: $credentials.username,
+                password: $credentials.password,
+                "auth-method": "Digest"
+            }
+        }
+        ,
+        {|
+            if($body) then
+                {
+                    body: {|
+                          typeswitch($body)
+                          case json-item return {
+                              "media-type" : "application/json;charset=UTF-8",
+                              "content" : serialize($body)
+                          }
+                          default return error($ml:UNSUPPORTED_BODY)
+                    |}
+                }
+            else ()
+        |}
+    |}
+};
+
+{{#methods}}
+(:~
+ : {{&summary}}
+{{#parameters}}
+{{^isSingleton}} * @param ${{&camelCaseName}} - {{&description}}{{/isSingleton}}
+{{/parameters}}
+ :)
+ declare {{#isGET}}%an:nondeterministic{{/isGET}} function ml:{{&methodName}}($name as string, $parameters as object){
+     let $path := "{{&path}}"
+     let $body := ()
+     let $queryParameters := {}
+     let $headers := {}
+     let $form := {}
+     {{#parameters}}
+
+         {{#isQueryParameter}}
+             {{#isSingleton}}
+                 let $queryParameters := {| $queryParameters, { "{{&name}}": "{{&singleton}}" } |}
+             {{/isSingleton}}
+             {{^isSingleton}}
+                 let $queryParameters := if($parameters("{{&camelCaseName}}")) then
+                        {| $queryParameters, { "{{&name}}": $parameters("{{&camelCaseName}}") } |}
+                    else
+                        $queryParameters
+             {{/isSingleton}}
+         {{/isQueryParameter}}
+
+         {{#isPathParameter}}
+             let $path := replace(replace($path, "{{=<% %>=}}{<%&name%>}<%={{ }}=%>", $parameters("{{&camelCaseName}}")
+         {{/isPathParameter}}
+
+         {{#isHeaderParameter}}
+             {{#isSingleton}}
+                 let $headers := {| $headers, { "{{&name}}": $parameters("{{&camelCaseName}}") } |}
+             {{/isSingleton}}
+             {{^isSingleton}}
+                 let $headers := if($parameters("{{&camelCaseName}}")) then
+                    {| $headers, { "{{&name}}": $parameters("{{&camelCaseName}}") } |}
+                 else
+                    $headers
+             {{/isSingleton}}
+         {{/isHeaderParameter}}
+
+         {{#isBodyParameter}}
+             let $body := if($parameters("body")) then $parameters("body") else ()
+         {{/isBodyParameter}}
+     {{/parameters}}
+     return
+        ml:send-{{#isGET}}nondeterministic-{{/isGET}}request($name, $queryParameters, $headers, $body)
+ };
+{{/methods}}

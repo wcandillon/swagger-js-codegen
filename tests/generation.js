@@ -35,6 +35,11 @@ list.forEach(function(file){
             }
         });
         assert(typeof(result), 'string');
+        result = CodeGen.getTypeScriptDefinition({
+            className: 'Test',
+            swagger: swagger
+        });
+        assert(typeof(result), 'string');
     };
 });
 vows.describe('Test Generation').addBatch(batch).export(module);

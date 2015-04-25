@@ -1,0 +1,7 @@
+interface {{&className}} {
+    {{#methods}}
+        {{&methodName}}(parameters as Object): Promise<Object>;
+    {{/methods}}
+}
+
+export = {{&className}};

@@ -48,6 +48,9 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     description: Your AngularJS module name
   className:
     type: string
+  stripPathPrefix:
+    type: string
+    description: removes a prefix from the API path from being used as method names.
   esnext:
     type: boolean
     description: passed through to jslint

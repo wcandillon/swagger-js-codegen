@@ -128,6 +128,7 @@ methods:
       methodName:
         type: string
         description: Generatated from the HTTP method and path elements or 'x-swagger-js-method-name' field
+      methodAction: runs a JavaScript function provided by opts.methodAction to be used for custom method templates
       method:
         type: string
         description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLIK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'
@@ -155,6 +156,21 @@ methods:
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema
+      type: string
+        description: response type for a success call
+      responseMessages:
+        type: array
+        description: response messages typically used for errors
+        items:
+           code:
+              type: string
+              description: response code (e.g. 400)
+            message: string
+              type: string
+              description: description of the response
+            responseModel:
+              type: string
+              description: model to be used for this response
       parameters:
         type: array
         description: Includes all of the properties defined for the parameter in the schema plus:

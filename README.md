@@ -131,7 +131,9 @@ methods:
       methodName:
         type: string
         description: Generatated from the HTTP method and path elements or 'x-swagger-js-method-name' field
-      methodAction: runs a JavaScript function provided by opts.methodAction to be used for custom method templates
+      methodAction:
+        type: function
+        description: runs a given function provided by options parameter "methodAction" to be used for custom templates
       method:
         type: string
         description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLIK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'
@@ -169,7 +171,7 @@ methods:
            code:
               type: string
               description: response code (e.g. 400)
-            message: string
+            message:
               type: string
               description: description of the response
             responseModel:

@@ -115,6 +115,9 @@ className:
 domain:
   type: string
   description: If all options defined: swagger.schemes[0] + '://' + swagger.host + swagger.basePath
+models:
+  type: object
+  description: contains of object of each model, keyed by model name
 methods:
   type: array
   items:
@@ -156,7 +159,8 @@ methods:
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema
-      type: string
+      type:
+        type: string
         description: response type for a success call
       responseMessages:
         type: array

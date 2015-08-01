@@ -1,0 +1,16 @@
+interface {{&className}} {
+{{#methods}}
+    {{&methodName}}(parameters : {
+    {{#parameters}}
+        '{{name}}': {{>type}}
+    {{/parameters}}
+    }): ng.IPromise<{{#responseType}}{{>type}}{{/responseType}}{{^responseType}}any{{/responseType}}>;
+
+{{/methods}}
+}
+
+// data types
+{{#definitions}}
+interface {{name}} {{>type}}
+
+{{/definitions}}

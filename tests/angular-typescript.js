@@ -13,7 +13,6 @@ vows.describe('Test generation of TypeScript definitions').addBatch({
             return CodeGen.getAngularTypeScriptDefinition({className: 'Petstore', swagger: swagger, dtsRefs: ['foo.d.ts', 'bar.d.ts']});
         },
         'should be equal to the expected result': function(generated){
-            fs.writeFile('actual.d.ts', generated);
             var expected = fs.readFileSync('tests/expected/petstore-simple.d.ts', {encoding: 'UTF-8'});
             assert.equal(generated, expected);
         }

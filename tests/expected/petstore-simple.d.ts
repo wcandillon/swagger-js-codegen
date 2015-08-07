@@ -1,3 +1,6 @@
+/// <reference path="foo.d.ts" />
+/// <reference path="bar.d.ts" />
+
 interface Petstore {
     findPets(parameters : {
         'tags': Array<string>

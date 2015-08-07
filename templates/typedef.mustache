@@ -1,10 +1,14 @@
+{{#imports}}
+/// <reference path="{{.}}" />
+{{/imports}}
+
 interface {{&className}} {
 {{#methods}}
     {{&methodName}}(parameters : {
     {{#parameters}}
         '{{name}}': {{>type}}
     {{/parameters}}
-    }): ng.IPromise<{{#responseType}}{{>type}}{{/responseType}}{{^responseType}}any{{/responseType}}>;
+    }): {{#resultFn}}{{#responseType}}{{>type}}{{/responseType}}{{^responseType}}any{{/responseType}}{{/resultFn}};
 
 {{/methods}}
 }

@@ -248,7 +248,7 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 
 ## Generating TypeScript definition files
 
-For the angular code, TypeScript definition files (`.d.ts`) can be generated that define the interface of the module.
+For both the node and the angular code, TypeScript definition files (`.d.ts`) can be generated that define the interface of the module.
 This includes the data types for the parameters and results of all methods. This allows static type checking of your
 API calls.
 
@@ -259,7 +259,7 @@ var CodeGen = require('swagger-js-codegen').CodeGen;
 
 var file = 'swagger/spec.json';
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-var tsdCode = CodeGen.getAngularTypeScriptDefinition({ className: 'Test', swagger: swagger });
+var tsdCode = CodeGen.getAngularTypeScriptDefinition({ className: 'Test', swagger: swagger, dtsRefs = ['../angular.d.ts'] });
 console.log(tsdCode);
 ```
 

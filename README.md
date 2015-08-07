@@ -246,7 +246,7 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 ```
 
 
-## Generating TypeScript definition files
+## Generating TypeScript definition files --- EXPERIMENTAL
 
 For both the node and the angular code, TypeScript definition files (`.d.ts`) can be generated that define the interface of the module.
 This includes the data types for the parameters and results of all methods. This allows static type checking of your
@@ -263,7 +263,7 @@ var tsdCode = CodeGen.getAngularTypeScriptDefinition({ className: 'Test', swagge
 console.log(tsdCode);
 ```
 
-
+Note that this feature is experimental and has not seen many testing yet.
 
 
 ## Grunt & Gulp task

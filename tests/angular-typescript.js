@@ -10,7 +10,7 @@ vows.describe('Test generation of TypeScript definitions').addBatch({
     'The generated code from petstore-simple.json': {
         topic: function(){
             var swagger = JSON.parse(fs.readFileSync('tests/apis/petstore-simple.json', 'UTF-8'));
-            return CodeGen.getAngularTypeScriptDefinition({className: 'Petstore', swagger: swagger, dtsRefs: ['foo.d.ts', 'bar.d.ts']});
+            return CodeGen.getAngularTypeScriptDefinition({className: 'Petstore', swagger: swagger, mustache: {imports: ['foo.d.ts', 'bar.d.ts']}});
         },
         'should be equal to the expected result': function(generated){
             var expected = fs.readFileSync('tests/expected/petstore-simple.d.ts', {encoding: 'UTF-8'});

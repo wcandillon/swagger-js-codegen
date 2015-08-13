@@ -259,7 +259,7 @@ var CodeGen = require('swagger-js-codegen').CodeGen;
 
 var file = 'swagger/spec.json';
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-var tsdCode = CodeGen.getAngularTypeScriptDefinition({ className: 'Test', swagger: swagger, dtsRefs = ['../angular.d.ts'] });
+var tsdCode = CodeGen.getAngularTypeScriptDefinition({ className: 'Test', swagger: swagger, mustache: {imports: ['../angular.d.ts']}});
 console.log(tsdCode);
 ```
 

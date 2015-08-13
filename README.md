@@ -252,7 +252,8 @@ For both the node and the angular code, TypeScript definition files (`.d.ts`) ca
 This includes the data types for the parameters and results of all methods. This allows static type checking of your
 API calls.
 
-TypeScript generation works similar to Javascript:
+TypeScript generation works similar to Javascript. The following example is for the angular version
+(replace `getAngularTypeScriptDefinition` with `getNodeTypeScriptDefinition` for the node version):
 ```javascript
 var fs = require('fs');
 var CodeGen = require('swagger-js-codegen').CodeGen;

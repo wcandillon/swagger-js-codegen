@@ -42,145 +42,40 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
 
 `getAngularCode()`, `getNodeCode()`, and `getCustomCode()` each support the following options:
 
-```yaml
-  moduleName:
-    type: string
-    description: Your AngularJS module name
-  className:
-    type: string
-  esnext:
-    type: boolean
-    description: passed through to jslint
-  mustache:
-    type: object
-    description: See the 'Custom Mustache Variables' section below
-  swagger:
-    type: object
-    required: true
-    properties:
-      swagger:
-        description: |
-          For Swagger Specification version 2.0 value of field 'swagger' must be a string '2.0'
-        type: string
-        enum:
-        - 2.0
-        - 1.2
-      info:
-        type: object
-        properties:
-          description:
-            type: string
-            description: Made available to templates as '{{&description}}'
-      securityDefinitions:
-        type: object
-        description:
-      parameters:
-        type: array
-        items:
-          type: object
-          properties:
-            name:
-              type: string
-              required: true
-            enum:
-              type: array
-            in:
-              type: string
-              enum:
-              - body
-              - path
-              - query
-              - header
-              - formData
 ```
+  - moduleName
+  - className
+  - esnext
+  - mustache
+  - swagger
+    - swagger (1.2 or 2.0)
+    - info
+      - description
+    - securityDefinitions
+    - parameters
+      - name
+      - enum
+      - in
+```
+
+For more details see [options-schema.md](docs/options-schema.md)
 
 ###Template Variables
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
 
-```yaml
-isNode:
-  type: boolean
-description:
-  type: string
-  description: Provided by your options field: 'swagger.info.description'
-isSecure:
-  type: boolean
-  description: false unless 'swagger.securityDefinitions' is defined
-moduleName:
-  type: string
-  description: Your AngularJS module name - provided by your options field
-className:
-  type: string
-  description: Provided by your options field
-domain:
-  type: string
-  description: If all options defined: swagger.schemes[0] + '://' + swagger.host + swagger.basePath
-methods:
-  type: array
-  items:
-    type: object
-    properties:
-      path:
-        type: string
-      className:
-        type: string
-        description: Provided by your options field
-      methodName:
-        type: string
-        description: Generatated from the HTTP method and path elements or 'x-swagger-js-method-name' field
-      method:
-        type: string
-        description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLIK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'
-        enum:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - PATCH
-        - COPY
-        - HEAD
-        - OPTIONS
-        - LINK
-        - UNLIK
-        - PURGE
-        - LOCK
-        - UNLOCK
-        - PROPFIND
-      isGET:
-        type: string
-        description: true if method === 'GET'
-      summary:
-        type: string
-        description: Provided by the 'description' field in the schema
-      isSecure:
-        type: boolean
-        description: true if the 'security' is defined for the method in the schema
-      parameters:
-        type: array
-        description: Includes all of the properties defined for the parameter in the schema plus:
-        items:
-          camelCaseName:
-            type: string
-          isSingleton:
-            type: boolean
-            description: true if there was only one 'enum' defined for the parameter
-          singleton:
-            type: string
-            description: the one and only 'enum' defined for the parameter (if there is only one)
-          isBodyParameter:
-            type: boolean
-          isPathParameter:
-            type: boolean
-          isQueryParameter:
-            type: boolean
-          isPatternType:
-            type: boolean
-            description: true if *in* is 'query', and 'pattern' is defined
-          isHeaderParameter:
-            type: boolean
-          isFormParameter:
-            type: boolean
 ```
+- isNode
+- description
+- isSecure
+- moduleName
+- className
+- domain
+- methods:
+  - path, className, methodName, method (GET, POST etc), isGET, summary, isSecure
+  - parameters:
+    - camelCaseName, isSingleton, singleton, isBodyParameter, isPathParameter...
+```
+For more details see [template-vars-schema.md](docs/template-vars-schema.md)
 
 ####Custom Mustache Variables
 You can also pass in your own variables for the mustache templates by adding a `mustache` object:
@@ -198,52 +93,10 @@ var source = CodeGen.getCustomCode({
 
 ##Swagger Extensions
 
-### x-swagger-js-method-name
-By default, javascript method names are generated by concatenating the HTTP method name and path segments.
-Generally, the generated names read well, but sometimes they turn out wrong:
+The following custom fields can be used in the swagger schemas:
 
-```javascript
-// A PUT to this path in a swagger schema:  /records/{id}/meta
-// is intended to update a "meta" property on a specific "Record" entity.
-// ...swagger-js-codegen generates a method named:
-MyApi.prototype.putEntitiesByIdMeta = function(parameters) {
-```
-
-If you would like to provide your own method names, use the `x-swagger-js-method-name` field at the method level
-
-```yaml
-  /records/{id}/meta:
-    put:
-      x-swagger-js-method-name: updateRecordMetaData
-      parameters:
-      - name: id
-       in: path
-       ...
-```
-
-### x-proxy-header
-Some proxies and application servers inject HTTP headers into the requests.  Server-side code
-may use these fields, but they are not required in the client API.
-
-eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
-
-```yaml
-  /locations:
-    get:
-      parameters:
-      - name: X-AppEngine-Country
-        in: header
-        x-proxy-header: true
-        type: string
-        description: Provided by AppEngine eg - US, AU, GB
-      - name: country
-        in: query
-        type: string
-        description: |
-          2 character country code.
-          If not specified, will default to the country provided in the X-AppEngine-Country header
-      ...
-```
+- [`x-swagger-js-method-name`](docs/x-swagger-js-method-name.md)
+- [`x-proxy-header`](docs/x-proxy-header.md)
 
 
 ## Grunt & Gulp task
@@ -251,7 +104,30 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 
 And example of gulp task is available [here](https://github.com/28msec/cellstore/blob/master/tasks/swagger.js).
 
-##Who is using it?
+## Using the Generated Code
+### AngularJS
+
+The AngularJS services are implemented as a Factory Factory so that a base URL, cache & token can be configured differently for testing and production.
+
+```javascript
+angular.module('demo', ['MyAPI'])
+    .factory('API', function(MyAPI, API_URL) {
+        'use strict';
+        return {
+            MyAPI_A: new MyAPI(API_URL + '/a/demo'),
+            MyAPI_B: new MyAPI({
+                domain: API_URL + '/b/demo',
+                cache: cache,
+                token: token
+            })
+        };
+    })
+    .controller('myController', ['API', function (API) {
+        this.record = API.MyAPI_A.getRecordById(123);
+    }]);
+```
+
+## Who is using it?
 The [CellStore](https://github.com/28msec/cellstore) project.
 
 [28.io](http://28.io) is using this project to generate their [nodejs](https://github.com/28msec/28.io-nodejs) and [angularjs language bindings](https://github.com/28msec/28.io-angularjs).

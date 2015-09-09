@@ -1,5 +1,26 @@
 /*jshint -W069 */
 /*global angular:false */
+/**
+ * Implemented as a Factory Factory so that a base URL, cache & token can be configured
+ * differently for testing and production.
+ * usage:<pre>
+angular.module('demo', ['{{&moduleName}}'])
+    .factory('API', function({{&className}}, API_URL) {
+        'use strict';
+        return {
+            {{&className}}A: new {{&className}}(API_URL + '/a/{{&className}}'),
+            {{&className}}B: new {{&className}}({
+                domain: API_URL + '/b/{{&className}}',
+                cache: cache,
+                token: token
+            })
+        };
+    })
+    .controller('myController', ['API', function (API) {
+        this.record = API.{{&className}}A.getRecordById(123);
+    }]);
+</pre>
+ */
 angular.module('{{&moduleName}}', [])
 .factory('{{&className}}', ['$q', '$http', '$rootScope', function($q, $http, $rootScope){
     'use strict';
@@ -78,7 +99,7 @@ angular.module('{{&moduleName}}', [])
             {{> method}}
         {{/methods}}
 
-	return {{&className}};
+	    return {{&className}};
     })();
 
     return {{&className}};

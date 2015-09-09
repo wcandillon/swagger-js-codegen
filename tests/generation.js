@@ -24,6 +24,14 @@ list.forEach(function(file){
             swagger: swagger
         });
         assert(typeof(result), 'string');
+        result = CodeGen.getAngularCode({
+            moduleName: 'Test',
+            className: 'Test',
+            swagger: swagger,
+            lint: false,
+            beautify: false
+        });
+        assert(typeof(result), 'string');
         result = CodeGen.getCustomCode({
             moduleName: 'Test',
             className: 'Test',

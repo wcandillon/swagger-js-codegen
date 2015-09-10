@@ -48,9 +48,15 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     description: Your AngularJS module name
   className:
     type: string
+  lint:
+    type: boolean
+    description: whether or not to run jslint on the generated code
   esnext:
     type: boolean
     description: passed through to jslint
+  beautify:
+    type: boolean
+    description: whether or not to beautify the generated code
   mustache:
     type: object
     description: See the 'Custom Mustache Variables' section below
@@ -127,7 +133,7 @@ methods:
         description: Provided by your options field
       methodName:
         type: string
-        description: Generatated from the HTTP method and path elements or 'x-swagger-js-method-name' field
+        description: Generated from the HTTP method and path elements or 'x-swagger-js-method-name' field
       method:
         type: string
         description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLIK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'

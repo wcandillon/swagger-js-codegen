@@ -22,7 +22,9 @@ request(req, function(error, response, body){
             
             }
         }
-        if(response.statusCode >= 200 && response.statusCode <= 299) {
+        if(response.statusCode === 204) {
+           deferred.resolve({ response: response });
+        } else if(response.statusCode >= 200 && response.statusCode <= 299) {
            deferred.resolve({ response: response, body: body });
         } else {
            deferred.reject({ response: response, body: body });

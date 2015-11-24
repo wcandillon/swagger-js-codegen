@@ -121,6 +121,9 @@ className:
 domain:
   type: string
   description: If all options defined: swagger.schemes[0] + '://' + swagger.host + swagger.basePath
+models:
+  type: object
+  description: contains of object of each model, keyed by model name
 methods:
   type: array
   items:
@@ -133,7 +136,10 @@ methods:
         description: Provided by your options field
       methodName:
         type: string
-        description: Generated from the HTTP method and path elements or 'x-swagger-js-method-name' field
+        description: Generatated from the HTTP method and path elements or 'x-swagger-js-method-name' field
+      methodAction:
+        type: function
+        description: A function to be called whenever that method occurs
       method:
         type: string
         description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLIK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'
@@ -161,6 +167,22 @@ methods:
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema
+      type:
+        type: string
+        description: response type for a success call
+      responseMessages:
+        type: array
+        description: response messages typically used for errors
+        items:
+           code:
+              type: string
+              description: response code (e.g. 400)
+            message:
+              type: string
+              description: description of the response
+            responseModel:
+              type: string
+              description: model to be used for this response
       parameters:
         type: array
         description: Includes all of the properties defined for the parameter in the schema plus:

@@ -7,11 +7,11 @@
     "test": "grunt"
   },
   "bugs": {
-    "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
+    "url": "https://github.com/VidRoll/swagger-js-codegen/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/wcandillon/swagger-js-codegen.git"
+    "url": "git://github.com/VidRoll/swagger-js-codegen.git"
   },
   "keywords": [
     "swagger",
@@ -25,10 +25,10 @@
   "licenses": [
     {
       "type": "Apache 2",
-      "url": "https://github.com/wcandillon/swagger-js-codegen/blob/master/LICENSE"
+      "url": "https://github.com/VidRoll/swagger-js-codegen/blob/master/LICENSE"
     }
   ],
-  "homepage": "https://github.com/wcandillon/swagger-js-codegen",
+  "homepage": "https://github.com/VidRoll/swagger-js-codegen",
   "dependencies": {
     "js-beautify": "~1.5.1",
     "jshint": "~2.5.1",

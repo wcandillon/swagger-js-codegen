@@ -255,7 +255,7 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 ## Grunt & Gulp task
 [There is a grunt task](https://github.com/wcandillon/grunt-swagger-js-codegen) that enables you to integrate the code generation in your development pipeline. This is extremely convenient if your application is using APIs which are documented/specified in the swagger format.
 
-And example of gulp task is available [here](https://github.com/28msec/cellstore/blob/master/tasks/swagger.js).
+And example of gulp task is available [here](https://github.com/wcandillon/cellstore/blob/master/tasks/swagger.js).
 
 ##Who is using it?
 The [CellStore](https://github.com/wcandillon/cellstore) project.

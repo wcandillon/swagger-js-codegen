@@ -186,6 +186,24 @@ methods:
             type: boolean
           isFormParameter:
             type: boolean
+      bodySchema:
+        type: object
+        properties:
+          type: array
+          description: the schema for a body parameter, null if no body parameter is defined.
+          items:
+            name:
+              type: string
+              description: the name of the property
+            type:
+              type: string
+              description: the type of the property
+            description:
+              type: string
+              description: the description of the property
+            required:
+              type: boolean
+              description: true if the property is required
 ```
 
 ####Custom Mustache Variables

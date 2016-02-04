@@ -5,17 +5,17 @@
 {{#parameters}}
 {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
- * 
+ *
  */
  {{&className}}.prototype.{{&methodName}} = function(parameters){
     if(parameters === undefined) {
         parameters = {};
     }
     var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
-    
+
     var domain = this.domain;
     var path = '{{&path}}';
-    
+
     var body;
     var queryParameters = {};
     var headers = {};
@@ -25,14 +25,14 @@
         if (this.token.isQuery) {
             queryParameters[this.token.headerOrQueryName] = this.token.value;
         } else if (this.token.headerOrQueryName) {
-            headers[this.token.headerOrQueryName] = this.token.value;    
+            headers[this.token.headerOrQueryName] = this.token.value;
         } else {
             headers['Authorization'] = 'Bearer ' + this.token.value;
         }
     {{/isSecure}}
 
     {{#parameters}}
-       
+
         {{#isQueryParameter}}
             {{#isSingleton}}
                 queryParameters['{{&name}}'] = '{{&singleton}}';
@@ -52,11 +52,11 @@
                 {{/isPatternType}}
             {{/isSingleton}}
         {{/isQueryParameter}}
-        
+
         {{#isPathParameter}}
             path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
         {{/isPathParameter}}
-        
+
         {{#isHeaderParameter}}
             {{#isSingleton}}
                 headers['{{&name}}'] = '{{&singleton}}';
@@ -67,10 +67,27 @@
                 }
             {{/isSingleton}}
         {{/isHeaderParameter}}
-        
+
         {{#isBodyParameter}}
             if(parameters['{{&camelCaseName}}'] !== undefined){
-                body = parameters['{{&camelCaseName}}'];
+                {{^bodySchema}}
+                    body = parameters['{{&camelCaseName}}'];
+                {{/bodySchema}}
+                {{#bodySchema}}
+                    body = {};
+
+                    {{#properties}}
+                        if(parameters['{{&camelCaseName}}']['{{name}}'] !== undefined){
+                            body['{{name}}'] = parameters['{{&camelCaseName}}']['{{name}}'];
+                        }
+                        {{#required}}
+                            if(body['{{name}}'] === undefined){
+                                deferred.reject(new Error('Missing required body property: {{name}}'));
+                                return deferred.promise;
+                            }
+                        {{/required}}
+                    {{/properties}}
+                {{/bodySchema}}
             }
         {{/isBodyParameter}}
 
@@ -91,9 +108,9 @@
             return deferred.promise;
         }
         {{/required}}
- 
+
     {{/parameters}}
-    
+
     if(parameters.$queryParameters) {
         Object.keys(parameters.$queryParameters)
         .forEach(function(parameterName){
@@ -103,6 +120,6 @@
     }
 
     {{> request}}
-    
-    return deferred.promise; 
+
+    return deferred.promise;
  };

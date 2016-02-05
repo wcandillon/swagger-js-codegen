@@ -44,6 +44,7 @@
     "matchdep": "~0.3.0",
     "vows": "~0.7.0",
     "grunt-jsonlint": "~1.0.4",
-    "request": "~2.40.0"
+    "request": "~2.40.0",
+    "rewire": "^2.5.1"
   }
 }

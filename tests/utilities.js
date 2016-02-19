@@ -26,6 +26,7 @@ vows.describe('Test Utilities').addBatch({
             'should not convert snake_case to camelCase': function(camelCase) {
                 assert.equal(camelCase('snake_case'), 'snake_case');
                 assert.equal(camelCase('double_snake_case'), 'double_snake_case');
+                assert.equal(camelCase('snake_with-kebab'), 'snake_withKebab');
             }
         },
         'when convertSnakeCase is true': {
@@ -42,6 +43,7 @@ vows.describe('Test Utilities').addBatch({
             'should convert snake_case to camelCase': function(camelCase) {
                 assert.equal(camelCase('snake_case'), 'snakeCase');
                 assert.equal(camelCase('double_snake_case'), 'doubleSnakeCase');
+                assert.equal(camelCase('snake_with-kebab'), 'snakeWithKebab');
             }
         }
 

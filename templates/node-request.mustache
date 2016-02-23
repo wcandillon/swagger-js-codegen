@@ -15,7 +15,7 @@ request(req, function(error, response, body){
     if(error) {
         deferred.reject(error);
     } else {
-        if(/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+        if(/application\/json/.test(response.headers['content-type'])) {
             try {
                 body = JSON.parse(body);
             } catch(e) {

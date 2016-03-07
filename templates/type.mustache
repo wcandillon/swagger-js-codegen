@@ -1,3 +1,4 @@
+{{#tsType}}
 {{! must use different delimiters to avoid ambiguities when delimiters directly follow a literal brace {. }}
 {{=<% %>=}}
 <%#isRef%><%target%><%/isRef%><%!
@@ -6,3 +7,5 @@
 '<%name%>': <%>type%><%/properties%>
 }<%/isObject%><%!
 %><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%><%#isBoolean%>boolean<%/isBoolean%>
+<%={{ }}=%>
+{{/tsType}}

@@ -9,7 +9,7 @@
 */
 {{&methodName}}(parameters: {
 {{#parameters}}
-    {{^isSingleton}}{{&camelCaseName}}: {{type}},{{/isSingleton}}
+    {{^isSingleton}}{{&camelCaseName}}{{&cardinality}}: {{tsType}},{{/isSingleton}}
 {{/parameters}}
 } = {}): Promise {
     let domain = this.domain;

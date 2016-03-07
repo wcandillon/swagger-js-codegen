@@ -1,0 +1,24 @@
+{{#imports}}
+/// <reference path="{{&.}}" />
+{{/imports}}
+
+import * as request from "superagent";
+
+/**
+ * {{&description}}
+ * @class {{&className}}
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+export default class {{&className}} {
+
+    private domain: string;
+
+    constructor(domain: string) {
+        this.domain = domain;
+    }
+
+{{#methods}}
+    {{> method}}
+
+{{/methods}}
+}

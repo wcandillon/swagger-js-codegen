@@ -32,6 +32,16 @@ list.forEach(function(file){
             beautify: false
         });
         assert(typeof(result), 'string');
+        assert(typeof(result), 'string');
+        if(swagger.swagger === '2.0') {
+            result = CodeGen.getTypescriptCode({
+                moduleName: 'Test',
+                className: 'Test',
+                swagger: swagger,
+                lint: false
+            });
+            assert(typeof(result), 'string');
+        }
         result = CodeGen.getCustomCode({
             moduleName: 'Test',
             className: 'Test',

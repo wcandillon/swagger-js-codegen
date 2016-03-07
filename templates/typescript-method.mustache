@@ -11,7 +11,7 @@
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
     $queryParameters?: {}
-}): Promise {
+}): Promise<request.Response> {
     let domain = this.domain;
     let path = '{{&path}}';
     let body;

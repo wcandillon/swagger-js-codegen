@@ -1,9 +1,13 @@
+{{#imports}}
+/// <reference path="{{.}}" />
+{{/imports}}
+
 import * as request from "superagent";
 
 /**
  * {{&description}}
  * @class {{&className}}
- * @param {(string|)} [domainOrOptions] - The project domain.
+ * @param {(string)} [domainOrOptions] - The project domain.
  */
 class {{&className}} {
 

@@ -8,10 +8,10 @@
 *
 */
 {{&methodName}}(parameters: {
-{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{tsType}},
+{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
     $queryParameters?: {}
-} = {}): Promise {
+}): Promise {
     let domain = this.domain;
     let path = '{{&path}}';
     let body;

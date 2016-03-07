@@ -7,7 +7,7 @@
 {{/parameters}}
 *
 */
-{{&methodName}}(parameters: {{{#parameters}}
+{{&methodName}}(parameters: { {{#parameters}}
 {{^isSingleton}}{{&camelCaseName}}{{&cardinality}}: {{tsType}},{{/isSingleton}}
 {{/parameters}}
 } = {}): Promise {

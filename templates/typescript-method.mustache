@@ -9,7 +9,8 @@
 */
 {{&methodName}}(parameters: {{{#parameters}}
 {{^isSingleton}}{{&camelCaseName}}{{&cardinality}}: {{tsType}},{{/isSingleton}}
-{{/parameters}}} = {}): Promise {
+{{/parameters}}
+} = {}): Promise {
     let domain = this.domain;
     let path = '{{&path}}';
     let body;

@@ -8,8 +8,8 @@
 *
 */
 {{&methodName}}(parameters: {
-{{#parameters}} {{^isSingleton}}{{&camelCaseName}}{{&cardinality}}: {{tsType}},
-{{/isSingleton}} {{/parameters}}
+{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{tsType}},
+{{/isSingleton}}{{/parameters}}
     $queryParameters?: {}
 } = {}): Promise {
     let domain = this.domain;

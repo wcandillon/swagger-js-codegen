@@ -26,9 +26,9 @@ req.end((error, response) => {
                 body = JSON.parse(body);
             } catch(e) {}
         }
-        if(response.statusCode === 204) {
+        if(response.status === 204) {
             resolve({ response: response });
-        } else if(response.statusCode >= 200 && response.statusCode <= 299) {
+        } else if(response.status >= 200 && response.status <= 299) {
             resolve({ response: response, body: body });
         } else {
             reject({ response: response, body: body });

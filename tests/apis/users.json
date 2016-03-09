@@ -1,0 +1,49 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.0",
+        "title": "<enter your title>"
+    },
+    "paths": {
+        "/users/{userId}": {
+            "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "description": "User's id",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "description": "Get user",
+                "operationId": "findById",
+                "responses": {
+                    "200": {
+                        "description": "User returned",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete user",
+                "operationId": "delete",
+                "responses": {
+                    "200": {
+                        "description": "User deleted"
+                    }
+                }
+            }
+        }
+    }
+}

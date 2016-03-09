@@ -1,11 +1,17 @@
-request({
-    method: '{{method}}', 
+var req = {
+    method: '{{method}}',
     uri: domain + path,
     qs: queryParameters,
     headers: headers,
-    body: body,
-    rejectUnauthorized: false
-}, function(error, response, body){
+    body: body
+};
+if(Object.keys(form).length > 0) {
+    req.form = form;
+}
+if(typeof(body) === 'object' && !(body instanceof Buffer)) {
+    req.json = true;
+}
+request(req, function(error, response, body){
     if(error) {
         deferred.reject(error);
     } else {
@@ -16,7 +22,9 @@ request({
             
             }
         }
-        if(response.statusCode >= 200 && response.statusCode <= 299) {
+        if(response.statusCode === 204) {
+           deferred.resolve({ response: response });
+        } else if(response.statusCode >= 200 && response.statusCode <= 299) {
            deferred.resolve({ response: response, body: body });
         } else {
            deferred.reject({ response: response, body: body });

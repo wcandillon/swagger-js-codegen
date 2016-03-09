@@ -3,35 +3,53 @@
  * @method
  * @name {{&className}}#{{&methodName}}
 {{#parameters}}
-{{^isSingleton}} * @param {{=<% %>=}}{{<%&type%>}}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
+{{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
  * 
  */
- this.{{&methodName}} = function(parameters){
+ {{&className}}.prototype.{{&methodName}} = function(parameters){
+    if(parameters === undefined) {
+        parameters = {};
+    }
     var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
     
+    var domain = this.domain;
     var path = '{{&path}}';
     
     var body;
     var queryParameters = {};
     var headers = {};
+    var form = {};
+
+    {{#isSecure}}
+        if (this.token.isQuery) {
+            queryParameters[this.token.headerOrQueryName] = this.token.value;
+        } else if (this.token.headerOrQueryName) {
+            headers[this.token.headerOrQueryName] = this.token.value;    
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token.value;
+        }
+    {{/isSecure}}
 
     {{#parameters}}
-        {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
-            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return deferred.promise;
-        }
-        {{/required}}
-        
+       
         {{#isQueryParameter}}
             {{#isSingleton}}
                 queryParameters['{{&name}}'] = '{{&singleton}}';
             {{/isSingleton}}
             {{^isSingleton}}
+                {{#isPatternType}}
+                    Object.keys(parameters).forEach(function(parameterName) {
+                        if(new RegExp('{{&pattern}}').test(parameterName)){
+                            queryParameters[parameterName] = parameters[parameterName];
+                        }
+                    });
+                {{/isPatternType}}
+                {{^isPatternType}}
                 if(parameters['{{&camelCaseName}}'] !== undefined){
                     queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
+                {{/isPatternType}}
             {{/isSingleton}}
         {{/isQueryParameter}}
         
@@ -44,17 +62,36 @@
                 headers['{{&name}}'] = '{{&singleton}}';
             {{/isSingleton}}
             {{^isSingleton}}
-                if(parameters.{{&camelCaseName}} !== undefined){
+                if(parameters['{{&camelCaseName}}'] !== undefined){
                     headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
             {{/isSingleton}}
         {{/isHeaderParameter}}
         
         {{#isBodyParameter}}
-            if(parameters.{{&camelCaseName}} !== undefined){
+            if(parameters['{{&camelCaseName}}'] !== undefined){
                 body = parameters['{{&camelCaseName}}'];
             }
         {{/isBodyParameter}}
+
+         {{#isFormParameter}}
+            {{#isSingleton}}
+                form['{{&name}}'] = '{{&singleton}}';
+            {{/isSingleton}}
+            {{^isSingleton}}
+                if(parameters['{{&camelCaseName}}'] !== undefined){
+                    form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                }
+            {{/isSingleton}}
+        {{/isFormParameter}}
+
+        {{#required}}
+        if(parameters['{{&camelCaseName}}'] === undefined){
+            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
+            return deferred.promise;
+        }
+        {{/required}}
+ 
     {{/parameters}}
     
     if(parameters.$queryParameters) {

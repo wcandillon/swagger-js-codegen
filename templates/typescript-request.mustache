@@ -20,18 +20,9 @@ if(Object.keys(form).length > 0) {
 req.end((error, response) => {
     if(error) {
         reject(error);
+    } else if(response.status >= 200 && response.status <= 299) {
+        resolve(response);
     } else {
-        if(/^application\/(.*\\+)?json/.test(response.header['content-type'])) {
-            try {
-                body = JSON.parse(body);
-            } catch(e) {}
-        }
-        if(response.status === 204) {
-            resolve({ response: response });
-        } else if(response.status >= 200 && response.status <= 299) {
-            resolve({ response: response, body: body });
-        } else {
-            reject({ response: response, body: body });
-        }
+        reject(response);
     }
 });

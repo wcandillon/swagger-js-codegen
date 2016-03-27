@@ -7,7 +7,7 @@
     "host": "portal.28.io",
     "basePath": "/api",
     "schemes": [
-        "https"
+        "http"
     ],
     "securityDefinitions": {
         "oauth2": {

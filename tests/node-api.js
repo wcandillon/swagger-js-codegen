@@ -13,7 +13,7 @@ vows.describe('Test Generated API').addBatch({
             var swagger = JSON.parse(fs.readFileSync('tests/apis/auth.json', 'UTF-8'));
             /*jshint evil:true*/
             var Auth = eval(CodeGen.getNodeCode({ className: 'Auth', swagger: swagger }));
-            return new Auth('https://portal.28.io/api');
+            return new Auth('http://portal.28.io/api');
         },
         'Should have authenticate method': function(auth){
             assert.equal(auth.authenticate !== undefined, true);

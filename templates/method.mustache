@@ -31,6 +31,10 @@
         }
     {{/isSecure}}
 
+    {{#headers}}
+        headers['{{&name}}'] = [{{&value}}];
+    {{/headers}}
+
     {{#parameters}}
        
         {{#isQueryParameter}}

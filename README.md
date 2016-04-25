@@ -159,6 +159,24 @@ methods:
             type: boolean
           isFormParameter:
             type: boolean
+definitions:
+  type: array
+  description: Array with all Types defined in defintions
+  items:
+    type: object
+    properties:
+      tsType:
+        type: string
+      isRef:
+        type: boolean
+      isObject:
+        type: boolean
+      isArray:
+        type: boolean
+      isAtomic:
+        type: boolean
+      name:
+        type: string
 ```
 
 ####Custom Mustache Variables

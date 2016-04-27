@@ -25,7 +25,7 @@ export interface {{name}} {{> type}}
  *    provide using <tt>.constant('domain', '//example.com')</tt> or <tt>.factory('domain', function(){return '//example.com'})</tt>
  {{/angular}}
  */
-export default class {{&className}} {
+export class {{&className}} {
 {{#angular}}
     static $inject = ['$http', '$q', 'domain'];
 {{/angular}}

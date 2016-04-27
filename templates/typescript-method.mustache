@@ -13,25 +13,44 @@
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
     $queryParameters?: {}
-}): Promise<request.Response> {
+}{{#angular}}, opts: {
+     $timeout?: number;
+     $refresh?: boolean;
+     $cache?: {
+        get:(key: string) => string|Object
+        put:(key: string, value: string|Object, options?: {}) => void;
+     };
+     $cacheItemOpts?: {};
+} = {}
+{{/angular}}): {{#angular}}ng.IPromise<{{&tsType}}{{/angular}}{{^angular}}Promise<request.Response{{/angular}}> {
     let domain = this.domain;
     let path = '{{&path}}';
+    {{#hasBody}}
     let body;
+    {{/hasBody}}
     let queryParameters = {};
     let headers = {};
+    {{#hasForm}}
     let form = {};
+    {{/hasForm}}
+{{#angular}}
+    let deferred = this.$q.defer();
+
+{{/angular}}
+{{^angular}}
     return new Promise(function(resolve, reject) {
+{{/angular}}
 {{#headers}}
     headers['{{&name}}'] = [{{&value}}];
 {{/headers}}
 
 {{#parameters}}
-    {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
-            reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
+    {{! TypeScript should assert required parameters at compile-time #required} }
+        if(queryParameters['{ {&camelCaseName} } '] === undefined){
+            reject(new Error('Missing required { {&paramType} } parameter: { {&camelCaseName} }'));
             return;
         }
-    {{/required}}
+    { {/required}}
 
     {{#isQueryParameter}}
         {{#isSingleton}}
@@ -112,8 +131,8 @@ if(parameters.$queryParameters) {
         queryParameters[parameterName] = parameter;
     });
 }
-
 {{> request}}
-
+{{^angular}}
     });
-};
+{{/angular}}
+}

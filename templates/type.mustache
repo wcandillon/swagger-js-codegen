@@ -4,8 +4,8 @@
 <%#isRef%><%target%><%/isRef%><%!
 %><%#isAtomic%><%tsType%><%/isAtomic%><%!
 %><%#isObject%>{<%#properties%>
-'<%name%>': <%>type%><%/properties%>
+<%#description%>/** <%description%> */<%/description%>
+'<%name%>': <%>type%>;<%/properties%>
 }<%/isObject%><%!
-%><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>>|<%#elementType%><%>type%><%/elementType%><%/isArray%><%#isBoolean%>boolean<%/isBoolean%>
-<%={{ }}=%>
-{{/tsType}}
+%><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>>|<%#elementType%><%>type%><%/elementType%><%/isArray%><%#isBoolean%>boolean<%/isBoolean%><%!
+%><%={{ }}=%>{{/tsType}}

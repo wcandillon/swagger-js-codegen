@@ -21,6 +21,7 @@ export default class Test {
      * @param {string} email - The account email. Mandatory if <code>grant_type=client_credentials</code>.
      * @param {string} password - The account password. Mandatory if <code>grant_type=client_credentials</code>.
      * @param {string} refresh_token - The <code>refresh_token</code> obtained in the last successful request to this endpoint.  Mandatory if <code>grant_type=refresh_token</code>.
+     *
      */
     auth(parameters: {
         'grant_type': string,
@@ -102,6 +103,7 @@ export default class Test {
      * @method
      * @name Test#getSecure
      * @param {string} token - Auth token
+     *
      */
     getSecure(parameters: {
         'token' ? : string,

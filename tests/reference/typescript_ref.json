@@ -18,6 +18,7 @@ export default class Test {
      * @method
      * @name Test#getPersons
      * @param {string} id - id
+     *
      */
     getPersons(parameters: {
         'id': string,

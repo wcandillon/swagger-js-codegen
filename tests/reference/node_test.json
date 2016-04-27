@@ -21,7 +21,7 @@ var Test = (function() {
     }
 
     /**
-     * Check whether a model instance exists in the data source.
+     * 
      * @method
      * @name Test#User_exists__head_Users__id_
      * @param {string} id - Model id

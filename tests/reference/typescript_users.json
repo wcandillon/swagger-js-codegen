@@ -18,6 +18,7 @@ export default class Test {
      * @method
      * @name Test#findById
      * @param {string} userId - User's id
+     *
      */
     findById(parameters: {
         'userId': string,
@@ -82,6 +83,7 @@ export default class Test {
      * @method
      * @name Test#delete
      * @param {string} userId - User's id
+     *
      */
     delete(parameters: {
         'userId': string,

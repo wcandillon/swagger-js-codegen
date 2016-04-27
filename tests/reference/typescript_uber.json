@@ -19,6 +19,7 @@ export default class Test {
      * @name Test#getProducts
      * @param {number} latitude - Latitude component of location.
      * @param {number} longitude - Longitude component of location.
+     *
      */
     getProducts(parameters: {
         'latitude': number,
@@ -97,6 +98,7 @@ export default class Test {
      * @param {integer} id - Move your app forward with the Uber API
      * @param {number} latitude - Latitude component of location.
      * @param {number} longitude - Longitude component of location.
+     *
      */
     getProductsById(parameters: {
         'id': number,
@@ -184,6 +186,7 @@ export default class Test {
      * @param {number} start_longitude - Longitude component of start location.
      * @param {number} end_latitude - Latitude component of end location.
      * @param {number} end_longitude - Longitude component of end location.
+     *
      */
     getEstimatesPrice(parameters: {
         'start_latitude': number,
@@ -283,6 +286,7 @@ export default class Test {
      * @param {number} start_longitude - Longitude component of start location.
      * @param {string} customer_uuid - Unique customer identifier to be used for experience customization.
      * @param {string} product_id - Unique identifier representing a specific product for a given latitude & longitude.
+     *
      */
     getEstimatesTime(parameters: {
         'start_latitude': number,
@@ -368,6 +372,7 @@ export default class Test {
      * The User Profile endpoint returns information about the Uber user that has authorized with the application.
      * @method
      * @name Test#getMe
+     *
      */
     getMe(parameters: {
         $queryParameters ? : {}
@@ -425,6 +430,7 @@ export default class Test {
      * @name Test#getHistory
      * @param {integer} offset - Offset the list of returned results by this amount. Default is zero.
      * @param {integer} limit - Number of items to retrieve. Default is 5, maximum is 100.
+     *
      */
     getHistory(parameters: {
         'offset' ? : number,

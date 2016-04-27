@@ -1,0 +1,43 @@
+var url = domain + path;
+{{#isGET}}
+var cached = opts.$cache && opts.$cache.get(url);
+if(cached !== undefined && opts.$refresh !== true) {
+    deferred.resolve(cached);
+    return deferred.promise;
+}
+{{/isGET}}
+var options = {
+    timeout: opts.$timeout,
+    method: '{{method}}',
+    url: url,
+    params: queryParameters,
+{{#hasBody}}
+    data: body,
+{{/hasBody}}
+{{#hasBody}}
+    data: form,
+{{/hasBody}}
+    headers: headers
+};
+{{! I don't think this is actually needed #hasBody} }
+if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+    options.headers['Content-Type'] = 'application/json';
+{ {/hasBody}}
+{{#hasForm}}
+options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+options.transformRequest = {{&className}}.transformRequest;
+{{/hasForm}}
+
+this.$http(options).then(function(response: ng.IHttpPromiseCallbackArg<{{&tsType}}>){
+    {{#hasVoidReturn}}
+    deferred.resolve();
+    {{/hasVoidReturn}}
+    {{^hasVoidReturn}}
+    deferred.resolve(response.data);
+    if(opts.$cache !== undefined) {
+        opts.$cache.put(url, response.data, opts.$cacheItemOpts ? opts.$cacheItemOpts : {});
+    }
+    {{/hasVoidReturn}}
+}, deferred.reject);
+
+return deferred.promise;

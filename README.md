@@ -55,6 +55,9 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
   lint:
     type: boolean
     description: whether or not to run jslint on the generated code
+  angular:
+    type: boolean
+    description: for use with `getTypescriptCode()`.  If true, will use $http, otherwise will use superagent.
   esnext:
     type: boolean
     description: passed through to jslint

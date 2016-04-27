@@ -14,8 +14,8 @@ function verify(result, file, type) {
     var reference = file.replace(/^tests\/apis\//, 'tests/reference/' + type + '_');
     if (false) {
         fs.writeFileSync(reference, result, 'UTF-8');
-    } else {        
-        assert(result, fs.readFileSync(reference, 'UTF-8'));
+    } else {
+        assert.equal(result, fs.readFileSync(reference, 'UTF-8'), file + ', ', type);
     }
 }
 

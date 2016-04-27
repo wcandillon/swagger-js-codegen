@@ -19,14 +19,12 @@ if(Object.keys(form).length > 0) {
    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
    options.transformRequest = {{&className}}.transformRequest;
 }
-$http(options)
-.success(function(data, status, headers, config){
+$http(options).then(function(data, status, headers, config){
     deferred.resolve(data);
     if(parameters.$cache !== undefined) {
         parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
     }
-})
-.error(function(data, status, headers, config){
+}, function(data, status, headers, config){
     deferred.reject({
         status: status,
         headers: headers,

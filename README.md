@@ -210,6 +210,6 @@ And example of gulp task is available [here](https://github.com/wcandillon/cells
 ##Who is using it?
 The [CellStore](https://github.com/wcandillon/cellstore) project.
 
-##[Contributions](CONTRIBUTING.md)
+##[Contributing](CONTRIBUTING.md)
 
 [28.io](http://28.io) is using this project to generate their [nodejs](https://github.com/28msec/28.io-nodejs) and [angularjs language bindings](https://github.com/28msec/28.io-angularjs).

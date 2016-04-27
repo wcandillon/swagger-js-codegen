@@ -1,13 +1,11 @@
 /**
 * {{&summary}}
 * @method
-{{#externalDocs}}
-* @see {@link {{&url}}|{{#description}}{{&description}}{{/description}}{{^description}}External docs{{/description}}}
-{{/externalDocs}}
 * @name {{&className}}#{{&methodName}}
 {{#parameters}}
     {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
+*
 */
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},

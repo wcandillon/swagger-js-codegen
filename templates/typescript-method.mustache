@@ -1,11 +1,13 @@
 /**
 * {{&summary}}
 * @method
+{{#externalDocs}}
+* @see {@link {{&url}}|{{#description}}{{&description}}{{/description}}{{^description}}External docs{{/description}}}
+{{/externalDocs}}
 * @name {{&className}}#{{&methodName}}
 {{#parameters}}
     {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
-*
 */
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
@@ -24,6 +26,12 @@
 {{/headers}}
 
 {{#parameters}}
+    {{#required}}
+        if(parameters['{{&camelCaseName}}'] === undefined){
+            reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
+            return;
+        }
+    {{/required}}
 
     {{#isQueryParameter}}
         {{#isSingleton}}
@@ -38,9 +46,14 @@
                 });
             {{/isPatternType}}
             {{^isPatternType}}
+                {{#required}}
+                queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                {{/required}}
+                {{^required}}
                 if(parameters['{{&camelCaseName}}'] !== undefined){
                     queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
+                {{/required}}
             {{/isPatternType}}
         {{/isSingleton}}
     {{/isQueryParameter}}
@@ -54,16 +67,26 @@
             headers['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
+            {{#required}}
+            headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
+            {{/required}}
+            {{^required}}
             if(parameters['{{&camelCaseName}}'] !== undefined){
                 headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
             }
+            {{/required}}
         {{/isSingleton}}
     {{/isHeaderParameter}}
 
     {{#isBodyParameter}}
+        {{#required}}
+        body = parameters['{{&camelCaseName}}'];
+        {{/required}}
+        {{^required}}
         if(parameters['{{&camelCaseName}}'] !== undefined){
             body = parameters['{{&camelCaseName}}'];
         }
+        {{/required}}
     {{/isBodyParameter}}
 
     {{#isFormParameter}}
@@ -71,19 +94,16 @@
             form['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
+            {{#required}}
+            form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+            {{/required}}
+            {{^required}}
             if(parameters['{{&camelCaseName}}'] !== undefined){
                 form['{{&name}}'] = parameters['{{&camelCaseName}}'];
             }
+            {{/required}}
         {{/isSingleton}}
     {{/isFormParameter}}
-
-    {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
-            reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return;
-        }
-    {{/required}}
-
 {{/parameters}}
 
 if(parameters.$queryParameters) {

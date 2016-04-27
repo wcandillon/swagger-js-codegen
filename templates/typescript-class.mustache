@@ -5,9 +5,11 @@
 import * as request from "superagent";
 {{/angular}}
 
+module {{moduleName}} {
+
 {{#types}}
 {{#description}}/** {{description}} */{{/description}}
-interface {{name}} {{> type}}
+export interface {{name}} {{> type}}
 
 {{/types}}
 
@@ -51,4 +53,5 @@ export default class {{&className}} {
         return str.join('&');
     }
 {{/angular}}
+}
 }

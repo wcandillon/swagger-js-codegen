@@ -1,0 +1,203 @@
+/*jshint -W069 */
+/*global angular:false */
+angular.module('Test', [])
+    .factory('Test', ['$q', '$http', '$rootScope', function($q, $http, $rootScope) {
+        'use strict';
+
+        /**
+         * 
+         * @class Test
+         * @param {(string|object)} [domainOrOptions] - The project domain or options object. If object, see the object's optional properties.
+         * @param {string} [domainOrOptions.domain] - The project domain
+         * @param {string} [domainOrOptions.cache] - An angularjs cache implementation
+         * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
+         * @param {string} [cache] - An angularjs cache implementation
+         */
+        var Test = (function() {
+            function Test(options, cache) {
+                var domain = (typeof options === 'object') ? options.domain : options;
+                this.domain = typeof(domain) === 'string' ? domain : '';
+                if (this.domain.length === 0) {
+                    throw new Error('Domain parameter must be specified as a string.');
+                }
+                cache = cache || ((typeof options === 'object') ? options.cache : cache);
+                this.cache = cache;
+            }
+
+            Test.prototype.$on = function($scope, path, handler) {
+                var url = this.domain + path;
+                $scope.$on(url, function() {
+                    handler();
+                });
+                return this;
+            };
+
+            Test.prototype.$broadcast = function(path) {
+                var url = this.domain + path;
+                //cache.remove(url);
+                $rootScope.$broadcast(url);
+                return this;
+            };
+
+            Test.transformRequest = function(obj) {
+                var str = [];
+                for (var p in obj) {
+                    var val = obj[p];
+                    if (angular.isArray(val)) {
+                        val.forEach(function(val) {
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
+                        });
+                    } else {
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
+                    }
+                }
+                return str.join("&");
+            };
+
+            /**
+             * Get user
+             * @method
+             * @name Test#findById
+             * @param {string} userId - User's id
+             * 
+             */
+            Test.prototype.findById = function(parameters) {
+                if (parameters === undefined) {
+                    parameters = {};
+                }
+                var deferred = $q.defer();
+
+                var domain = this.domain;
+                var path = '/users/{userId}';
+
+                var body;
+                var queryParameters = {};
+                var headers = {};
+                var form = {};
+
+                path = path.replace('{userId}', parameters['userId']);
+
+                if (parameters['userId'] === undefined) {
+                    deferred.reject(new Error('Missing required  parameter: userId'));
+                    return deferred.promise;
+                }
+
+                if (parameters.$queryParameters) {
+                    Object.keys(parameters.$queryParameters)
+                        .forEach(function(parameterName) {
+                            var parameter = parameters.$queryParameters[parameterName];
+                            queryParameters[parameterName] = parameter;
+                        });
+                }
+
+                var url = domain + path;
+                var cached = parameters.$cache && parameters.$cache.get(url);
+                if (cached !== undefined && parameters.$refresh !== true) {
+                    deferred.resolve(cached);
+                    return deferred.promise;
+                }
+                var options = {
+                    timeout: parameters.$timeout,
+                    method: 'GET',
+                    url: url,
+                    params: queryParameters,
+                    data: body,
+                    headers: headers
+                };
+                if (Object.keys(form).length > 0) {
+                    options.data = form;
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    options.transformRequest = Test.transformRequest;
+                }
+                $http(options)
+                    .success(function(data, status, headers, config) {
+                        deferred.resolve(data);
+                        if (parameters.$cache !== undefined) {
+                            parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+                        }
+                    })
+                    .error(function(data, status, headers, config) {
+                        deferred.reject({
+                            status: status,
+                            headers: headers,
+                            config: config,
+                            body: data
+                        });
+                    });
+
+                return deferred.promise;
+            };
+            /**
+             * Delete user
+             * @method
+             * @name Test#delete
+             * @param {string} userId - User's id
+             * 
+             */
+            Test.prototype.delete = function(parameters) {
+                if (parameters === undefined) {
+                    parameters = {};
+                }
+                var deferred = $q.defer();
+
+                var domain = this.domain;
+                var path = '/users/{userId}';
+
+                var body;
+                var queryParameters = {};
+                var headers = {};
+                var form = {};
+
+                path = path.replace('{userId}', parameters['userId']);
+
+                if (parameters['userId'] === undefined) {
+                    deferred.reject(new Error('Missing required  parameter: userId'));
+                    return deferred.promise;
+                }
+
+                if (parameters.$queryParameters) {
+                    Object.keys(parameters.$queryParameters)
+                        .forEach(function(parameterName) {
+                            var parameter = parameters.$queryParameters[parameterName];
+                            queryParameters[parameterName] = parameter;
+                        });
+                }
+
+                var url = domain + path;
+                var options = {
+                    timeout: parameters.$timeout,
+                    method: 'DELETE',
+                    url: url,
+                    params: queryParameters,
+                    data: body,
+                    headers: headers
+                };
+                if (Object.keys(form).length > 0) {
+                    options.data = form;
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    options.transformRequest = Test.transformRequest;
+                }
+                $http(options)
+                    .success(function(data, status, headers, config) {
+                        deferred.resolve(data);
+                        if (parameters.$cache !== undefined) {
+                            parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+                        }
+                    })
+                    .error(function(data, status, headers, config) {
+                        deferred.reject({
+                            status: status,
+                            headers: headers,
+                            config: config,
+                            body: data
+                        });
+                    });
+
+                return deferred.promise;
+            };
+
+            return Test;
+        })();
+
+        return Test;
+    }]);

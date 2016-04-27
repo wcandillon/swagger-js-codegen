@@ -1,0 +1,511 @@
+/*jshint -W069 */
+/**
+ * <p>These resources can be used to manage jobs. Jobs are of three kinds: <code>execute</code>, <code>map</code> and <code>shuffle</code>. Each job has one of the following statuses: <code>pending</code>, <code>failed</code>, <code>in-progress</code>, <code>completed</code>, <code>timed-out</code>. To use this API, a default MongoDB database must be configured. The endpoint of these resources is based on your project name. For instance, if your 28.io project is named <code>myproject</code>, your endpoint for this API will be: <code>http://myproject.28.io/v1/_jobs</code>.</p>
+ * @class Test
+ * @param {(string|object)} [domainOrOptions] - The project domain or options object. If object, see the object's optional properties.
+ * @param {string} [domainOrOptions.domain] - The project domain
+ * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
+ */
+var Test = (function() {
+    'use strict';
+
+    var request = require('request');
+    var Q = require('q');
+
+    function Test(options) {
+        var domain = (typeof options === 'object') ? options.domain : options;
+        this.domain = domain ? domain : 'http://portal.28.io/v1';
+        if (this.domain.length === 0) {
+            throw new Error('Domain parameter must be specified as a string.');
+        }
+    }
+
+    /**
+     * Lists jobs
+     * @method
+     * @name Test#listJobs
+     * @param {array} status - One or more project statuses.
+     * @param {string} from - The starting date for filtering the listed jobs.
+     * @param {string} to - The ending date for filtering the listed jobs.
+     * @param {string} token - A project token.
+     * 
+     */
+    Test.prototype.listJobs = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/_jobs';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['status'] !== undefined) {
+            queryParameters['status'] = parameters['status'];
+        }
+
+        if (parameters['from'] !== undefined) {
+            queryParameters['from'] = parameters['from'];
+        }
+
+        if (parameters['to'] !== undefined) {
+            queryParameters['to'] = parameters['to'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters['token'] === undefined) {
+            deferred.reject(new Error('Missing required query parameter: token'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieves a job details
+     * @method
+     * @name Test#getJob
+     * @param {string} jobUuid - The job UUID.
+     * @param {string} token - A project token.
+     * 
+     */
+    Test.prototype.getJob = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/_jobs/{job-uuid}';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        path = path.replace('{job-uuid}', parameters['jobUuid']);
+
+        if (parameters['jobUuid'] === undefined) {
+            deferred.reject(new Error('Missing required path parameter: jobUuid'));
+            return deferred.promise;
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters['token'] === undefined) {
+            deferred.reject(new Error('Missing required query parameter: token'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Removes a job
+     * @method
+     * @name Test#removeJob
+     * @param {string} jobUuid - The job UUID.
+     * @param {string} token - A project token.
+     * 
+     */
+    Test.prototype.removeJob = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/_jobs/{job-uuid}';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        path = path.replace('{job-uuid}', parameters['jobUuid']);
+
+        if (parameters['jobUuid'] === undefined) {
+            deferred.reject(new Error('Missing required path parameter: jobUuid'));
+            return deferred.promise;
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters['token'] === undefined) {
+            deferred.reject(new Error('Missing required query parameter: token'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'DELETE',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Lists the results of a job
+     * @method
+     * @name Test#listResults
+     * @param {string} jobUuid - The job UUID.
+     * @param {string} token - A project token.
+     * @param {integer} offset - The index of the first item from which to start listing the collection items. Default is 1.
+     * @param {integer} limit - The number of collection items to list. Default is 10.
+     * @param {boolean} expand - Whether to include the serialized item in the listing. The default value is false.
+     * @param {boolean} allowPartial - Whether to allow to retrieve partial results for in progress or failed jobs. The default value is false.
+     * @param {string} Accept - Specifies the serialization of the produced objects
+     * 
+     */
+    Test.prototype.listResults = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/_jobs/{job-uuid}/results';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        headers['Accept'] = ['*/*', 'application/xml', 'application/xhtml+xml', 'text/html', 'text/plain', 'application/json', 'application/28.io+json'];
+
+        path = path.replace('{job-uuid}', parameters['jobUuid']);
+
+        if (parameters['jobUuid'] === undefined) {
+            deferred.reject(new Error('Missing required path parameter: jobUuid'));
+            return deferred.promise;
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters['token'] === undefined) {
+            deferred.reject(new Error('Missing required query parameter: token'));
+            return deferred.promise;
+        }
+
+        if (parameters['offset'] !== undefined) {
+            queryParameters['offset'] = parameters['offset'];
+        }
+
+        if (parameters['limit'] !== undefined) {
+            queryParameters['limit'] = parameters['limit'];
+        }
+
+        if (parameters['expand'] !== undefined) {
+            queryParameters['expand'] = parameters['expand'];
+        }
+
+        if (parameters['allowPartial'] !== undefined) {
+            queryParameters['allow-partial'] = parameters['allowPartial'];
+        }
+
+        if (parameters['Accept'] !== undefined) {
+            headers['Accept'] = parameters['Accept'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Removes a job results
+     * @method
+     * @name Test#removeResults
+     * @param {string} jobUuid - The job UUID.
+     * @param {string} token - A project token.
+     * 
+     */
+    Test.prototype.removeResults = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/_jobs/{job-uuid}/results';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        path = path.replace('{job-uuid}', parameters['jobUuid']);
+
+        if (parameters['jobUuid'] === undefined) {
+            deferred.reject(new Error('Missing required path parameter: jobUuid'));
+            return deferred.promise;
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters['token'] === undefined) {
+            deferred.reject(new Error('Missing required query parameter: token'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'DELETE',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+
+    return Test;
+})();
+
+exports.Test = Test;

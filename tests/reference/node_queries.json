@@ -1,0 +1,1026 @@
+/*jshint -W069 */
+/**
+ * <p>This API allows its users to retrieve financial information provided to the US Securities and Exchange Commission (SEC) by public companies using the XBRL global standard technical syntax. Submitted XBRL information is read by the system, converted to a format which is optimized for query (as opposed to XBRL which is optimized for information exchange), and stored in a database in that queriable format. Additional metadata is added to the system which is commonly used when querying this financial information. Please note that only financial information provided within SEC forms 10-Q and 10-K is provided via this system.</p> <p>Information can be retrieved about entities, the submissions made by those entities, the components contained within those submissions, the model structure of a component, or the facts reported within a component.  All information is provided in the following formats:  JSON (the default), XML, CSV, and Excel.</p> <p>For more information about using this system, you can download this Excel spreadsheet which contains working examples.  Also, this getting started guide is helpful in understanding the information provided by this system.</p> <p>Please note that information outside of the DOW30 can only be accessed using a valid token that can be retrieved by creating an account on http://www.secxbrl.info and login is done using the Session API.</p> <p>Also note, that the POST method can be simulated by using GET and adding the _method=POST parameter to the HTTP request.</p><p>Please keep in mind that URLs are case sensitive. That is, all parameters need to be provided as shown in the documentation.</p>
+ * @class Test
+ * @param {(string|object)} [domainOrOptions] - The project domain or options object. If object, see the object's optional properties.
+ * @param {string} [domainOrOptions.domain] - The project domain
+ * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
+ */
+var Test = (function() {
+    'use strict';
+
+    var request = require('request');
+    var Q = require('q');
+
+    function Test(options) {
+        var domain = (typeof options === 'object') ? options.domain : options;
+        this.domain = domain ? domain : 'http://secxbrl.alpha.xbrl.io/v1/_queries/public/api';
+        if (this.domain.length === 0) {
+            throw new Error('Domain parameter must be specified as a string.');
+        }
+    }
+
+    /**
+     * Retrieve information about all or a selection of entities
+     * @method
+     * @name Test#listEntities
+     * @param {string} format - The result format
+     * @param {string} tag - A tag to filter
+     * @param {string} cik - A CIK number
+     * @param {string} ticker - A ticker symbols
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listEntities = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/entities.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve the filings of a particular entity
+     * @method
+     * @name Test#listFilings
+     * @param {string} format - The result format
+     * @param {string} tag - A tag to filter
+     * @param {string} cik - A CIK number
+     * @param {string} ticker - A ticker symbols
+     * @param {string} sic - The industry group
+     * @param {string} aid - The id of the filing
+     * @param {string} fiscalYear - The fiscal year of the fact to retrieve (default: LATEST)
+     * @param {string} fiscalPeriod - The fiscal period of the fact to retrieve (default: FY)
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listFilings = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/filings.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['aid'] !== undefined) {
+            queryParameters['aid'] = parameters['aid'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve a summary for all components of a given filing
+     * @method
+     * @name Test#listComponents
+     * @param {string} format - The result format
+     * @param {string} ticker - The ticker of the entity
+     * @param {string} tag - The tag to filter entities
+     * @param {string} sic - The industry group
+     * @param {string} cik - The CIK of an entity. This parameter needs to be used together with the fiscalYear, fiscalPeriod, and disclosure parameters to identify a component.
+     * @param {string} fiscalYear - The fiscal year of the fact to retrieve (default: ALL)
+     * @param {string} fiscalPeriod - The fiscal period of the fact to retrieve (default: ALL)
+     * @param {string} aid - The id of the filing
+     * @param {string} cid - The id of a particular component
+     * @param {string} networkIdentifier - The network identifier of a particular component
+     * @param {string} disclosure - The disclosure to search for (e.g. BalanceSheet)
+     * @param {string} reportElement - The name of the report element to search for (e.g. us-gaap:Goodwill)
+     * @param {string} label - A search term to search in the labels of components (e.g. stock)
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listComponents = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/components.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        if (parameters['aid'] !== undefined) {
+            queryParameters['aid'] = parameters['aid'];
+        }
+
+        if (parameters['cid'] !== undefined) {
+            queryParameters['cid'] = parameters['cid'];
+        }
+
+        if (parameters['networkIdentifier'] !== undefined) {
+            queryParameters['networkIdentifier'] = parameters['networkIdentifier'];
+        }
+
+        if (parameters['disclosure'] !== undefined) {
+            queryParameters['disclosure'] = parameters['disclosure'];
+        }
+
+        if (parameters['reportElement'] !== undefined) {
+            queryParameters['reportElement'] = parameters['reportElement'];
+        }
+
+        if (parameters['label'] !== undefined) {
+            queryParameters['label'] = parameters['label'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve the fact table for a given component. A component can be selected in three ways. (1) by component id (cid), (2) by accession number and disclosure (aid and disclosure), or (3) by CIK, fiscal year, fiscal period, and disclosure (cik, fiscalYear, fiscalPeriod, and disclosure).
+     * @method
+     * @name Test#listFactTable
+     * @param {string} format - The result format
+     * @param {string} cid - The id of the component
+     * @param {string} aid - The accession number of the filing. This parameter needs to be used together with the disclosure parameter to identify a component.
+     * @param {string} cik - The CIK of an entity. This parameter needs to be used together with the fiscalYear, fiscalPeriod, and disclosure parameters to identify a component.
+     * @param {string} ticker - The ticker of the entity
+     * @param {string} tag - A tag to filter
+     * @param {string} sic - The industry group
+     * @param {string} networkIdentifier - The network identifier of a particular component
+     * @param {string} fiscalYear - The fiscal year of the filing
+     * @param {string} fiscalPeriod - The fiscal period of the filing
+     * @param {string} disclosure - The disclosure of the component (e.g. BalanceSheet)
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listFactTable = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/facttable-for-component.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['cid'] !== undefined) {
+            queryParameters['cid'] = parameters['cid'];
+        }
+
+        if (parameters['aid'] !== undefined) {
+            queryParameters['aid'] = parameters['aid'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['networkIdentifier'] !== undefined) {
+            queryParameters['networkIdentifier'] = parameters['networkIdentifier'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        if (parameters['disclosure'] !== undefined) {
+            queryParameters['disclosure'] = parameters['disclosure'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve the model structure for a given component. A component can be selected in three ways. (1) by component id (cid), (2) by accession number and disclosure (aid and disclosure), or (3) by CIK, fiscal year, fiscal period, and disclosure (cik, fiscalYear, fiscalPeriod, and disclosure).
+     * @method
+     * @name Test#listModelStructure
+     * @param {string} format - The result format
+     * @param {string} cid - The id of the component
+     * @param {string} aid - The accession number of the filing. This parameter needs to be used together with the disclosure parameter to identify a component.
+     * @param {string} cik - The CIK of an entity. This parameter needs to be used together with the fiscalYear, fiscalPeriod, and disclosure parameters to identify a component.
+     * @param {string} ticker - The ticker of the entity
+     * @param {string} tag - The tag to filter entities
+     * @param {string} sic - The industry group
+     * @param {string} networkIdentifier - The network identifier of a particular component
+     * @param {string} fiscalYear - The fiscal year of the filing
+     * @param {string} fiscalPeriod - The fiscal period of the filing
+     * @param {string} disclosure - The disclosure of the component (e.g. BalanceSheet)
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listModelStructure = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/modelstructure-for-component.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['cid'] !== undefined) {
+            queryParameters['cid'] = parameters['cid'];
+        }
+
+        if (parameters['aid'] !== undefined) {
+            queryParameters['aid'] = parameters['aid'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['networkIdentifier'] !== undefined) {
+            queryParameters['networkIdentifier'] = parameters['networkIdentifier'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        if (parameters['disclosure'] !== undefined) {
+            queryParameters['disclosure'] = parameters['disclosure'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve the fact table for a given set of filings and a report.
+     * @method
+     * @name Test#listFactTableForReport
+     * @param {string} format - The result format
+     * @param {string} cik - The CIK of the entity
+     * @param {string} ticker - The ticker of the entity
+     * @param {string} tag - The tag to filter entities
+     * @param {string} sic - The industry group
+     * @param {string} fiscalYear - The fiscal year of the fact to retrieve (default: LATEST)
+     * @param {string} fiscalPeriod - The fiscal period of the fact to retrieve (default: FY)
+
+     * 
+     */
+    Test.prototype.listFactTableForReport = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/facttable-for-report.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        queryParameters['report'] = 'FundamentalAccountingConcepts  <a href="/concept-map/FundamentalAccountingConcepts"><i class="fa fa-question"></i>';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve one or more facts for a combination of filings.
+     * @method
+     * @name Test#listFacts
+     * @param {string} format - The result format
+     * @param {string} cik - The CIK of the entity
+     * @param {string} ticker - The ticker of the entity
+     * @param {string} tag - The tag to filter entities
+     * @param {string} sic - The industry group
+     * @param {string} fiscalYear - The fiscal year of the fact to retrieve (default: LATEST)
+     * @param {string} concept - The name of the concept to retrieve the fact for (alternatively, a parameter with name xbrl:Concept can be used).
+     * @param {string} fiscalPeriod - The fiscal period of the fact to retrieve (default: FY)
+
+
+     * @param {string} prefix:dimension - The name of a dimension used for filtering. Accepted format: prefix:dimension. As a value, the value of the dimension or ALL can be provided if all facts with this dimension should be retrieved
+     * @param {string} prefix:dimension::default - The default value of the dimension [prefix:dimension] that should be returned if the dimension was not provided explicitly for a fact. Accepted format: prefix:dimension::default
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listFacts = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/facts.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['concept'] !== undefined) {
+            queryParameters['concept'] = parameters['concept'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        queryParameters['map'] = 'FundamentalAccountingConcepts  <a href="/concept-map/FundamentalAccountingConcepts"><i class="fa fa-question"></i>';
+
+        queryParameters['rules'] = 'FundamentalAccountingConcepts';
+
+        Object.keys(parameters).forEach(function(parameterName) {
+            if (new RegExp('[^:]+:[^:]+').test(parameterName)) {
+                queryParameters[parameterName] = parameters[parameterName];
+            }
+        });
+
+        Object.keys(parameters).forEach(function(parameterName) {
+            if (new RegExp('[^:]+:[^:]+::default').test(parameterName)) {
+                queryParameters[parameterName] = parameters[parameterName];
+            }
+        });
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * Retrieve the report elements contained in a set of filings.
+     * @method
+     * @name Test#listReportElements
+     * @param {string} format - The result format
+     * @param {string} tag - A tag to filter
+     * @param {string} cik - A CIK number
+     * @param {string} ticker - A ticker symbols
+     * @param {string} sic - The industry group
+     * @param {string} fiscalYear - The fiscal year of the fact to retrieve (default: ALL)
+     * @param {string} fiscalPeriod - The fiscal period of the fact to retrieve (default: FY)
+     * @param {string} aid - The id of the filing
+     * @param {string} onlyNames - Whether only the names of the report elements should be returned. If so, the values don't contain duplicates. (default: false)
+     * @param {string} name - The name of the report element to return (e.g. us-gaap:Assets).
+     * @param {string} label - A search term to search in the labels of report elements (e.g. stock)
+     * @param {string} token - The token of the current session (if accessing entities beyond DOW30)
+     * 
+     */
+    Test.prototype.listReportElements = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/report-elements.jq';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['format'] !== undefined) {
+            queryParameters['format'] = parameters['format'];
+        }
+
+        if (parameters['tag'] !== undefined) {
+            queryParameters['tag'] = parameters['tag'];
+        }
+
+        if (parameters['cik'] !== undefined) {
+            queryParameters['cik'] = parameters['cik'];
+        }
+
+        if (parameters['ticker'] !== undefined) {
+            queryParameters['ticker'] = parameters['ticker'];
+        }
+
+        if (parameters['sic'] !== undefined) {
+            queryParameters['sic'] = parameters['sic'];
+        }
+
+        if (parameters['fiscalYear'] !== undefined) {
+            queryParameters['fiscalYear'] = parameters['fiscalYear'];
+        }
+
+        if (parameters['fiscalPeriod'] !== undefined) {
+            queryParameters['fiscalPeriod'] = parameters['fiscalPeriod'];
+        }
+
+        if (parameters['aid'] !== undefined) {
+            queryParameters['aid'] = parameters['aid'];
+        }
+
+        if (parameters['onlyNames'] !== undefined) {
+            queryParameters['onlyNames'] = parameters['onlyNames'];
+        }
+
+        if (parameters['name'] !== undefined) {
+            queryParameters['name'] = parameters['name'];
+        }
+
+        if (parameters['label'] !== undefined) {
+            queryParameters['label'] = parameters['label'];
+        }
+
+        if (parameters['token'] !== undefined) {
+            queryParameters['token'] = parameters['token'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'POST',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+
+    return Test;
+})();
+
+exports.Test = Test;

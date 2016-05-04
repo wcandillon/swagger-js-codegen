@@ -55,9 +55,12 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
   lint:
     type: boolean
     description: whether or not to run jslint on the generated code
-  angular:
-    type: boolean
-    description: for use with `getTypescriptCode()`.  If true, will use $http, otherwise will use superagent.
+  language:
+    type: string
+    description: currently only 'typescript' is supported, but could potentially be 'coffeescript', 'es2015'...
+  framework:
+    type: string
+    description: currently only 'angular' is supported, but could potentially be 'react', 'polymer'...
   esnext:
     type: boolean
     description: passed through to jslint
@@ -133,7 +136,17 @@ methods:
         description: true if method === 'GET'
       summary:
         type: string
-        description: Provided by the 'description' field in the schema
+        description: Provided by the 'description' or 'summary' field in the schema
+      externalDocs:
+        type: object
+        properties:
+          url:
+            type: string
+            description: The URL for the target documentation. Value MUST be in the format of a URL.
+            required: true
+          description:
+            type: string
+            description: A short description of the target documentation. GitHub-Markdown syntax can be used for rich text representation.
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema

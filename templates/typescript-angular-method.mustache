@@ -12,8 +12,17 @@
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-    $queryParameters?: {}
-}): Promise<request.Response> {
+      $queryParameters?: {},
+    },
+    opts: {
+      $timeout?: number;
+      $refresh?: boolean;
+      $cache?: {
+        get:(key: string) => string|Object
+        put:(key: string, value: string|Object, options?: {}) => void;
+      };
+      $cacheItemOpts?: {};
+    } = {}): ng.IPromise<{{&tsType}}> {
     let domain = this.domain;
     let path = '{{&path}}';
     {{#hasBody}}
@@ -24,8 +33,8 @@
     {{#hasForm}}
     let form = {};
     {{/hasForm}}
+    let deferred = this.$q.defer();
 
-    return new Promise(function(resolve, reject) {
 {{#headers}}
     headers['{{&name}}'] = [{{&value}}];
 {{/headers}}
@@ -91,5 +100,4 @@ if(parameters.$queryParameters) {
     });
 }
 {{> request}}
-    });
 }

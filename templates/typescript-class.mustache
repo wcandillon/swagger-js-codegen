@@ -1,57 +1,26 @@
 {{#imports}}
 /// <reference path="{{&.}}" />
 {{/imports}}
-{{^angular}}
 import * as request from "superagent";
-{{/angular}}
 
 module {{moduleName}} {
 
 {{#types}}
 {{#description}}/** {{description}} */{{/description}}
-export interface {{name}} {{> type}}
+interface {{name}} {{> type}}
 
 {{/types}}
 
 /**
  * {{&description}}
  * @class {{&className}}
-{{#angular}}
- * @param {ng.IHttpService} $http
- * @param {ng.IQService} $q
-{{/angular}}
  * @param {string} domain - The project domain.
-{{#angular}}
- *    provide using <tt>.constant('domain', '//example.com')</tt> or <tt>.factory('domain', function(){return '//example.com'})</tt>
- {{/angular}}
  */
-export class {{&className}} {
-{{#angular}}
-    static $inject = ['$http', '$q', 'domain'];
-{{/angular}}
-
-    constructor({{#angular}}private $http: ng.IHttpService, private $q: ng.IQService, {{/angular}}private domain: string) {}
+export default class {{&className}} {
+    constructor(private domain: string) {}
 
 {{#methods}}
     {{> method}}
 
 {{/methods}}
-
-{{#angular}}
-    private static transformRequest(obj: any): string {
-        var str = [];
-        for(var p in obj) {
-            var val = obj[p];
-            if(angular.isArray(val)) {
-               val.forEach(function(val){
-                 str.push(encodeURIComponent(p) + '=' + encodeURIComponent(val));
-               });
-            } else {
-               str.push(encodeURIComponent(p) + '=' + encodeURIComponent(val));
-            }
-        }
-        return str.join('&');
-    }
-{{/angular}}
-}
 }

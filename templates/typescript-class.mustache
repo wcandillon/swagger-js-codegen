@@ -11,10 +11,12 @@ import * as request from "superagent";
  */
 export default class {{&className}} {
 
-    private domain: string;
+    private domain: string = "{{&domain}}";
 
-    constructor(domain: string) {
-        this.domain = domain;
+    constructor(domain?: string) {
+        if(domain) {
+            this.domain = domain;
+        }
     }
 
 {{#methods}}

@@ -22,7 +22,7 @@
     let form = {};
     return new Promise(function(resolve, reject) {
 {{#headers}}
-    headers['{{&name}}'] = [{{&value}}];
+    headers['{{&name}}'] = {{&value}};
 {{/headers}}
 
 {{#parameters}}

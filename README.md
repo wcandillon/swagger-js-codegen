@@ -170,11 +170,11 @@ methods:
           isFormParameter:
             type: boolean
       responses:
-		type: object
-		description: Includes all defined response-codes and its JSONs schema
-		additionalProperties:
-		  type: object
-		  description: See the 'Response Object' section in the [Swagger 2.0 specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#response-object)
+        type: object
+        description: Includes all defined response-codes and its JSONs schema
+        additionalProperties:
+          type: object
+          description: See the 'Response Object' section in the [Swagger 2.0 specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#response-object)
 ```
 
 ####Custom Mustache Variables

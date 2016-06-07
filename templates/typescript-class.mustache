@@ -18,6 +18,10 @@ export default class {{&className}} {
             this.domain = domain;
         }
     }
+    
+    getDomain() {
+        return this.domain;
+    }
 
 {{#methods}}
     {{> method}}

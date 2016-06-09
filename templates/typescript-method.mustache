@@ -1,11 +1,13 @@
 /**
 * {{&summary}}
 * @method
+{{#externalDocs}}
+* @see {@link {{&url}}|{{#description}}{{&description}}{{/description}}{{^description}}External docs{{/description}}}
+{{/externalDocs}}
 * @name {{&className}}#{{&methodName}}
 {{#parameters}}
     {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
-*
 */
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
@@ -19,6 +21,10 @@
     let headers = {};
     let form = {};
     return new Promise(function(resolve, reject) {
+{{#headers}}
+    headers['{{&name}}'] = {{&value}};
+{{/headers}}
+
 {{#parameters}}
 
     {{#isQueryParameter}}

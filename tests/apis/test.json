@@ -13,6 +13,10 @@
             "head": {
                 "tags": ["User"],
                 "summary": "Check whether a model instance exists in the data source.",
+                "externalDocs": {
+                    "description": "More info on the WIKI",
+                    "url": "https://example.atlassian.net/wiki/pages/example"
+                },
                 "operationId": "User.exists__head_Users_{id}",
                 "parameters": [{
                     "name": "id",

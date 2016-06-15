@@ -31,7 +31,7 @@ $queryParameters?: {}
         {{/isPathParameter}}
     {{/parameters}}
     let keys = Object.keys(queryParameters);
-    return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key]))): '');
+    return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
 };
 
 /**

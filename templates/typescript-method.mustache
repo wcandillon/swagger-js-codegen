@@ -1,3 +1,17 @@
+{{&methodName}}URL(parameters: {
+{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+{{/isSingleton}}{{/parameters}}
+$queryParameters?: {}
+}): string {
+    let path = '{{&path}}';
+    {{#parameters}}
+        {{#isPathParameter}}
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
+        {{/isPathParameter}}
+    {{/parameters}}
+    return this.domain + path;
+};
+
 /**
 * {{&summary}}
 * @method

@@ -1,3 +1,39 @@
+{{&methodName}}URL(parameters: {
+{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+{{/isSingleton}}{{/parameters}}
+$queryParameters?: {}
+}): string {
+    let queryParameters = {};
+    let path = '{{&path}}';
+    {{#parameters}}
+        {{#isQueryParameter}}
+            {{#isSingleton}}
+                queryParameters['{{&name}}'] = '{{&singleton}}';
+            {{/isSingleton}}
+            {{^isSingleton}}
+                {{#isPatternType}}
+                    Object.keys(parameters).forEach(function(parameterName) {
+                    if(new RegExp('{{&pattern}}').test(parameterName)){
+                    queryParameters[parameterName] = parameters[parameterName];
+                    }
+                    });
+                {{/isPatternType}}
+                {{^isPatternType}}
+                    if(parameters['{{&camelCaseName}}'] !== undefined){
+                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                    }
+                {{/isPatternType}}
+            {{/isSingleton}}
+        {{/isQueryParameter}}
+
+        {{#isPathParameter}}
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
+        {{/isPathParameter}}
+    {{/parameters}}
+    let keys = Object.keys(queryParameters);
+    return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
+};
+
 /**
 * {{&summary}}
 * @method

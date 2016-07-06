@@ -12,6 +12,7 @@ import * as request from "superagent";
 export default class {{&className}} {
 
     private domain: string = "{{&domain}}";
+    private errorHandlers = [];
 
     constructor(domain?: string) {
         if(domain) {
@@ -21,6 +22,10 @@ export default class {{&className}} {
     
     getDomain() {
         return this.domain;
+    }
+    
+    addErrorHandler(handler) {
+        this.errorHandlers.push(handler);
     }
 
 {{#methods}}

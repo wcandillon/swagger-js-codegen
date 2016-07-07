@@ -18,12 +18,9 @@ if(Object.keys(form).length > 0) {
 }
 
 req.end((error, response) => {
-    if(error) {
+    if(error || !response.ok) {
         reject(error);
-    } else if(response.status >= 200 && response.status <= 299) {
-        resolve(response);
     } else {
-        this.errorHandlers.forEach(handler => handler(response));
-        reject(response);
+        resolve(response);
     }
 });

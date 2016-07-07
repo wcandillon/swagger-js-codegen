@@ -53,6 +53,7 @@ $queryParameters?: {}
 }): Promise<request.Response> {
     let domain = parameters.$domain ? parameters.$domain : this.domain;
     let errorHandlers = this.errorHandlers;
+    let request = this.request;
     let path = '{{&path}}';
     let body;
     let queryParameters = {};
@@ -133,7 +134,7 @@ if(parameters.$queryParameters) {
     });
 }
 
-{{> request}}
+    request('{{method}}', domain + path);
 
     });
 };

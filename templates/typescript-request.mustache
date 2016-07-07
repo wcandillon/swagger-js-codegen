@@ -20,6 +20,7 @@ if(Object.keys(form).length > 0) {
 req.end((error, response) => {
     if(error || !response.ok) {
         reject(error);
+        errorHandlers.forEach(handler => handler());
     } else {
         resolve(response);
     }

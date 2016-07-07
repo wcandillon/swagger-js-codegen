@@ -48,9 +48,11 @@ $queryParameters?: {}
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-    $queryParameters?: {}
+    $queryParameters?: {},
+    $domain?: string
 }): Promise<request.Response> {
-    let domain = this.domain;
+    let domain = $domain ? $domain : this.domain;
+    let errorHandlers = this.errorHandlers;
     let path = '{{&path}}';
     let body;
     let queryParameters = {};

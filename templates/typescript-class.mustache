@@ -28,8 +28,8 @@ export default class {{&className}} {
         this.errorHandlers.push(handler);
     }
 
-    private request(method, url) {
-        let req = request('{{method}}', url)
+    private request(method, url, body, headers, queryParameters, form, reject, resolve, errorHandlers) {
+        let req = request(method, url)
             .query(queryParameters);
         Object.keys(headers).forEach(key => {
             req.set(key, headers[key]);

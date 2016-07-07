@@ -51,10 +51,10 @@ $queryParameters?: {}
     $queryParameters?: {},
     $domain?: string
 }): Promise<request.Response> {
-    let domain = parameters.$domain ? parameters.$domain : this.domain;
-    let errorHandlers = this.errorHandlers;
-    let request = this.request;
-    let path = '{{&path}}';
+    const domain = parameters.$domain ? parameters.$domain : this.domain;
+    const errorHandlers = this.errorHandlers;
+    const request = this.request;
+    const path = '{{&path}}';
     let body;
     let queryParameters = {};
     let headers = {};
@@ -134,7 +134,7 @@ if(parameters.$queryParameters) {
     });
 }
 
-    request('{{method}}', domain + path);
+    request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
 
     });
 };

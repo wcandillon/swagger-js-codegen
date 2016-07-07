@@ -51,7 +51,7 @@ $queryParameters?: {}
     $queryParameters?: {},
     $domain?: string
 }): Promise<request.Response> {
-    let domain = $domain ? $domain : this.domain;
+    let domain = parameters.$domain ? parameters.$domain : this.domain;
     let errorHandlers = this.errorHandlers;
     let path = '{{&path}}';
     let body;

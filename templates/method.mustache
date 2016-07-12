@@ -44,7 +44,7 @@
             {{^isSingleton}}
                 {{#isPatternType}}
                     Object.keys(parameters).forEach(function(parameterName) {
-                        if(new RegExp('{{&pattern}}').test(parameterName)){
+                        if(new RegExp('{{&x-name-pattern}}').test(parameterName)){
                             queryParameters[parameterName] = parameters[parameterName];
                         }
                     });
@@ -106,7 +106,7 @@
         });
     }
 
-    {{> request}}
-    
-    return deferred.promise; 
+    this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form, deferred);
+
+    return deferred.promise;
  };

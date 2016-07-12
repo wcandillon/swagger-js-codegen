@@ -33,8 +33,7 @@ var source = CodeGen.getCustomCode({
     swagger: swaggerSpec,
     template: {
         class: fs.readFileSync('my-class.mustache', 'utf-8'),
-        method: fs.readFileSync('my-method.mustache', 'utf-8'),
-        request: fs.readFileSync('my-request.mustache', 'utf-8')
+        method: fs.readFileSync('my-method.mustache', 'utf-8')
     }
 });
 ```
@@ -42,7 +41,7 @@ var source = CodeGen.getCustomCode({
 ##Options
 In addition to the common options listed below, `getCustomCode()` *requires* a `template` field:
 
-    template: { class: "...", method: "...", request: "..." }
+    template: { class: "...", method: "..." }
 
 `getAngularCode()`, `getNodeCode()`, and `getCustomCode()` each support the following options:
 
@@ -130,7 +129,17 @@ methods:
         description: true if method === 'GET'
       summary:
         type: string
-        description: Provided by the 'description' field in the schema
+        description: Provided by the 'description' or 'summary' field in the schema
+      externalDocs:
+        type: object
+        properties:
+          url:
+            type: string
+            description: The URL for the target documentation. Value MUST be in the format of a URL.
+            required: true
+          description:
+            type: string
+            description: A short description of the target documentation. GitHub-Markdown syntax can be used for rich text representation.
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema

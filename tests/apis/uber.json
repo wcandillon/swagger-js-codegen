@@ -43,6 +43,11 @@
                         "required": true,
                         "type": "number",
                         "format": "double"
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "x-exclude-from-bindings": true
                     }
                 ],
                 "tags": [

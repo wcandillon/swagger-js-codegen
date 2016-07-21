@@ -44,7 +44,7 @@
             {{^isSingleton}}
                 {{#isPatternType}}
                     Object.keys(parameters).forEach(function(parameterName) {
-                        if(new RegExp('{{&x-name-pattern}}').test(parameterName)){
+                        if(new RegExp('{{&pattern}}').test(parameterName)){
                             queryParameters[parameterName] = parameters[parameterName];
                         }
                     });

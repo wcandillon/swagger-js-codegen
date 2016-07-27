@@ -1,3 +1,39 @@
+{{&methodName}}URL(parameters: {
+{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+{{/isSingleton}}{{/parameters}}
+$queryParameters?: {}
+}): string {
+    let queryParameters = {};
+    let path = '{{&path}}';
+    {{#parameters}}
+        {{#isQueryParameter}}
+            {{#isSingleton}}
+                queryParameters['{{&name}}'] = '{{&singleton}}';
+            {{/isSingleton}}
+            {{^isSingleton}}
+                {{#isPatternType}}
+                    Object.keys(parameters).forEach(function(parameterName) {
+                    if(new RegExp('{{&pattern}}').test(parameterName)){
+                    queryParameters[parameterName] = parameters[parameterName];
+                    }
+                    });
+                {{/isPatternType}}
+                {{^isPatternType}}
+                    if(parameters['{{&camelCaseName}}'] !== undefined){
+                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                    }
+                {{/isPatternType}}
+            {{/isSingleton}}
+        {{/isQueryParameter}}
+
+        {{#isPathParameter}}
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
+        {{/isPathParameter}}
+    {{/parameters}}
+    let keys = Object.keys(queryParameters);
+    return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
+};
+
 /**
 * {{&summary}}
 * @method
@@ -12,10 +48,13 @@
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-    $queryParameters?: {}
+    $queryParameters?: {},
+    $domain?: string
 }): Promise<request.Response> {
-    let domain = this.domain;
-    let path = '{{&path}}';
+    const domain = parameters.$domain ? parameters.$domain : this.domain;
+    const errorHandlers = this.errorHandlers;
+    const request = this.request;
+    const path = '{{&path}}';
     {{#hasBody}}
     let body;
     {{/hasBody}}
@@ -27,7 +66,7 @@
 
     return new Promise(function(resolve, reject) {
 {{#headers}}
-    headers['{{&name}}'] = [{{&value}}];
+    headers['{{&name}}'] = {{&value}};
 {{/headers}}
 
 {{#parameters}}
@@ -90,6 +129,7 @@ if(parameters.$queryParameters) {
         queryParameters[parameterName] = parameter;
     });
 }
-{{> request}}
+    request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
     });
 }

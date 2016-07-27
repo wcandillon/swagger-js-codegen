@@ -106,7 +106,7 @@
         });
     }
 
-    {{> request}}
-    
-    return deferred.promise; 
+    this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form, deferred);
+
+    return deferred.promise;
  };

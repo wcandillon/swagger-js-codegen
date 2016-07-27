@@ -65,7 +65,6 @@ vows.describe('Test Utilities').addBatch({
                 selectTemplates(opts, 'angular');
                 assert.equal(opts.template.class, dirname + 'angular-class.mustache');
                 assert.equal(opts.template.method, dirname + 'method.mustache');
-                assert.equal(opts.template.request, dirname + 'angular-request.mustache');
                 assert.equal(opts.template.type, undefined);
             },
             'with node': function(selectTemplates) {
@@ -74,7 +73,6 @@ vows.describe('Test Utilities').addBatch({
                 selectTemplates(opts, 'node');
                 assert.equal(opts.template.class, dirname + 'node-class.mustache');
                 assert.equal(opts.template.method, dirname + 'method.mustache');
-                assert.equal(opts.template.request, dirname + 'node-request.mustache');
                 assert.equal(opts.template.type, undefined);
             },
             'with typescript': function(selectTemplates) {
@@ -83,7 +81,6 @@ vows.describe('Test Utilities').addBatch({
                 selectTemplates(opts, 'typescript');
                 assert.equal(opts.template.class, dirname + 'typescript-class.mustache');
                 assert.equal(opts.template.method, dirname + 'typescript-method.mustache');
-                assert.equal(opts.template.request, dirname + 'typescript-request.mustache');
                 assert.equal(opts.template.type, dirname + 'type.mustache');
             }
         }

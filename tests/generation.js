@@ -57,8 +57,7 @@ list.forEach(function(file){
             swagger: swagger,
             template: {
                 class: fs.readFileSync(__dirname + '/../templates/angular-class.mustache', 'utf-8'),
-                method: fs.readFileSync(__dirname + '/../templates/method.mustache', 'utf-8'),
-                request:fs.readFileSync(__dirname + '/../templates/angular-request.mustache', 'utf-8')
+                method: fs.readFileSync(__dirname + '/../templates/method.mustache', 'utf-8')
             }
         });
         verify(result, file, 'custom');

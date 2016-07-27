@@ -11,10 +11,51 @@ import * as request from "superagent";
  */
 export default class {{&className}} {
 
-    private domain: string;
+    private domain: string = "{{&domain}}";
+    private errorHandlers = [];
 
-    constructor(domain: string) {
-        this.domain = domain;
+    constructor(domain?: string) {
+        if(domain) {
+            this.domain = domain;
+        }
+    }
+    
+    getDomain() {
+        return this.domain;
+    }
+    
+    addErrorHandler(handler) {
+        this.errorHandlers.push(handler);
+    }
+
+    private request(method, url, body, headers, queryParameters, form, reject, resolve, errorHandlers) {
+        let req = request(method, url)
+            .query(queryParameters);
+        Object.keys(headers).forEach(key => {
+            req.set(key, headers[key]);
+        });
+
+        if(body) {
+            req.send(body);
+        }
+
+        if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+            req.set('Content-Type', 'application/json');
+        }
+
+        if(Object.keys(form).length > 0) {
+            req.type('form');
+            req.send(form);
+        }
+
+        req.end((error, response) => {
+            if(error || !response.ok) {
+                reject(error);
+                errorHandlers.forEach(handler => handler(error));
+            } else {
+                resolve(response);
+            }
+        });
     }
 
 {{#methods}}

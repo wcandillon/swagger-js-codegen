@@ -33,8 +33,7 @@ var source = CodeGen.getCustomCode({
     swagger: swaggerSpec,
     template: {
         class: fs.readFileSync('my-class.mustache', 'utf-8'),
-        method: fs.readFileSync('my-method.mustache', 'utf-8'),
-        request: fs.readFileSync('my-request.mustache', 'utf-8')
+        method: fs.readFileSync('my-method.mustache', 'utf-8')
     }
 });
 ```
@@ -42,7 +41,7 @@ var source = CodeGen.getCustomCode({
 ##Options
 In addition to the common options listed below, `getCustomCode()` *requires* a `template` field:
 
-    template: { class: "...", method: "...", request: "..." }
+    template: { class: "...", method: "..." }
 
 `getAngularCode()`, `getNodeCode()`, and `getCustomCode()` each support the following options:
 

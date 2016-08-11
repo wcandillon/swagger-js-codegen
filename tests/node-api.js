@@ -30,7 +30,7 @@ vows.describe('Test Generated API').addBatch({
                 return promise;
             },
             'Should have missing parameter error': function(error){
-                assert.equal(error.message, 'Missing required query parameter: grant_type');
+                assert.equal(error.message, 'Missing required query parameter: grantType');
             }
         },
         'Calling Authenticate method with wrong password': {
@@ -42,7 +42,7 @@ vows.describe('Test Generated API').addBatch({
                 auth.authenticate({
                     email: 'w+test@28.io',
                     password: 'foobartest',
-                    grant_type: 'client_credentials'
+                    grantType: 'client_credentials'
                 }).then(callback, callback);
                 return promise;
             },
@@ -59,7 +59,7 @@ vows.describe('Test Generated API').addBatch({
                 auth.authenticate({
                     email: 'w+test@28.io',
                     password: 'foobar',
-                    grant_type: 'client_credentials'
+                    grantType: 'client_credentials'
                 }).then(function(result){
                     promise.emit('success', result);
                 }, function(result){

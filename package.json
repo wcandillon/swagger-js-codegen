@@ -1,7 +1,7 @@
 {
   "name": "swagger-js-codegen",
   "main": "./lib/codegen.js",
-  "version": "1.6.8",
+  "version": "1.6.7",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
     "test": "grunt"
@@ -32,7 +32,7 @@
   "dependencies": {
     "js-beautify": "~1.5.1",
     "jshint": "~2.5.1",
-    "lodash": "^2.4.1",
+    "lodash": "4.14.1",
     "mustache": "^2.0.0"
   },
   "devDependencies": {
@@ -44,7 +44,6 @@
     "matchdep": "~0.3.0",
     "vows": "~0.7.0",
     "grunt-jsonlint": "~1.0.4",
-    "request": "~2.40.0",
-    "rewire": "^2.5.1"
+    "request": "~2.40.0"
   }
 }

@@ -22,7 +22,7 @@
         put:(key: string, value: string|Object, options?: {}) => void;
       };
       $cacheItemOpts?: {};
-    } = {}): ng.IPromise<{{&tsType}}> {
+    } = {}): ng.IPromise<{{&tsType}}|any> {
     let domain = this.domain;
     let path = '{{&path}}';
     {{#hasBody}}
@@ -130,7 +130,7 @@ options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 options.transformRequest = {{&className}}.transformRequest;
 {{/hasForm}}
 
-this.$http(options).then(function(response: ng.IHttpPromiseCallbackArg<{{&tsType}}>){
+this.$http(options).then(function(response: ng.IHttpPromiseCallbackArg<{{&tsType}}|any>){
     {{#hasVoidReturn}}
     deferred.resolve();
     {{/hasVoidReturn}}

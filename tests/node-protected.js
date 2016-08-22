@@ -29,7 +29,7 @@ vows.describe('Test Protected').addBatch({
                 protectedAPI.auth({
                     email: 'w+test@28.io',
                     password: 'foobar',
-                    grant_type: 'client_credentials'
+                    grantType: 'client_credentials'
                 }).then(function(result){
                     promise.emit('success', result);
                 }, function(result){

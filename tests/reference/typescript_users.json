@@ -1,0 +1,146 @@
+import * as request from "superagent";
+
+/**
+ * 
+ * @class Test
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+export default class Test {
+
+    private domain: string;
+
+    constructor(domain: string) {
+        this.domain = domain;
+    }
+
+    /**
+     * Get user
+     * @method
+     * @name Test#findById
+     * @param {string} userId - User's id
+     *
+     */
+    findById(parameters: {
+        'userId': string,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/users/{userId}';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            path = path.replace('{userId}', parameters['userId']);
+
+            if (parameters['userId'] === undefined) {
+                reject(new Error('Missing required  parameter: userId'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * Delete user
+     * @method
+     * @name Test#delete
+     * @param {string} userId - User's id
+     *
+     */
+    delete(parameters: {
+        'userId': string,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/users/{userId}';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            path = path.replace('{userId}', parameters['userId']);
+
+            if (parameters['userId'] === undefined) {
+                reject(new Error('Missing required  parameter: userId'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('DELETE', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+}

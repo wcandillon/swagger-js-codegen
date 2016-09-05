@@ -1,0 +1,587 @@
+/*jshint -W069 */
+/**
+ * Move your app forward with the Uber API
+ * @class Test
+ * @param {(string|object)} [domainOrOptions] - The project domain or options object. If object, see the object's optional properties.
+ * @param {string} [domainOrOptions.domain] - The project domain
+ * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
+ */
+var Test = (function() {
+    'use strict';
+
+    var request = require('request');
+    var Q = require('q');
+
+    function Test(options) {
+        var domain = (typeof options === 'object') ? options.domain : options;
+        this.domain = domain ? domain : 'https://api.uber.com/v1';
+        if (this.domain.length === 0) {
+            throw new Error('Domain parameter must be specified as a string.');
+        }
+    }
+
+    /**
+     * The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order.
+     * @method
+     * @name Test#getProducts
+     * @param {number} latitude - Latitude component of location.
+     * @param {number} longitude - Longitude component of location.
+     * 
+     */
+    Test.prototype.getProducts = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/products';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['latitude'] !== undefined) {
+            queryParameters['latitude'] = parameters['latitude'];
+        }
+
+        if (parameters['latitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: latitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['longitude'] !== undefined) {
+            queryParameters['longitude'] = parameters['longitude'];
+        }
+
+        if (parameters['longitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: longitude'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order.
+     * @method
+     * @name Test#getProductsById
+     * @param {integer} id - Move your app forward with the Uber API
+     * @param {number} latitude - Latitude component of location.
+     * @param {number} longitude - Longitude component of location.
+     * 
+     */
+    Test.prototype.getProductsById = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/products/{id}';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        path = path.replace('{id}', parameters['id']);
+
+        if (parameters['id'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: id'));
+            return deferred.promise;
+        }
+
+        if (parameters['latitude'] !== undefined) {
+            queryParameters['latitude'] = parameters['latitude'];
+        }
+
+        if (parameters['latitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: latitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['longitude'] !== undefined) {
+            queryParameters['longitude'] = parameters['longitude'];
+        }
+
+        if (parameters['longitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: longitude'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * The Price Estimates endpoint returns an estimated price range for each product offered at a given location. The price estimate is provided as a formatted string with the full price range and the localized currency symbol.<br><br>The response also includes low and high estimates, and the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code for situations requiring currency conversion. When surge is active for a particular product, its surge_multiplier will be greater than 1, but the price estimate already factors in this multiplier.
+     * @method
+     * @name Test#getEstimatesPrice
+     * @param {number} start_latitude - Latitude component of start location.
+     * @param {number} start_longitude - Longitude component of start location.
+     * @param {number} end_latitude - Latitude component of end location.
+     * @param {number} end_longitude - Longitude component of end location.
+     * 
+     */
+    Test.prototype.getEstimatesPrice = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/estimates/price';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['start_latitude'] !== undefined) {
+            queryParameters['start_latitude'] = parameters['start_latitude'];
+        }
+
+        if (parameters['start_latitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: start_latitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['start_longitude'] !== undefined) {
+            queryParameters['start_longitude'] = parameters['start_longitude'];
+        }
+
+        if (parameters['start_longitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: start_longitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['end_latitude'] !== undefined) {
+            queryParameters['end_latitude'] = parameters['end_latitude'];
+        }
+
+        if (parameters['end_latitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: end_latitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['end_longitude'] !== undefined) {
+            queryParameters['end_longitude'] = parameters['end_longitude'];
+        }
+
+        if (parameters['end_longitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: end_longitude'));
+            return deferred.promise;
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs.
+     * @method
+     * @name Test#getEstimatesTime
+     * @param {number} start_latitude - Latitude component of start location.
+     * @param {number} start_longitude - Longitude component of start location.
+     * @param {string} customer_uuid - Unique customer identifier to be used for experience customization.
+     * @param {string} product_id - Unique identifier representing a specific product for a given latitude & longitude.
+     * 
+     */
+    Test.prototype.getEstimatesTime = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/estimates/time';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['start_latitude'] !== undefined) {
+            queryParameters['start_latitude'] = parameters['start_latitude'];
+        }
+
+        if (parameters['start_latitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: start_latitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['start_longitude'] !== undefined) {
+            queryParameters['start_longitude'] = parameters['start_longitude'];
+        }
+
+        if (parameters['start_longitude'] === undefined) {
+            deferred.reject(new Error('Missing required  parameter: start_longitude'));
+            return deferred.promise;
+        }
+
+        if (parameters['customer_uuid'] !== undefined) {
+            queryParameters['customer_uuid'] = parameters['customer_uuid'];
+        }
+
+        if (parameters['product_id'] !== undefined) {
+            queryParameters['product_id'] = parameters['product_id'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * The User Profile endpoint returns information about the Uber user that has authorized with the application.
+     * @method
+     * @name Test#getMe
+     * 
+     */
+    Test.prototype.getMe = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/me';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+    /**
+     * The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary.
+     * @method
+     * @name Test#getHistory
+     * @param {integer} offset - Offset the list of returned results by this amount. Default is zero.
+     * @param {integer} limit - Number of items to retrieve. Default is 5, maximum is 100.
+     * 
+     */
+    Test.prototype.getHistory = function(parameters) {
+        if (parameters === undefined) {
+            parameters = {};
+        }
+        var deferred = Q.defer();
+
+        var domain = this.domain;
+        var path = '/history';
+
+        var body;
+        var queryParameters = {};
+        var headers = {};
+        var form = {};
+
+        if (parameters['offset'] !== undefined) {
+            queryParameters['offset'] = parameters['offset'];
+        }
+
+        if (parameters['limit'] !== undefined) {
+            queryParameters['limit'] = parameters['limit'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters)
+                .forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+        }
+
+        var req = {
+            method: 'GET',
+            uri: domain + path,
+            qs: queryParameters,
+            headers: headers,
+            body: body
+        };
+        if (Object.keys(form).length > 0) {
+            req.form = form;
+        }
+        if (typeof(body) === 'object' && !(body instanceof Buffer)) {
+            req.json = true;
+        }
+        request(req, function(error, response, body) {
+            if (error) {
+                deferred.reject(error);
+            } else {
+                if (/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+
+                    }
+                }
+                if (response.statusCode === 204) {
+                    deferred.resolve({
+                        response: response
+                    });
+                } else if (response.statusCode >= 200 && response.statusCode <= 299) {
+                    deferred.resolve({
+                        response: response,
+                        body: body
+                    });
+                } else {
+                    deferred.reject({
+                        response: response,
+                        body: body
+                    });
+                }
+            }
+        });
+
+        return deferred.promise;
+    };
+
+    return Test;
+})();
+
+exports.Test = Test;

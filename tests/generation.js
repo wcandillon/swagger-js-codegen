@@ -9,6 +9,16 @@ var CodeGen = require('../lib/codegen').CodeGen;
 
 var batch = {};
 var list = ffs.readdirSync('tests/apis');
+
+function verify(result, file, type) {
+    var reference = file.replace(/^tests\/apis\//, 'tests/reference/' + type + '_');
+    if (false) {
+        fs.writeFileSync(reference, result, 'UTF-8');
+    } else {
+        assert.equal(result, fs.readFileSync(reference, 'UTF-8'), file + ', ', type);
+    }
+}
+
 list.forEach(function(file){
     file = 'tests/apis/' + file;
     batch[file] = function(){
@@ -17,13 +27,13 @@ list.forEach(function(file){
             className: 'Test',
             swagger: swagger
         });
-        assert(typeof(result), 'string');
+        verify(result, file, 'node');
         result = CodeGen.getAngularCode({
             moduleName: 'Test',
             className: 'Test',
             swagger: swagger
         });
-        assert(typeof(result), 'string');
+        verify(result, file, 'angular');
         result = CodeGen.getAngularCode({
             moduleName: 'Test',
             className: 'Test',
@@ -31,8 +41,7 @@ list.forEach(function(file){
             lint: false,
             beautify: false
         });
-        assert(typeof(result), 'string');
-        assert(typeof(result), 'string');
+        verify(result, file, 'angular-ugly');
         if(swagger.swagger === '2.0') {
             result = CodeGen.getTypescriptCode({
                 moduleName: 'Test',
@@ -40,7 +49,7 @@ list.forEach(function(file){
                 swagger: swagger,
                 lint: false
             });
-            assert(typeof(result), 'string');
+            verify(result, file, 'typescript');
         }
         result = CodeGen.getCustomCode({
             moduleName: 'Test',
@@ -51,7 +60,7 @@ list.forEach(function(file){
                 method: fs.readFileSync(__dirname + '/../templates/method.mustache', 'utf-8')
             }
         });
-        assert(typeof(result), 'string');
+        verify(result, file, 'custom');
     };
 });
 vows.describe('Test Generation').addBatch(batch).export(module);

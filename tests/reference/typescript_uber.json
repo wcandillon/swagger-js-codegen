@@ -1,0 +1,495 @@
+import * as request from "superagent";
+
+/**
+ * Move your app forward with the Uber API
+ * @class Test
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+export default class Test {
+
+    private domain: string;
+
+    constructor(domain: string) {
+        this.domain = domain;
+    }
+
+    /**
+     * The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order.
+     * @method
+     * @name Test#getProducts
+     * @param {number} latitude - Latitude component of location.
+     * @param {number} longitude - Longitude component of location.
+     *
+     */
+    getProducts(parameters: {
+        'latitude': number,
+        'longitude': number,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/products';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters['latitude'] !== undefined) {
+                queryParameters['latitude'] = parameters['latitude'];
+            }
+
+            if (parameters['latitude'] === undefined) {
+                reject(new Error('Missing required  parameter: latitude'));
+                return;
+            }
+
+            if (parameters['longitude'] !== undefined) {
+                queryParameters['longitude'] = parameters['longitude'];
+            }
+
+            if (parameters['longitude'] === undefined) {
+                reject(new Error('Missing required  parameter: longitude'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order.
+     * @method
+     * @name Test#getProductsById
+     * @param {integer} id - Move your app forward with the Uber API
+     * @param {number} latitude - Latitude component of location.
+     * @param {number} longitude - Longitude component of location.
+     *
+     */
+    getProductsById(parameters: {
+        'id': number,
+        'latitude': number,
+        'longitude': number,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/products/{id}';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            path = path.replace('{id}', parameters['id']);
+
+            if (parameters['id'] === undefined) {
+                reject(new Error('Missing required  parameter: id'));
+                return;
+            }
+
+            if (parameters['latitude'] !== undefined) {
+                queryParameters['latitude'] = parameters['latitude'];
+            }
+
+            if (parameters['latitude'] === undefined) {
+                reject(new Error('Missing required  parameter: latitude'));
+                return;
+            }
+
+            if (parameters['longitude'] !== undefined) {
+                queryParameters['longitude'] = parameters['longitude'];
+            }
+
+            if (parameters['longitude'] === undefined) {
+                reject(new Error('Missing required  parameter: longitude'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * The Price Estimates endpoint returns an estimated price range for each product offered at a given location. The price estimate is provided as a formatted string with the full price range and the localized currency symbol.<br><br>The response also includes low and high estimates, and the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code for situations requiring currency conversion. When surge is active for a particular product, its surge_multiplier will be greater than 1, but the price estimate already factors in this multiplier.
+     * @method
+     * @name Test#getEstimatesPrice
+     * @param {number} start_latitude - Latitude component of start location.
+     * @param {number} start_longitude - Longitude component of start location.
+     * @param {number} end_latitude - Latitude component of end location.
+     * @param {number} end_longitude - Longitude component of end location.
+     *
+     */
+    getEstimatesPrice(parameters: {
+        'start_latitude': number,
+        'start_longitude': number,
+        'end_latitude': number,
+        'end_longitude': number,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/estimates/price';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters['start_latitude'] !== undefined) {
+                queryParameters['start_latitude'] = parameters['start_latitude'];
+            }
+
+            if (parameters['start_latitude'] === undefined) {
+                reject(new Error('Missing required  parameter: start_latitude'));
+                return;
+            }
+
+            if (parameters['start_longitude'] !== undefined) {
+                queryParameters['start_longitude'] = parameters['start_longitude'];
+            }
+
+            if (parameters['start_longitude'] === undefined) {
+                reject(new Error('Missing required  parameter: start_longitude'));
+                return;
+            }
+
+            if (parameters['end_latitude'] !== undefined) {
+                queryParameters['end_latitude'] = parameters['end_latitude'];
+            }
+
+            if (parameters['end_latitude'] === undefined) {
+                reject(new Error('Missing required  parameter: end_latitude'));
+                return;
+            }
+
+            if (parameters['end_longitude'] !== undefined) {
+                queryParameters['end_longitude'] = parameters['end_longitude'];
+            }
+
+            if (parameters['end_longitude'] === undefined) {
+                reject(new Error('Missing required  parameter: end_longitude'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs.
+     * @method
+     * @name Test#getEstimatesTime
+     * @param {number} start_latitude - Latitude component of start location.
+     * @param {number} start_longitude - Longitude component of start location.
+     * @param {string} customer_uuid - Unique customer identifier to be used for experience customization.
+     * @param {string} product_id - Unique identifier representing a specific product for a given latitude & longitude.
+     *
+     */
+    getEstimatesTime(parameters: {
+        'start_latitude': number,
+        'start_longitude': number,
+        'customer_uuid' ? : string,
+        'product_id' ? : string,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/estimates/time';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters['start_latitude'] !== undefined) {
+                queryParameters['start_latitude'] = parameters['start_latitude'];
+            }
+
+            if (parameters['start_latitude'] === undefined) {
+                reject(new Error('Missing required  parameter: start_latitude'));
+                return;
+            }
+
+            if (parameters['start_longitude'] !== undefined) {
+                queryParameters['start_longitude'] = parameters['start_longitude'];
+            }
+
+            if (parameters['start_longitude'] === undefined) {
+                reject(new Error('Missing required  parameter: start_longitude'));
+                return;
+            }
+
+            if (parameters['customer_uuid'] !== undefined) {
+                queryParameters['customer_uuid'] = parameters['customer_uuid'];
+            }
+
+            if (parameters['product_id'] !== undefined) {
+                queryParameters['product_id'] = parameters['product_id'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * The User Profile endpoint returns information about the Uber user that has authorized with the application.
+     * @method
+     * @name Test#getMe
+     *
+     */
+    getMe(parameters: {
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/me';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary.
+     * @method
+     * @name Test#getHistory
+     * @param {integer} offset - Offset the list of returned results by this amount. Default is zero.
+     * @param {integer} limit - Number of items to retrieve. Default is 5, maximum is 100.
+     *
+     */
+    getHistory(parameters: {
+        'offset' ? : number,
+        'limit' ? : number,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/history';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters['offset'] !== undefined) {
+                queryParameters['offset'] = parameters['offset'];
+            }
+
+            if (parameters['limit'] !== undefined) {
+                queryParameters['limit'] = parameters['limit'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+}

@@ -1,0 +1,163 @@
+import * as request from "superagent";
+
+/**
+ * 
+ * @class Test
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+export default class Test {
+
+    private domain: string;
+
+    constructor(domain: string) {
+        this.domain = domain;
+    }
+
+    /**
+     * Get token
+     * @method
+     * @name Test#auth
+     * @param {string} grant_type - Authorization grant type. Use <code>client_credentials</code> to create a token or <code>refresh_token</code> to refresh a token
+     * @param {string} email - The account email. Mandatory if <code>grant_type=client_credentials</code>.
+     * @param {string} password - The account password. Mandatory if <code>grant_type=client_credentials</code>.
+     * @param {string} refresh_token - The <code>refresh_token</code> obtained in the last successful request to this endpoint.  Mandatory if <code>grant_type=refresh_token</code>.
+     *
+     */
+    auth(parameters: {
+        'grant_type': string,
+        'email' ? : string,
+        'password' ? : string,
+        'refresh_token' ? : string,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/auth';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters['grant_type'] !== undefined) {
+                queryParameters['grant_type'] = parameters['grant_type'];
+            }
+
+            if (parameters['grant_type'] === undefined) {
+                reject(new Error('Missing required  parameter: grant_type'));
+                return;
+            }
+
+            if (parameters['email'] !== undefined) {
+                queryParameters['email'] = parameters['email'];
+            }
+
+            if (parameters['password'] !== undefined) {
+                queryParameters['password'] = parameters['password'];
+            }
+
+            if (parameters['refresh_token'] !== undefined) {
+                queryParameters['refresh_token'] = parameters['refresh_token'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('POST', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+    /**
+     * Get secure
+     * @method
+     * @name Test#getSecure
+     * @param {string} token - Auth token
+     *
+     */
+    getSecure(parameters: {
+        'token' ? : string,
+        $queryParameters ? : {}
+    }): Promise < request.Response > {
+        let domain = this.domain;
+        let path = '/project';
+        let body;
+        let queryParameters = {};
+        let headers = {};
+        let form = {};
+        return new Promise(function(resolve, reject) {
+
+            if (parameters['token'] !== undefined) {
+                queryParameters['token'] = parameters['token'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            let req = request('GET', domain + path)
+                .query(queryParameters);
+            Object.keys(headers).forEach(key => {
+                req.set(key, headers[key]);
+            });
+
+            if (body) {
+                req.send(body);
+            }
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                req.set('Content-Type', 'application/json');
+            }
+
+            if (Object.keys(form).length > 0) {
+                req.type('form');
+                req.send(form);
+            }
+
+            req.end((error, response) => {
+                if (error) {
+                    reject(error);
+                } else if (response.status >= 200 && response.status <= 299) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+
+        });
+    };
+
+}

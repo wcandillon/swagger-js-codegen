@@ -1,0 +1,241 @@
+/*jshint -W069 */
+/*global angular:false */
+angular.module('Test', [])
+    .factory('Test', ['$q', '$http', '$rootScope', function($q, $http, $rootScope) {
+        'use strict';
+
+        /**
+         * 
+         * @class Test
+         * @param {(string|object)} [domainOrOptions] - The project domain or options object. If object, see the object's optional properties.
+         * @param {string} [domainOrOptions.domain] - The project domain
+         * @param {string} [domainOrOptions.cache] - An angularjs cache implementation
+         * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
+         * @param {string} [cache] - An angularjs cache implementation
+         */
+        var Test = (function() {
+            function Test(options, cache) {
+                var domain = (typeof options === 'object') ? options.domain : options;
+                this.domain = typeof(domain) === 'string' ? domain : 'http://portal.28.io/api';
+                if (this.domain.length === 0) {
+                    throw new Error('Domain parameter must be specified as a string.');
+                }
+                cache = cache || ((typeof options === 'object') ? options.cache : cache);
+                this.cache = cache;
+                this.token = (typeof options === 'object') ? (options.token ? options.token : {}) : {};
+            }
+
+            Test.prototype.$on = function($scope, path, handler) {
+                var url = this.domain + path;
+                $scope.$on(url, function() {
+                    handler();
+                });
+                return this;
+            };
+
+            Test.prototype.$broadcast = function(path) {
+                var url = this.domain + path;
+                //cache.remove(url);
+                $rootScope.$broadcast(url);
+                return this;
+            };
+
+            Test.transformRequest = function(obj) {
+                var str = [];
+                for (var p in obj) {
+                    var val = obj[p];
+                    if (angular.isArray(val)) {
+                        val.forEach(function(val) {
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
+                        });
+                    } else {
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(val));
+                    }
+                }
+                return str.join("&");
+            };
+
+            /**
+             * Set Token
+             * @method
+             * @name Test#setToken
+             * @param {string} value - token's value
+             * @param {string} headerOrQueryName - the header or query name to send the token at
+             * @param {boolean} isQuery - true if send the token as query param, otherwise, send as header param
+             *
+             */
+            Test.prototype.setToken = function(value, headerOrQueryName, isQuery) {
+                this.token.value = value;
+                this.token.headerOrQueryName = headerOrQueryName;
+                this.token.isQuery = isQuery;
+            };
+
+            /**
+             * Get token
+             * @method
+             * @name Test#auth
+             * @param {string} grant_type - Authorization grant type. Use <code>client_credentials</code> to create a token or <code>refresh_token</code> to refresh a token
+             * @param {string} email - The account email. Mandatory if <code>grant_type=client_credentials</code>.
+             * @param {string} password - The account password. Mandatory if <code>grant_type=client_credentials</code>.
+             * @param {string} refresh_token - The <code>refresh_token</code> obtained in the last successful request to this endpoint.  Mandatory if <code>grant_type=refresh_token</code>.
+             * 
+             */
+            Test.prototype.auth = function(parameters) {
+                if (parameters === undefined) {
+                    parameters = {};
+                }
+                var deferred = $q.defer();
+
+                var domain = this.domain;
+                var path = '/auth';
+
+                var body;
+                var queryParameters = {};
+                var headers = {};
+                var form = {};
+
+                if (parameters['grant_type'] !== undefined) {
+                    queryParameters['grant_type'] = parameters['grant_type'];
+                }
+
+                if (parameters['grant_type'] === undefined) {
+                    deferred.reject(new Error('Missing required  parameter: grant_type'));
+                    return deferred.promise;
+                }
+
+                if (parameters['email'] !== undefined) {
+                    queryParameters['email'] = parameters['email'];
+                }
+
+                if (parameters['password'] !== undefined) {
+                    queryParameters['password'] = parameters['password'];
+                }
+
+                if (parameters['refresh_token'] !== undefined) {
+                    queryParameters['refresh_token'] = parameters['refresh_token'];
+                }
+
+                if (parameters.$queryParameters) {
+                    Object.keys(parameters.$queryParameters)
+                        .forEach(function(parameterName) {
+                            var parameter = parameters.$queryParameters[parameterName];
+                            queryParameters[parameterName] = parameter;
+                        });
+                }
+
+                var url = domain + path;
+                var options = {
+                    timeout: parameters.$timeout,
+                    method: 'POST',
+                    url: url,
+                    params: queryParameters,
+                    data: body,
+                    headers: headers
+                };
+                if (Object.keys(form).length > 0) {
+                    options.data = form;
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    options.transformRequest = Test.transformRequest;
+                }
+                $http(options)
+                    .success(function(data, status, headers, config) {
+                        deferred.resolve(data);
+                        if (parameters.$cache !== undefined) {
+                            parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+                        }
+                    })
+                    .error(function(data, status, headers, config) {
+                        deferred.reject({
+                            status: status,
+                            headers: headers,
+                            config: config,
+                            body: data
+                        });
+                    });
+
+                return deferred.promise;
+            };
+            /**
+             * Get secure
+             * @method
+             * @name Test#getSecure
+             * @param {string} token - Auth token
+             * 
+             */
+            Test.prototype.getSecure = function(parameters) {
+                if (parameters === undefined) {
+                    parameters = {};
+                }
+                var deferred = $q.defer();
+
+                var domain = this.domain;
+                var path = '/project';
+
+                var body;
+                var queryParameters = {};
+                var headers = {};
+                var form = {};
+
+                if (this.token.isQuery) {
+                    queryParameters[this.token.headerOrQueryName] = this.token.value;
+                } else if (this.token.headerOrQueryName) {
+                    headers[this.token.headerOrQueryName] = this.token.value;
+                } else {
+                    headers['Authorization'] = 'Bearer ' + this.token.value;
+                }
+
+                if (parameters['token'] !== undefined) {
+                    queryParameters['token'] = parameters['token'];
+                }
+
+                if (parameters.$queryParameters) {
+                    Object.keys(parameters.$queryParameters)
+                        .forEach(function(parameterName) {
+                            var parameter = parameters.$queryParameters[parameterName];
+                            queryParameters[parameterName] = parameter;
+                        });
+                }
+
+                var url = domain + path;
+                var cached = parameters.$cache && parameters.$cache.get(url);
+                if (cached !== undefined && parameters.$refresh !== true) {
+                    deferred.resolve(cached);
+                    return deferred.promise;
+                }
+                var options = {
+                    timeout: parameters.$timeout,
+                    method: 'GET',
+                    url: url,
+                    params: queryParameters,
+                    data: body,
+                    headers: headers
+                };
+                if (Object.keys(form).length > 0) {
+                    options.data = form;
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    options.transformRequest = Test.transformRequest;
+                }
+                $http(options)
+                    .success(function(data, status, headers, config) {
+                        deferred.resolve(data);
+                        if (parameters.$cache !== undefined) {
+                            parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+                        }
+                    })
+                    .error(function(data, status, headers, config) {
+                        deferred.reject({
+                            status: status,
+                            headers: headers,
+                            config: config,
+                            body: data
+                        });
+                    });
+
+                return deferred.promise;
+            };
+
+            return Test;
+        })();
+
+        return Test;
+    }]);

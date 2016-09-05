@@ -129,17 +129,7 @@ methods:
         description: true if method === 'GET'
       summary:
         type: string
-        description: Provided by the 'description' or 'summary' field in the schema
-      externalDocs:
-        type: object
-        properties:
-          url:
-            type: string
-            description: The URL for the target documentation. Value MUST be in the format of a URL.
-            required: true
-          description:
-            type: string
-            description: A short description of the target documentation. GitHub-Markdown syntax can be used for rich text representation.
+        description: Provided by the 'description' field in the schema
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema
@@ -220,3 +210,6 @@ And example of gulp task is available [here](https://github.com/wcandillon/cells
 The [CellStore](https://github.com/wcandillon/cellstore) project.
 
 [28.io](http://28.io) is using this project to generate their [nodejs](https://github.com/28msec/28.io-nodejs) and [angularjs language bindings](https://github.com/28msec/28.io-angularjs).
+
+##Contributing
+Pull requests welcome, refer to the [contribution guidelines](CONTRIBUTING.md)

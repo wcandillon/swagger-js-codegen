@@ -30,6 +30,13 @@ $queryParameters?: {}
             path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
         {{/isPathParameter}}
     {{/parameters}}
+    
+    if(parameters.$queryParameters) {
+        Object.keys(parameters.$queryParameters).forEach(function(parameterName){
+            var parameter = parameters.$queryParameters[parameterName];
+            queryParameters[parameterName] = parameter;
+        });
+    }
     let keys = Object.keys(queryParameters);
     return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
 };

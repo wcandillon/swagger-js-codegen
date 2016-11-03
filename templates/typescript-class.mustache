@@ -3,6 +3,12 @@
 {{/imports}}
 
 import * as request from "superagent";
+import {SuperAgentStatic} from "superagent";
+
+type CallbackHandler = (err: any, res?: request.Response) => void;
+{{#definitions}}
+type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+{{/definitions}}
 
 /**
  * {{&description}}
@@ -12,24 +18,24 @@ import * as request from "superagent";
 export default class {{&className}} {
 
     private domain: string = "{{&domain}}";
-    private errorHandlers = [];
+    private errorHandlers: CallbackHandler[] = [];
 
     constructor(domain?: string) {
         if(domain) {
             this.domain = domain;
         }
     }
-    
+
     getDomain() {
         return this.domain;
     }
-    
-    addErrorHandler(handler) {
+
+    addErrorHandler(handler: CallbackHandler) {
         this.errorHandlers.push(handler);
     }
 
-    private request(method, url, body, headers, queryParameters, form, reject, resolve, errorHandlers) {
-        let req = request(method, url)
+    private request(method: string, url: string, body: any, headers: any, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler, errorHandlers: CallbackHandler[]) {
+        let req = (request as SuperAgentStatic)(method, url)
             .query(queryParameters);
         Object.keys(headers).forEach(key => {
             req.set(key, headers[key]);

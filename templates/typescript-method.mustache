@@ -1,9 +1,9 @@
 {{&methodName}}URL(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-$queryParameters?: {}
+$queryParameters?: any
 }): string {
-    let queryParameters = {};
+    let queryParameters: any = {};
     let path = '{{&path}}';
     {{#parameters}}
         {{#isQueryParameter}}
@@ -55,17 +55,17 @@ $queryParameters?: {}
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-    $queryParameters?: {},
+    $queryParameters?: any,
     $domain?: string
 }): Promise<request.Response> {
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     const errorHandlers = this.errorHandlers;
     const request = this.request;
-    const path = '{{&path}}';
-    let body;
-    let queryParameters = {};
-    let headers = {};
-    let form = {};
+    let path = '{{&path}}';
+    let body: any;
+    let queryParameters: any = {};
+    let headers: any = {};
+    let form: any = {};
     return new Promise(function(resolve, reject) {
 {{#headers}}
     headers['{{&name}}'] = {{&value}};

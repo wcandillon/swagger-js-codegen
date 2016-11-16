@@ -39,9 +39,9 @@ $queryParameters?: any
     }
 
     {{^isBodyParameter}}
-        if('{{method}}' === 'POST') {
-        queryParameters = {};
-        }
+        {{^isPOST}}
+    queryParameters = {};
+        {{/isPOST}}
     {{/isBodyParameter}}
 
 
@@ -149,11 +149,12 @@ if(parameters.$queryParameters) {
     });
 }
 
-
-    if(body === undefined && '{{method}}' === 'POST') {
-        form = queryParameters;
-        queryParameters = {};
-    }
+    {{^isBodyParameter}}
+        {{^isPOST}}
+            form = queryParameters;
+            queryParameters = {};
+        {{/isPOST}}
+    {{/isBodyParameter}}
 
     request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
 

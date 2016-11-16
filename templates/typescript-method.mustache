@@ -38,7 +38,7 @@ $queryParameters?: any
         });
     }
 
-    if(body === undefined && {{method}} === 'POST') {
+    if(body === undefined && '{{method}}' === 'POST') {
         form = queryParameters;
         queryParameters = {};
     }
@@ -148,7 +148,7 @@ if(parameters.$queryParameters) {
 }
 
 
-    if(body === undefined && {{method}} === 'POST') {
+    if(body === undefined && '{{method}}' === 'POST') {
         form = queryParameters;
         queryParameters = {};
     }

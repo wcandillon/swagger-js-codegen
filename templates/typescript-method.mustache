@@ -39,7 +39,7 @@ $queryParameters?: any
     }
 
     {{^isBodyParameter}}
-        {{^isPOST}}
+        {{#isPOST}}
     queryParameters = {};
         {{/isPOST}}
     {{/isBodyParameter}}
@@ -150,7 +150,7 @@ if(parameters.$queryParameters) {
 }
 
     {{^isBodyParameter}}
-        {{^isPOST}}
+        {{#isPOST}}
             form = queryParameters;
             queryParameters = {};
         {{/isPOST}}

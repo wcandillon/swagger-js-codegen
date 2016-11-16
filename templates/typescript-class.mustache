@@ -44,6 +44,10 @@ export default class {{&className}} {
         if(body) {
             req.send(body);
         }
+        
+        if(body === undefined && method.toUpperCase() === "POST") {
+            req.set("Content-Type", "application/x-www-form-urlencoded");
+        }
 
         if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
             req.set('Content-Type', 'application/json');

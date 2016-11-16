@@ -37,6 +37,12 @@ $queryParameters?: any
             queryParameters[parameterName] = parameter;
         });
     }
+
+    if(body === undefined && {{method}} === 'POST') {
+        form = queryParameters;
+        queryParameters = {};
+    }
+
     let keys = Object.keys(queryParameters);
     return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
 };
@@ -140,6 +146,12 @@ if(parameters.$queryParameters) {
         queryParameters[parameterName] = parameter;
     });
 }
+
+
+    if(body === undefined && {{method}} === 'POST') {
+        form = queryParameters;
+        queryParameters = {};
+    }
 
     request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
 

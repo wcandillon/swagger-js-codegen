@@ -35,13 +35,7 @@ export default class {{&className}} {
     }
 
     private request(method: string, url: string, body: any, headers: any, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler, errorHandlers: CallbackHandler[]) {
-        let req = (request as SuperAgentStatic)(method, url);
-
-        if(body === undefined && method.toUpperCase() === 'POST') {
-            form = queryParameters;
-        } else {
-            req.query(queryParameters);
-        }
+        let req = (request as SuperAgentStatic)(method, url).query(queryParameters);
 
         Object.keys(headers).forEach(key => {
             req.set(key, headers[key]);

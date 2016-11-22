@@ -2,7 +2,7 @@
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
 $queryParameters?: any, 
-$domain?: string, 
+$domain?: string
 }): string {
     let queryParameters: any = {};
     const domain = parameters.$domain ? parameters.$domain : this.domain;

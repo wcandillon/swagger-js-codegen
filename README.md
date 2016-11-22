@@ -66,6 +66,10 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
   imports:
     type: array
     description: Typescript definition files to be imported.
+  promise:
+    type: string
+    description: Promise implementation to use [any-promise, native, q, bluebird, ...]
+    default: any-promise
   swagger:
     type: object
     required: true
@@ -90,6 +94,9 @@ moduleName:
 className:
   type: string
   description: Provided by your options field
+promise:
+  type: string
+  description: Expression that will return the chosen Promise implementation
 domain:
   type: string
   description: If all options defined: swagger.schemes[0] + '://' + swagger.host + swagger.basePath

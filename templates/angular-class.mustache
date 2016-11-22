@@ -1,7 +1,7 @@
 /*jshint -W069 */
 /*global angular:false */
 angular.module('{{&moduleName}}', [])
-.factory('{{&className}}', ['$q', '$http', '$rootScope', function($q, $http, $rootScope){
+.factory('{{&className}}', ['$q', '$http', '$rootScope', function(P, $http, $rootScope){
     'use strict';
 
     /**
@@ -27,7 +27,7 @@ angular.module('{{&moduleName}}', [])
             {{/isSecure}}
         }
 
-        {{&className}}.prototype.request = function(method, url, parameters, body, headers, queryParameters, form, deferred){
+        {{&className}}.prototype.request = function(method, url, parameters, body, headers, queryParameters, form){
             {{#isGET}}
             var cached = parameters.$cache && parameters.$cache.get(url);
             if(cached !== undefined && parameters.$refresh !== true) {
@@ -48,19 +48,22 @@ angular.module('{{&moduleName}}', [])
                 options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 options.transformRequest = {{&className}}.transformRequest;
             }
-            $http(options)
-            .success(function(data, status, headers, config){
-                deferred.resolve(data);
-                if(parameters.$cache !== undefined) {
-                    parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
-                }
-            })
-            .error(function(data, status, headers, config){
-                deferred.reject({
-                    status: status,
-                    headers: headers,
-                    config: config,
-                    body: data
+
+            return new P(function(resolve, reject) {
+                $http(options)
+                .success(function(data, status, headers, config){
+                    resolve(data);
+                    if(parameters.$cache !== undefined) {
+                        parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+                    }
+                })
+                .error(function(data, status, headers, config){
+                    reject({
+                        status: status,
+                        headers: headers,
+                        config: config,
+                        body: data
+                    });
                 });
             });
 

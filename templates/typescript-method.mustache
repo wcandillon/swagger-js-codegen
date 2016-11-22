@@ -3,6 +3,7 @@
 {{/isSingleton}}{{/parameters}}
 $queryParameters?: any
 }): string {
+    const domain = parameters.$domain ? parameters.$domain : this.domain;
     let queryParameters: any = {};
     let path = '{{&path}}';
     {{#parameters}}
@@ -46,7 +47,7 @@ $queryParameters?: any
 
 
     let keys = Object.keys(queryParameters);
-    return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
+    return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
 };
 
 /**

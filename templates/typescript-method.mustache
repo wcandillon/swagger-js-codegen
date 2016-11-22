@@ -1,9 +1,11 @@
 {{&methodName}}URL(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-$queryParameters?: any
+$queryParameters?: any, 
+$domain?: string
 }): string {
     let queryParameters: any = {};
+    const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';
     {{#parameters}}
         {{#isQueryParameter}}
@@ -46,7 +48,7 @@ $queryParameters?: any
 
 
     let keys = Object.keys(queryParameters);
-    return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
+    return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
 };
 
 /**

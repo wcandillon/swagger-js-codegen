@@ -10,7 +10,7 @@
 {{/parameters}}
 */
 {{&methodName}}(parameters: {
-{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+{{#parameters}}{{^isSingleton}}{{&camelCaseName}}{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
       $queryParameters?: {},
     },
@@ -131,15 +131,19 @@ options.transformRequest = {{&className}}.transformRequest;
 {{/hasForm}}
 
 this.$http(options).then(function(response: ng.IHttpPromiseCallbackArg<{{&tsType}}|any>){
-    {{#hasVoidReturn}}
-    deferred.resolve();
-    {{/hasVoidReturn}}
-    {{^hasVoidReturn}}
-    deferred.resolve(response.data);
-    if(opts.$cache !== undefined) {
-        opts.$cache.put(url, response.data, opts.$cacheItemOpts ? opts.$cacheItemOpts : {});
+    if(response.status >= 400) {
+        deferred.reject(response);
+    } else {
+        {{#hasVoidReturn}}
+        deferred.resolve();
+        {{/hasVoidReturn}}
+        {{^hasVoidReturn}}
+        deferred.resolve(response.data);
+        if(opts.$cache !== undefined) {
+            opts.$cache.put(url, response.data, opts.$cacheItemOpts ? opts.$cacheItemOpts : {});
+        }
+        {{/hasVoidReturn}}
     }
-    {{/hasVoidReturn}}
 }, deferred.reject);
 
 return deferred.promise;

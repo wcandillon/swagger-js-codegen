@@ -68,14 +68,12 @@ $domain?: string
     $domain?: string
 }): Promise<request.Response> {
     const domain = parameters.$domain ? parameters.$domain : this.domain;
-    const errorHandlers = this.errorHandlers;
-    const request = this.request;
     let path = '{{&path}}';
     let body: any;
     let queryParameters: any = {};
     let headers: any = {};
     let form: any = {};
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 {{#headers}}
     headers['{{&name}}'] = {{&value}};
 {{/headers}}
@@ -95,7 +93,7 @@ $domain?: string
                 });
             {{/isPatternType}}
             {{^isPatternType}}
-                if(parameters['{{&camelCaseName}}'] !== undefined){
+                if(parameters['{{&camelCaseName}}'] !== undefined) {
                     queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
             {{/isPatternType}}
@@ -111,14 +109,14 @@ $domain?: string
             headers['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined){
+            if(parameters['{{&camelCaseName}}'] !== undefined) {
                 headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
 
     {{#isBodyParameter}}
-        if(parameters['{{&camelCaseName}}'] !== undefined){
+        if(parameters['{{&camelCaseName}}'] !== undefined) {
             body = parameters['{{&camelCaseName}}'];
         }
     {{/isBodyParameter}}
@@ -128,14 +126,14 @@ $domain?: string
             form['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined){
+            if(parameters['{{&camelCaseName}}'] !== undefined) {
                 form['{{&name}}'] = parameters['{{&camelCaseName}}'];
             }
         {{/isSingleton}}
     {{/isFormParameter}}
 
     {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
+        if(parameters['{{&camelCaseName}}'] === undefined) {
             reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
             return;
         }
@@ -156,6 +154,6 @@ if(parameters.$queryParameters) {
         {{/isPOST}}
     {{/isBodyParameter}}
 
-    request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+    this.request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve);
     });
 }

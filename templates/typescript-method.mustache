@@ -49,7 +49,7 @@ $domain?: string
 
     let keys = Object.keys(queryParameters);
     return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
-};
+}
 
 /**
 * {{&summary}}
@@ -160,4 +160,4 @@ if(parameters.$queryParameters) {
 
     request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
     });
-};
+}

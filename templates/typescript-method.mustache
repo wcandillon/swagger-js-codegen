@@ -34,9 +34,8 @@ $domain?: string
     {{/parameters}}
     
     if(parameters.$queryParameters) {
-        Object.keys(parameters.$queryParameters).forEach(function(parameterName){
-            var parameter = parameters.$queryParameters[parameterName];
-            queryParameters[parameterName] = parameter;
+        Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+            queryParameters[parameterName] = parameters.$queryParameters[parameterName];
         });
     }
 
@@ -146,8 +145,7 @@ $domain?: string
 
 if(parameters.$queryParameters) {
     Object.keys(parameters.$queryParameters).forEach(function(parameterName){
-        var parameter = parameters.$queryParameters[parameterName];
-        queryParameters[parameterName] = parameter;
+        queryParameters[parameterName] = parameters.$queryParameters[parameterName];
     });
 }
 

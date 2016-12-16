@@ -10,6 +10,8 @@ type CallbackHandler = (err: any, res?: request.Response) => void;
 type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}
 
+type Logger = { log: (line: string) => {} };
+
 /**
  * {{&description}}
  * @class {{&className}}
@@ -20,7 +22,7 @@ export default class {{&className}} {
     private domain: string = "{{&domain}}";
     private errorHandlers: CallbackHandler[] = [];
 
-    constructor(domain?: string) {
+    constructor(domain?: string, private logger?: Logger) {
         if(domain) {
             this.domain = domain;
         }
@@ -35,6 +37,10 @@ export default class {{&className}} {
     }
 
     private request(method: string, url: string, body: any, headers: any, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler, errorHandlers: CallbackHandler[]) {
+        if(this.logger) {
+          this.logger.log(`Call ${method} ${url}`);
+        }
+
         let req = (request as SuperAgentStatic)(method, url).query(queryParameters);
 
         Object.keys(headers).forEach(key => {

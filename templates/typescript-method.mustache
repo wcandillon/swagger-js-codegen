@@ -29,7 +29,7 @@ $domain?: string
         {{/isQueryParameter}}
 
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}'].toString());
         {{/isPathParameter}}
     {{/parameters}}
     
@@ -159,6 +159,5 @@ if(parameters.$queryParameters) {
     {{/isBodyParameter}}
 
     request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
-
     });
 };

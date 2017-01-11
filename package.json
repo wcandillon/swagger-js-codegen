@@ -22,12 +22,7 @@
     "email": "w@28.io",
     "url": "http://28.io"
   },
-  "licenses": [
-    {
-      "type": "Apache 2",
-      "url": "https://github.com/wcandillon/swagger-js-codegen/blob/master/LICENSE"
-    }
-  ],
+  "license": "Apache-2.0",
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
     "js-beautify": "^1.5.1",

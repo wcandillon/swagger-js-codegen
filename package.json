@@ -4,7 +4,8 @@
   "version": "1.7.12",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "clean": "rm -rf tmp-*"
   },
   "bugs": {
     "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
@@ -39,6 +40,8 @@
     "matchdep": "^1.0.1 ",
     "q": "^1.0.1",
     "request": "^2.40.0",
+    "tmp": "0.0.31",
+    "typescript": "^2.1.4",
     "vows": "^0.8.1"
   }
 }

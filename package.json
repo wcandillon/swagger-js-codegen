@@ -30,20 +30,20 @@
   ],
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
-    "js-beautify": "~1.5.1",
-    "jshint": "~2.5.1",
-    "lodash": "4.14.1",
+    "js-beautify": "^1.5.1",
+    "jshint": "^2.5.1",
+    "lodash": "^4.15.0",
     "mustache": "^2.0.0"
   },
   "devDependencies": {
-    "final-fs": "~1.6.0",
+    "final-fs": "^1.6.0",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.1.0",
-    "grunt-jsonlint": "~1.0.4",
-    "grunt-vows": "~0.4.1",
-    "matchdep": "~0.3.0",
-    "q": "~1.0.1",
-    "request": "~2.40.0",
-    "vows": "~0.7.0"
+    "grunt-jsonlint": "^1.0.4",
+    "grunt-vows": "^0.4.1",
+    "matchdep": "^1.0.1 ",
+    "q": "^1.0.1",
+    "request": "^2.40.0",
+    "vows": "^0.8.1"
   }
 }

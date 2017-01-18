@@ -29,7 +29,7 @@ $domain?: string
         {{/isQueryParameter}}
 
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}'].toString());
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
         {{/isPathParameter}}
     {{/parameters}}
     
@@ -101,7 +101,7 @@ $domain?: string
     {{/isQueryParameter}}
 
     {{#isPathParameter}}
-        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}'].toString());
+        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
     {{/isPathParameter}}
 
     {{#isHeaderParameter}}

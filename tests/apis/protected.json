@@ -60,6 +60,17 @@
                             "$ref": "#/definitions/Authentication"
                         }
                     },
+                    "security": [
+                        {
+                            "oauth2": []
+                        }
+                    ],
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Error",
                         "schema": {
@@ -131,7 +142,7 @@
                     "type": "ProjectTokens",
                     "description": "The project tokens which can be used to make request to the APIs on the project endpoints"
                 }
-            }            
+            }
         },
         "Error": {
             "required": [

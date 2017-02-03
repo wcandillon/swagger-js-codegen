@@ -1,0 +1,46 @@
+{{#imports}}
+/// <reference path="{{&.}}" />
+{{/imports}}
+
+module {{moduleName}} {
+
+{{#definitions}}
+    {{#description}}/** {{description}} */{{/description}}
+    export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+
+{{/definitions}}
+
+/**
+* {{&description}}
+* @class {{&className}}
+* @param {ng.IHttpService} $http
+* @param {ng.IQService} $q
+* @param {string} domain - The project domain.
+*    provide using <code>.constant('domain', '//example.com')</code> or <code>.factory('domain', function(){return '//example.com'})</code>
+*/
+export class {{&className}} {
+    static $inject = ['$http', '$q', 'domain'];
+
+    constructor(private $http: ng.IHttpService, private $q: ng.IQService, private domain: string) {}
+
+{{#methods}}
+    {{> method}}
+
+{{/methods}}
+
+    private static transformRequest(obj: any): string {
+        var str = [];
+        for(var p in obj) {
+            var val = obj[p];
+            if(angular.isArray(val)) {
+                val.forEach(function(val){
+                    str.push(encodeURIComponent(p) + '=' + encodeURIComponent(val));
+                });
+            } else {
+                str.push(encodeURIComponent(p) + '=' + encodeURIComponent(val));
+            }
+        }
+        return str.join('&');
+    }
+}
+}

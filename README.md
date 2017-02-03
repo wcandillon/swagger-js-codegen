@@ -55,6 +55,12 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
   lint:
     type: boolean
     description: whether or not to run jslint on the generated code
+  language:
+    type: string
+    description: currently only 'typescript' is supported, but could potentially be 'coffeescript', 'es2015'...
+  framework:
+    type: string
+    description: currently only 'angular' is supported, but could potentially be 'react', 'polymer'...
   esnext:
     type: boolean
     description: passed through to jslint

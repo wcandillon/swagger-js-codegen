@@ -1,7 +1,6 @@
 {{#imports}}
 /// <reference path="{{&.}}" />
 {{/imports}}
-
 import * as request from "superagent";
 import {SuperAgentStatic} from "superagent";
 
@@ -10,13 +9,20 @@ type CallbackHandler = (err: any, res?: request.Response) => void;
 type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}
 
+module {{moduleName}} {
+
+{{#definitions}}
+{{#description}}/** {{description}} */{{/description}}
+interface {{name}} {{> type}}
+
+{{/definitions}}
+
 /**
  * {{&description}}
  * @class {{&className}}
  * @param {string} domain - The project domain.
  */
 export default class {{&className}} {
-
     private domain: string = "{{&domain}}";
     private errorHandlers: CallbackHandler[] = [];
 

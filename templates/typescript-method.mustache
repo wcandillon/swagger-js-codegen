@@ -71,18 +71,22 @@ $domain?: string
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     const errorHandlers = this.errorHandlers;
     const request = this.request;
-    let path = '{{&path}}';
+    const path = '{{&path}}';
+    {{#hasBody}}
     let body: any;
+    {{/hasBody}}
     let queryParameters: any = {};
     let headers: any = {};
+    {{#hasForm}}
     let form: any = {};
+    {{/hasForm}}
+
     return new Promise(function(resolve, reject) {
 {{#headers}}
     headers['{{&name}}'] = {{&value}};
 {{/headers}}
 
 {{#parameters}}
-
     {{#isQueryParameter}}
         {{#isSingleton}}
             queryParameters['{{&name}}'] = '{{&singleton}}';
@@ -134,14 +138,6 @@ $domain?: string
             }
         {{/isSingleton}}
     {{/isFormParameter}}
-
-    {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
-            reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return;
-        }
-    {{/required}}
-
 {{/parameters}}
 
     if(parameters.$queryParameters) {

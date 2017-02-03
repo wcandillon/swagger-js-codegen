@@ -11,11 +11,11 @@ type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 
 module {{moduleName}} {
 
-{{#types}}
+{{#definitions}}
 {{#description}}/** {{description}} */{{/description}}
 interface {{name}} {{> type}}
 
-{{/types}}
+{{/definitions}}
 
 /**
  * {{&description}}

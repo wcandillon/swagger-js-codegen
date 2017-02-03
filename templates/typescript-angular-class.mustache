@@ -4,11 +4,12 @@
 
 module {{moduleName}} {
 
-{{#types}}
+{{#definitions}}
     {{#description}}/** {{description}} */{{/description}}
-    export interface {{name}} {{> type}}
+    {{#isObject}}export interface {{name}} {{> type}}{{/isObject}}
+    {{#isArray}}export type {{name}} = {{> type}};{{/isArray}}
 
-{{/types}}
+{{/definitions}}
 
 /**
 * {{&description}}

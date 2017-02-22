@@ -29,14 +29,13 @@ $domain?: string
         {{/isQueryParameter}}
 
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
         {{/isPathParameter}}
     {{/parameters}}
     
     if(parameters.$queryParameters) {
-        Object.keys(parameters.$queryParameters).forEach(function(parameterName){
-            var parameter = parameters.$queryParameters[parameterName];
-            queryParameters[parameterName] = parameter;
+        Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+            queryParameters[parameterName] = parameters.$queryParameters[parameterName];
         });
     }
 
@@ -49,7 +48,7 @@ $domain?: string
 
     let keys = Object.keys(queryParameters);
     return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
-};
+}
 
 /**
 * {{&summary}}
@@ -69,14 +68,12 @@ $domain?: string
     $domain?: string
 }): Promise<request.Response> {
     const domain = parameters.$domain ? parameters.$domain : this.domain;
-    const errorHandlers = this.errorHandlers;
-    const request = this.request;
     let path = '{{&path}}';
     let body: any;
     let queryParameters: any = {};
     let headers: any = {};
     let form: any = {};
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 {{#headers}}
     headers['{{&name}}'] = {{&value}};
 {{/headers}}
@@ -96,7 +93,7 @@ $domain?: string
                 });
             {{/isPatternType}}
             {{^isPatternType}}
-                if(parameters['{{&camelCaseName}}'] !== undefined){
+                if(parameters['{{&camelCaseName}}'] !== undefined) {
                     queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
                 }
             {{/isPatternType}}
@@ -104,7 +101,7 @@ $domain?: string
     {{/isQueryParameter}}
 
     {{#isPathParameter}}
-        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
+        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
     {{/isPathParameter}}
 
     {{#isHeaderParameter}}
@@ -112,14 +109,14 @@ $domain?: string
             headers['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined){
+            if(parameters['{{&camelCaseName}}'] !== undefined) {
                 headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
 
     {{#isBodyParameter}}
-        if(parameters['{{&camelCaseName}}'] !== undefined){
+        if(parameters['{{&camelCaseName}}'] !== undefined) {
             body = parameters['{{&camelCaseName}}'];
         }
     {{/isBodyParameter}}
@@ -129,14 +126,14 @@ $domain?: string
             form['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined){
+            if(parameters['{{&camelCaseName}}'] !== undefined) {
                 form['{{&name}}'] = parameters['{{&camelCaseName}}'];
             }
         {{/isSingleton}}
     {{/isFormParameter}}
 
     {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
+        if(parameters['{{&camelCaseName}}'] === undefined) {
             reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
             return;
         }
@@ -146,8 +143,7 @@ $domain?: string
 
 if(parameters.$queryParameters) {
     Object.keys(parameters.$queryParameters).forEach(function(parameterName){
-        var parameter = parameters.$queryParameters[parameterName];
-        queryParameters[parameterName] = parameter;
+        queryParameters[parameterName] = parameters.$queryParameters[parameterName];
     });
 }
 
@@ -158,7 +154,6 @@ if(parameters.$queryParameters) {
         {{/isPOST}}
     {{/isBodyParameter}}
 
-    request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
-
+    this.request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve);
     });
-};
+}

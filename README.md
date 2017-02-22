@@ -33,7 +33,8 @@ var source = CodeGen.getCustomCode({
     swagger: swaggerSpec,
     template: {
         class: fs.readFileSync('my-class.mustache', 'utf-8'),
-        method: fs.readFileSync('my-method.mustache', 'utf-8')
+        method: fs.readFileSync('my-method.mustache', 'utf-8'),
+        type: fs.readFileSync('my-type.mustache', 'utf-8')
     }
 });
 ```
@@ -211,12 +212,8 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 ```
 
 
-## Grunt & Gulp task
+## Grunt task
 [There is a grunt task](https://github.com/wcandillon/grunt-swagger-js-codegen) that enables you to integrate the code generation in your development pipeline. This is extremely convenient if your application is using APIs which are documented/specified in the swagger format.
 
-And example of gulp task is available [here](https://github.com/wcandillon/cellstore/blob/master/tasks/swagger.js).
-
 ##Who is using it?
-The [CellStore](https://github.com/wcandillon/cellstore) project.
-
 [28.io](http://28.io) is using this project to generate their [nodejs](https://github.com/28msec/28.io-nodejs) and [angularjs language bindings](https://github.com/28msec/28.io-angularjs).

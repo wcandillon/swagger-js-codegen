@@ -1,10 +1,11 @@
 {
   "name": "swagger-js-codegen",
   "main": "./lib/codegen.js",
-  "version": "1.7.10",
+  "version": "1.8.0",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "clean": "rm -rf tmp-*"
   },
   "bugs": {
     "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
@@ -22,28 +23,26 @@
     "email": "w@28.io",
     "url": "http://28.io"
   },
-  "licenses": [
-    {
-      "type": "Apache 2",
-      "url": "https://github.com/wcandillon/swagger-js-codegen/blob/master/LICENSE"
-    }
-  ],
+  "license": "Apache-2.0",
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
-    "js-beautify": "~1.5.1",
-    "jshint": "~2.5.1",
-    "lodash": "4.14.1",
+    "js-beautify": "^1.5.1",
+    "jshint": "^2.5.1",
+    "lodash": "^4.15.0",
     "mustache": "^2.0.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-contrib-jshint": "~0.9.2",
-    "grunt-vows": "~0.4.1",
-    "q": "~1.0.1",
-    "final-fs": "~1.6.0",
-    "matchdep": "~0.3.0",
-    "vows": "~0.7.0",
-    "grunt-jsonlint": "~1.0.4",
-    "request": "~2.40.0"
+    "final-fs": "^1.6.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-jsonlint": "^1.0.4",
+    "grunt-vows": "^0.4.1",
+    "matchdep": "^1.0.1 ",
+    "q": "^1.0.1",
+    "request": "^2.40.0",
+    "superagent": "^3.3.1",
+    "tmp": "0.0.31",
+    "typescript": "^2.1.4",
+    "vows": "^0.8.1"
   }
 }

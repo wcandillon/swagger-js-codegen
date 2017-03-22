@@ -1,8 +1,6 @@
-{{#imports}}
-/// <reference path="{{&.}}" />
-{{/imports}}
+import * as angular from 'angular';
 
-module {{moduleName}} {
+export module {{moduleName}} {
 
 {{#definitions}}
     {{#description}}/** {{description}} */{{/description}}

@@ -1,16 +1,16 @@
-#Swagger to JS & Typescript Codegen
+# Swagger to JS & Typescript Codegen
 [![Circle CI](https://circleci.com/gh/wcandillon/swagger-js-codegen.svg?style=svg)](https://circleci.com/gh/wcandillon/swagger-js-codegen) [![NPM version](http://img.shields.io/npm/v/swagger-js-codegen.svg?style=flat)](http://badge.fury.io/js/swagger-js-codegen)
 
 This package generates a nodejs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
 The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
 
-##Installation
+## Installation
 ```bash
 npm install swagger-js-codegen
 ```
 
-##Example
+## Example
 ```javascript
 var fs = require('fs');
 var CodeGen = require('swagger-js-codegen').CodeGen;
@@ -25,7 +25,7 @@ console.log(angularjsSourceCode);
 console.log(tsSourceCode);
 ```
 
-##Custom template
+## Custom template
 ```javascript
 var source = CodeGen.getCustomCode({
     moduleName: 'Test',
@@ -39,7 +39,7 @@ var source = CodeGen.getCustomCode({
 });
 ```
 
-##Options
+## Options
 In addition to the common options listed below, `getCustomCode()` *requires* a `template` field:
 
     template: { class: "...", method: "..." }
@@ -73,7 +73,7 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     description: swagger object
 ```
 
-###Template Variables
+### Template Variables
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
 
 ```yaml
@@ -177,7 +177,7 @@ methods:
           description: See the 'Response Object' section in the [Swagger 2.0 specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#response-object)
 ```
 
-####Custom Mustache Variables
+#### Custom Mustache Variables
 You can also pass in your own variables for the mustache templates by adding a `mustache` object:
 
 ```javascript
@@ -191,7 +191,7 @@ var source = CodeGen.getCustomCode({
 });
 ```
 
-##Swagger Extensions
+## Swagger Extensions
 
 ### x-proxy-header
 Some proxies and application servers inject HTTP headers into the requests.  Server-side code
@@ -221,5 +221,5 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 ## Grunt task
 [There is a grunt task](https://github.com/wcandillon/grunt-swagger-js-codegen) that enables you to integrate the code generation in your development pipeline. This is extremely convenient if your application is using APIs which are documented/specified in the swagger format.
 
-##Who is using it?
+## Who is using it?
 [28.io](http://28.io) is using this project to generate their [nodejs](https://github.com/28msec/28.io-nodejs) and [angularjs language bindings](https://github.com/28msec/28.io-angularjs).

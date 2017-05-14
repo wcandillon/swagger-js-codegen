@@ -62,6 +62,12 @@ list.forEach(function(file){
             swagger: swagger
         });
         assert(typeof(result), 'string');
+        result = CodeGen.getReactCode({
+				  	moduleName: 'Test',
+			  		className: 'Test',
+				    swagger: swagger
+			  });
+			  assert(typeof(result), 'string');
         result = CodeGen.getAngularCode({
             moduleName: 'Test',
             className: 'Test',

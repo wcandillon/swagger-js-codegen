@@ -1,4 +1,6 @@
-/*jshint -W069 */
+/*jshint esversion: 6 */
+/*global fetch, btoa */
+import Q from 'q';
 /**
  * {{&description}}
  * @class {{&className}}
@@ -6,14 +8,11 @@
  * @param {string} [domainOrOptions.domain] - The project domain
  * @param {object} [domainOrOptions.token] - auth token - object with value property and optional headerOrQueryName and isQuery properties
  */
-{{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} {{&className}} = (function(){
+let {{&className}} = (function(){
     'use strict';
 
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} request = require('request');
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} Q = require('q');
-
     function {{&className}}(options){
-        {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} domain = (typeof options === 'object') ? options.domain : options;
+        let domain = (typeof options === 'object') ? options.domain : options;
         this.domain = domain ? domain : '{{&domain}}';
         if(this.domain.length === 0) {
             throw new Error('Domain parameter must be specified as a string.');
@@ -31,7 +30,17 @@
         {{/isSecure}}
     }
 
-    function mergeQueryParams(parameters, queryParameters) {
+    function serializeQueryParams(parameters) {
+        let str = [];
+        for (let p in parameters) {
+            if (parameters.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + '=' + encodeURIComponent(parameters[p]));
+            }
+        }
+        return str.join('&');
+     }
+
+     function mergeQueryParams(parameters, queryParameters) {
         if (parameters.$queryParameters) {
             Object.keys(parameters.$queryParameters)
                   .forEach(function(parameterName) {
@@ -40,52 +49,39 @@
             });
         }
         return queryParameters;
-    }
+     }
 
-    /**
-     * HTTP Request
-     * @method
-     * @name {{&className}}#request
-     * @param {string} method - http method
-     * @param {string} url - url to do request
-     * @param {object} parameters
-     * @param {object} body - body parameters / object
-     * @param {object} headers - header parameters
-     * @param {object} queryParameters - querystring parameters
-     * @param {object} form - form data object
-     * @param {object} deferred - promise object
-     */
+     /**
+      * HTTP Request
+      * @method
+      * @name {{&className}}#request
+      * @param {string} method - http method
+      * @param {string} url - url to do request
+      * @param {object} parameters
+      * @param {object} body - body parameters / object
+      * @param {object} headers - header parameters
+      * @param {object} queryParameters - querystring parameters
+      * @param {object} form - form data object
+      * @param {object} deferred - promise object
+      */
     {{&className}}.prototype.request = function(method, url, parameters, body, headers, queryParameters, form, deferred){
-        {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} req = {
-            method: method,
-            uri: url,
-            qs: queryParameters,
-            headers: headers,
-            body: body
-        };
-        if(Object.keys(form).length > 0) {
-            req.form = form;
+        const queryParams = queryParameters && Object.keys(queryParameters).length ? serializeQueryParams(queryParameters) : null ;
+        const urlWithParams = url + (queryParams ? '?' + queryParams : '');
+
+        if(body && !Object.keys(body).length) {
+            body = undefined;
         }
-        if(typeof(body) === 'object' && !(body instanceof Buffer)) {
-            req.json = true;
-        }
-        request(req, function(error, response, body){
-            if(error) {
-                deferred.reject(error);
-            } else {
-                if(/^application\/(.*\\+)?json/.test(response.headers['content-type'])) {
-                    try {
-                        body = JSON.parse(body);
-                    } catch(e) {}
-                }
-                if(response.statusCode === 204) {
-                    deferred.resolve({ response: response });
-                } else if(response.statusCode >= 200 && response.statusCode <= 299) {
-                    deferred.resolve({ response: response, body: body });
-                } else {
-                    deferred.reject({ response: response, body: body });
-                }
-            }
+
+        fetch(urlWithParams, {
+            method,
+            headers,
+            body: JSON.stringify(body)
+        }).then((response) => {
+            return response.json();
+        }).then((body) => {
+            deferred.resolve(body);
+        }).catch((error) => {
+            deferred.reject(error);
         });
     };
 
@@ -140,7 +136,7 @@
         * @param {object} headerParams - headers object
         */
         {{&className}}.prototype.setAuthHeaders = function (headerParams) {
-            {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} headers = headerParams ? headerParams : {};
+            let headers = headerParams ? headerParams : {};
         {{#isSecureToken}}
             if (!this.token.isQuery) {
                 if (this.token.headerOrQueryName) {
@@ -157,7 +153,7 @@
         {{/isSecureApiKey}}
         {{#isSecureBasic}}
             if (this.basic.username && this.basic.password) {
-                headers['Authorization'] = 'Basic ' + new Buffer(this.basic.username + ':' + this.basic.password, 'base64').toString();
+                headers['Authorization'] = 'Basic ' + btoa(this.basic.username + ':' + this.basic.password);
             }
         {{/isSecureBasic}}
             return headers;

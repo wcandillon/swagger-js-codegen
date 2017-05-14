@@ -1,7 +1,8 @@
-node_modules
+.idea/
+node_modules/
+*.iml
+wks.*
 .DS_Store
 *.swp
-*.iml
-.idea
 
 tmp-*

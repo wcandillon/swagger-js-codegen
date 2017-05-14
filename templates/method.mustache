@@ -2,41 +2,27 @@
  * {{&summary}}
  * @method
  * @name {{&className}}#{{&methodName}}
+ * @param {object} parameters - method options and parameters
 {{#parameters}}
-{{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
+    {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> parameters.{{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
- * 
  */
  {{&className}}.prototype.{{&methodName}} = function(parameters){
     if(parameters === undefined) {
         parameters = {};
     }
-    var deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
-    
-    var domain = this.domain;
-    var path = '{{&path}}';
-    
-    var body;
-    var queryParameters = {};
-    var headers = {};
-    var form = {};
+    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
+    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} domain = this.domain,  path = '{{&path}}';
+    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} body = {}, queryParameters = {}, headers = {}, form = {};
 
     {{#isSecure}}
-        if (this.token.isQuery) {
-            queryParameters[this.token.headerOrQueryName] = this.token.value;
-        } else if (this.token.headerOrQueryName) {
-            headers[this.token.headerOrQueryName] = this.token.value;    
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token.value;
-        }
+        headers = this.setAuthHeaders(headers);
     {{/isSecure}}
-
     {{#headers}}
         headers['{{&name}}'] = [{{&value}}];
     {{/headers}}
 
     {{#parameters}}
-       
         {{#isQueryParameter}}
             {{#isSingleton}}
                 queryParameters['{{&name}}'] = '{{&singleton}}';
@@ -49,6 +35,11 @@
                         }
                     });
                 {{/isPatternType}}
+                {{#default}}
+                    /** set default value **/
+                    queryParameters['{{&name}}'] = {{&default}};
+                {{/default}}
+
                 {{^isPatternType}}
                 if(parameters['{{&camelCaseName}}'] !== undefined){
                     queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
@@ -97,14 +88,7 @@
         {{/required}}
  
     {{/parameters}}
-    
-    if(parameters.$queryParameters) {
-        Object.keys(parameters.$queryParameters)
-        .forEach(function(parameterName){
-            var parameter = parameters.$queryParameters[parameterName];
-            queryParameters[parameterName] = parameter;
-        });
-    }
+    queryParameters = mergeQueryParams(parameters, queryParameters);
 
     this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form, deferred);
 

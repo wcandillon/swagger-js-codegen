@@ -6,7 +6,7 @@ $domain?: string
 }): string {
     let queryParameters: any = {};
     const domain = parameters.$domain ? parameters.$domain : this.domain;
-    let path = '{{&path}}';
+    let path = '{{&basePath}}{{&path}}';
     {{#parameters}}
         {{#isQueryParameter}}
             {{#isSingleton}}

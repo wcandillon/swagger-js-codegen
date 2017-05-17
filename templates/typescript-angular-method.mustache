@@ -24,7 +24,7 @@
       $cacheItemOpts?: {};
     } = {}): ng.IPromise<{{&tsType}}|any> {
     let domain = this.domain;
-    let path = '{{&path}}';
+    let path = '{{&basePath}}{{&path}}';
     {{#hasBody}}
     let body;
     {{/hasBody}}

@@ -157,7 +157,7 @@
         {{/isSecureApiKey}}
         {{#isSecureBasic}}
             if (this.basic.username && this.basic.password) {
-                headers['Authorization'] = 'Basic ' + new Buffer(this.basic.username + ':' + this.basic.password, 'base64').toString();
+                headers['Authorization'] = 'Basic ' + new Buffer(this.basic.username + ':' + this.basic.password).toString("base64");
             }
         {{/isSecureBasic}}
             return headers;

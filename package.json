@@ -1,8 +1,8 @@
 {
-  "name": "swagger-js-codegen",
+  "name": "fork-swagger-js-codegen-with-responsetypes",
   "main": "./lib/codegen.js",
-  "version": "1.10.0",
-  "description": "A Swagger codegen for JavaScript",
+  "version": "1.0.0",
+  "description": "A Swagger codegen for JavaScript fork, with support for responsetypes",
   "scripts": {
     "test": "grunt",
     "clean": "rm -rf tmp-*"
@@ -11,23 +11,22 @@
     "swagger2ts": "bin/swagger2ts.js"
   },
   "bugs": {
-    "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
+    "url": "https://github.com/mtennoe/swagger-js-codegen/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/wcandillon/swagger-js-codegen.git"
+    "url": "git://github.com/mtennoe/swagger-js-codegen.git"
   },
   "keywords": [
     "swagger",
     "rest"
   ],
   "author": {
-    "name": "William Candillon",
-    "email": "w@28.io",
-    "url": "http://28.io"
+    "name": "Marius Tennøe",
+    "email": "mariust@outlook.com"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/wcandillon/swagger-js-codegen",
+  "homepage": "https://github.com/mtennoe/swagger-js-codegen",
   "dependencies": {
     "commander": "^2.9.0",
     "js-beautify": "^1.5.1",

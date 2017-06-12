@@ -3,6 +3,8 @@ This package generates a nodejs, reactjs or angularjs class from a [swagger spec
 
 The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
 
+This fork was made to allow for accessing the TypeScript types of successful responses in the mustache templates.
+
 ## Installation
 ```bash
 npm install fork-swagger-js-codegen-with-responsetypes

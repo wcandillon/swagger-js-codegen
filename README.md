@@ -173,6 +173,9 @@ methods:
             type: boolean
           isFormParameter:
             type: boolean
+      successfulResponseType:
+        type: string
+        description: The type of a successful response. Defaults to any for non-parsable types or Swagger 1.0 spec files
 ```
 
 #### Custom Mustache Variables

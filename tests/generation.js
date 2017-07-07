@@ -57,32 +57,7 @@ list.forEach(function(file){
     file = 'tests/apis/' + file;
     batch[file] = function(){
         var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-        var result = CodeGen.getNodeCode({
-            className: 'Test',
-            swagger: swagger
-        });
-        assert(typeof(result), 'string');
-        result = CodeGen.getReactCode({
-		moduleName: 'Test',
-		className: 'Test',
-	    	swagger: swagger
-	  	});
-  	assert(typeof(result), 'string');
-        result = CodeGen.getAngularCode({
-            moduleName: 'Test',
-            className: 'Test',
-            swagger: swagger
-        });
-        assert(typeof(result), 'string');
-        result = CodeGen.getAngularCode({
-            moduleName: 'Test',
-            className: 'Test',
-            swagger: swagger,
-            lint: false,
-            beautify: false
-        });
-        assert(typeof(result), 'string');
-        assert(typeof(result), 'string');
+        var result;
         if(swagger.swagger === '2.0') {
             result = CodeGen.getTypescriptCode({
                 moduleName: 'Test',
@@ -97,8 +72,9 @@ list.forEach(function(file){
             moduleName: 'Test',
             className: 'Test',
             swagger: swagger,
+            lint: false,
             template: {
-                class: fs.readFileSync(__dirname + '/../templates/angular-class.mustache', 'utf-8'),
+                class: fs.readFileSync(__dirname + '/../templates/class.mustache', 'utf-8'),
                 method: fs.readFileSync(__dirname + '/../templates/method.mustache', 'utf-8')
             }
         });

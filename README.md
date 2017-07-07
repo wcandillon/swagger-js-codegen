@@ -1,29 +1,23 @@
-# Swagger to JS & Typescript Codegen
-This package generates a nodejs, reactjs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/mtennoe/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
+# Swagger to Typescript Codegen
+This package generates a TypeScript class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/mtennoe/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
 The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
 
-This fork was made to allow for accessing the TypeScript types of successful responses in the mustache templates.
+This fork was made to simplify some parts, add some more features, and tailor it more to specific use cases.
 
 ## Installation
 ```bash
-npm install fork-swagger-js-codegen-with-responsetypes
+npm install swagger-typescript-codegen
 ```
 
 ## Example
 ```javascript
 var fs = require('fs');
-var CodeGen = require('fork-swagger-js-codegen-with-responsetypes').CodeGen;
+var CodeGen = require('swagger-typescript-codegen').CodeGen;
 
 var file = 'swagger/spec.json';
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-var nodejsSourceCode = CodeGen.getNodeCode({ className: 'Test', swagger: swagger });
-var angularjsSourceCode = CodeGen.getAngularCode({ className: 'Test', swagger: swagger });
-var reactjsSourceCode = CodeGen.getReactCode({ className: 'Test', swagger: swagger });
 var tsSourceCode = CodeGen.getTypescriptCode({ className: 'Test', swagger: swagger, imports: ['../../typings/tsd.d.ts'] });
-console.log(nodejsSourceCode);
-console.log(angularjsSourceCode);
-console.log(reactjsSourceCode);
 console.log(tsSourceCode);
 ```
 
@@ -46,12 +40,12 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
 
     template: { class: "...", method: "..." }
 
-`getAngularCode()`, `getNodeCode()`, and `getCustomCode()` each support the following options:
+`getTypescriptCode()`, `getCustomCode()` each support the following options:
 
 ```yaml
   moduleName:
     type: string
-    description: Your AngularJS module name
+    description: Your module name
   className:
     type: string
   lint:
@@ -79,8 +73,6 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
 
 ```yaml
-isNode:
-  type: boolean
 isES6:
   type: boolean
 description:
@@ -91,7 +83,7 @@ isSecure:
   description: false unless 'swagger.securityDefinitions' is defined
 moduleName:
   type: string
-  description: Your AngularJS module name - provided by your options field
+  description: Your module name - provided by your options field
 className:
   type: string
   description: Provided by your options field

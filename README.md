@@ -97,6 +97,8 @@ methods:
     properties:
       path:
         type: string
+      pathFormatString:
+        type: string
       className:
         type: string
         description: Provided by your options field

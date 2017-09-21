@@ -35,8 +35,7 @@
     "jshint": "^2.9.5",
     "lodash": "^4.17.4",
     "mustache": "^2.3.0",
-    "path-type": "^3.0.0",
-    "vows": "^0.8.1"
+    "path-type": "^3.0.0"
   },
   "devDependencies": {
     "final-fs": "^1.6.1",
@@ -49,6 +48,7 @@
     "superagent": "^3.6.0",
     "tmp": "^0.0.33",
     "typescript": "^2.5.2",
-    "update-notifier": "^2.2.0"
+    "update-notifier": "^2.2.0",
+    "vows": "^0.8.1"
   }
 }

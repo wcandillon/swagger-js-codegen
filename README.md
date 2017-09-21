@@ -1,9 +1,9 @@
 # Swagger to JS & Typescript Codegen
 [![Circle CI](https://circleci.com/gh/wcandillon/swagger-js-codegen.svg?style=svg)](https://circleci.com/gh/wcandillon/swagger-js-codegen) [![NPM version](http://img.shields.io/npm/v/swagger-js-codegen.svg?style=flat)](http://badge.fury.io/js/swagger-js-codegen)
 
-This package generates a nodejs, reactjs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
+This package generates a Nodejs, Reactjs or Angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
-The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
+The Typescript generator is based on [Superagent](https://github.com/visionmedia/superagent) and can be used for both Nodejs and the browser via Browserify/Webpack.
 
 ## Installation
 ```bash
@@ -12,15 +12,16 @@ npm install swagger-js-codegen
 
 ## Example
 ```javascript
-var fs = require('fs');
-var CodeGen = require('swagger-js-codegen').CodeGen;
+const fs = require('fs');
+const { CodeGen } = require('swagger-js-codegen');
 
-var file = 'swagger/spec.json';
-var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-var nodejsSourceCode = CodeGen.getNodeCode({ className: 'Test', swagger: swagger });
-var angularjsSourceCode = CodeGen.getAngularCode({ className: 'Test', swagger: swagger });
-var reactjsSourceCode = CodeGen.getReactCode({ className: 'Test', swagger: swagger });
-var tsSourceCode = CodeGen.getTypescriptCode({ className: 'Test', swagger: swagger, imports: ['../../typings/tsd.d.ts'] });
+const file = 'swagger/spec.json';
+const swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
+const nodejsSourceCode = CodeGen.getNodeCode({ className: 'Test', swagger });
+const angularjsSourceCode = CodeGen.getAngularCode({ className: 'Test', swagger });
+const reactjsSourceCode = CodeGen.getReactCode({ className: 'Test', swagger });
+const tsSourceCode = CodeGen.getTypescriptCode({ className: 'Test', swagger, imports: ['../../typings/tsd.d.ts'] });
+
 console.log(nodejsSourceCode);
 console.log(angularjsSourceCode);
 console.log(reactjsSourceCode);
@@ -29,7 +30,7 @@ console.log(tsSourceCode);
 
 ## Custom template
 ```javascript
-var source = CodeGen.getCustomCode({
+const source = CodeGen.getCustomCode({
     moduleName: 'Test',
     className: 'Test',
     swagger: swaggerSpec,
@@ -76,7 +77,7 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
 ```
 
 ### Template Variables
-The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
+The following data are passed to the [Mustache templates](https://github.com/janl/mustache.js):
 
 ```yaml
 isNode:
@@ -176,10 +177,10 @@ methods:
 ```
 
 #### Custom Mustache Variables
-You can also pass in your own variables for the mustache templates by adding a `mustache` object:
+You can also pass in your own variables for the Mustache templates by adding a `mustache` object:
 
 ```javascript
-var source = CodeGen.getCustomCode({
+const source = CodeGen.getCustomCode({
     ...
     mustache: {
       foo: 'bar',

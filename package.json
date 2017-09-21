@@ -8,7 +8,7 @@
     "clean": "rm -rf tmp-*"
   },
   "bin": {
-    "swagger2ts": "bin/swagger2ts.js"
+    "swagger2ts": "bin/swagger-js-codegen.js"
   },
   "bugs": {
     "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
@@ -29,25 +29,26 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
-    "commander": "^2.9.0",
-    "js-beautify": "^1.5.1",
-    "jshint": "^2.5.1",
-    "lodash": "^4.15.0",
-    "mustache": "^2.0.0",
-    "update-notifier": "^2.1.0"
+    "commander": "^2.11.0",
+    "js-beautify": "^1.7.3",
+    "js-yaml": "^3.10.0",
+    "jshint": "^2.9.5",
+    "lodash": "^4.17.4",
+    "mustache": "^2.3.0",
+    "path-type": "^3.0.0",
+    "vows": "^0.8.1"
   },
   "devDependencies": {
-    "final-fs": "^1.6.0",
+    "final-fs": "^1.6.1",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.1.0",
-    "grunt-jsonlint": "^1.0.4",
-    "grunt-vows": "^0.4.1",
-    "matchdep": "^1.0.1 ",
-    "q": "^1.0.1",
-    "request": "^2.40.0",
-    "superagent": "^3.3.1",
-    "tmp": "0.0.31",
-    "typescript": "^2.1.4",
-    "vows": "^0.8.1"
+    "grunt-jsonlint": "^1.1.0",
+    "grunt-vows": "^0.4.2",
+    "matchdep": "^2.0.0",
+    "request": "^2.82.0",
+    "superagent": "^3.6.0",
+    "tmp": "^0.0.33",
+    "typescript": "^2.5.2",
+    "update-notifier": "^2.2.0"
   }
 }

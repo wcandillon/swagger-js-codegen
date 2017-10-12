@@ -168,7 +168,7 @@ angular.module('{{&moduleName}}', [])
                 * @param {string} password
                 */
                 {{&className}}.prototype.setBasicAuth = function (username, password) {
-                    this.basic.username = value;
+                    this.basic.username = username;
                     this.basic.password = password;
                 };
             {{/isSecureBasic}}

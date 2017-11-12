@@ -37,7 +37,7 @@
                 {{/isPatternType}}
                 {{#default}}
                     /** set default value **/
-                    queryParameters['{{&name}}'] = {{&default}};
+                    queryParameters['{{&name}}'] = '{{&default}}';
                 {{/default}}
 
                 {{^isPatternType}}

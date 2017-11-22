@@ -77,7 +77,8 @@ let {{&className}} = (function(){
             headers,
             body: JSON.stringify(body)
         }).then((response) => {
-            return response.json();
+            if(response.status === 204) return response.text();
+            else return response.json();
         }).then((body) => {
             deferred.resolve(body);
         }).catch((error) => {

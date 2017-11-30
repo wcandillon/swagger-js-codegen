@@ -83,7 +83,10 @@
                 } else if(response.statusCode >= 200 && response.statusCode <= 299) {
                     deferred.resolve({ response: response, body: body });
                 } else {
-                    deferred.reject({ response: response, body: body });
+                    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} err = new Error('Unexpected status code:' + response.statusCode);
+                    err.body = body;
+                    err.response = response;
+                    deferred.reject(err);
                 }
             }
         });

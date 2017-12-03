@@ -77,7 +77,7 @@ angular.module('{{&moduleName}}', [])
             };
             if(Object.keys(form).length > 0) {
                 options.data = form;
-                options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/x-www-form-urlencoded';
                 options.transformRequest = {{&className}}.transformRequest;
             }
             $http(options)

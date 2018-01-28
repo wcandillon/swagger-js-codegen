@@ -57,6 +57,9 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
   beautify:
     type: boolean
     description: whether or not to beautify the generated code
+  beautifyOptions:
+    type: object
+    description: Options to be passed to the beautify command. See js-beautify for all available options.
   mustache:
     type: object
     description: See the 'Custom Mustache Variables' section below

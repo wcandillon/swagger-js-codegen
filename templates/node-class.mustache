@@ -18,6 +18,8 @@
         if(this.domain.length === 0) {
             throw new Error('Domain parameter must be specified as a string.');
         }
+        {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} headers = (typeof options === 'object') ? options.headers : {};
+        this.headers = headers ? headers : {};
         {{#isSecure}}
             {{#isSecureToken}}
                 this.token = (typeof options === 'object') ? (options.token ? options.token : {}) : {};

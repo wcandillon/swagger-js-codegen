@@ -145,6 +145,15 @@ methods:
       isSecure:
         type: boolean
         description: true if the 'security' is defined for the method in the schema
+      version:
+        type: string
+        description: Version part of the path, if the path starts with the prefix '/api/vXXX/'.
+      intVersion:
+        type: integer
+        description: Integer part of the version string.
+      isLatestVersion:
+        type: boolean
+        description: True iff this is the latest version of the method.
       parameters:
         type: array
         description: Includes all of the properties defined for the parameter in the schema plus:

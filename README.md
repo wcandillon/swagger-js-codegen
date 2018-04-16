@@ -110,7 +110,7 @@ methods:
         description: Generated from the HTTP method and path elements or 'x-swagger-js-method-name' field
       method:
         type: string
-        description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLIK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'
+        description: 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'
         enum:
         - GET
         - POST
@@ -121,7 +121,7 @@ methods:
         - HEAD
         - OPTIONS
         - LINK
-        - UNLIK
+        - UNLINK
         - PURGE
         - LOCK
         - UNLOCK
@@ -182,6 +182,9 @@ methods:
       successfulResponseType:
         type: string
         description: The type of a successful response. Defaults to any for non-parsable types or Swagger 1.0 spec files
+      successfulResponseTypeIsRef:
+        type: boolean
+        description: True iff the successful response type is the name of a type defined in the Swagger schema.
 ```
 
 #### Custom Mustache Variables

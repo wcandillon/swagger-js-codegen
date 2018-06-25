@@ -37,7 +37,12 @@
                 {{/isPatternType}}
                 {{#default}}
                     /** set default value **/
-                    queryParameters['{{&name}}'] = {{&default}};
+                    {{#isString}}
+                      queryParameters['{{&name}}'] = '{{default}}';
+                    {{/isString}}
+                    {{^isString}}
+                      queryParameters['{{&name}}'] = {{default}};
+                    {{/isString}}
                 {{/default}}
 
                 {{^isPatternType}}
@@ -47,11 +52,11 @@
                 {{/isPatternType}}
             {{/isSingleton}}
         {{/isQueryParameter}}
-        
+
         {{#isPathParameter}}
             path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
         {{/isPathParameter}}
-        
+
         {{#isHeaderParameter}}
             {{#isSingleton}}
                 headers['{{&name}}'] = '{{&singleton}}';
@@ -62,7 +67,7 @@
                 }
             {{/isSingleton}}
         {{/isHeaderParameter}}
-        
+
         {{#isBodyParameter}}
             if(parameters['{{&camelCaseName}}'] !== undefined){
                 body = parameters['{{&camelCaseName}}'];
@@ -86,7 +91,7 @@
             return deferred.promise;
         }
         {{/required}}
- 
+
     {{/parameters}}
     queryParameters = mergeQueryParams(parameters, queryParameters);
 

@@ -1,55 +1,3 @@
-{{&methodName}}URL(parameters: {
-{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
-{{/isSingleton}}{{/parameters}}
-$queryParameters?: any, 
-$domain?: string
-}): string {
-    let queryParameters: any = {};
-    const domain = parameters.$domain ? parameters.$domain : this.domain;
-    let path = '{{&path}}';
-    {{#parameters}}
-        {{#isQueryParameter}}
-            {{#isSingleton}}
-                queryParameters['{{&name}}'] = '{{&singleton}}';
-            {{/isSingleton}}
-            {{^isSingleton}}
-                {{#isPatternType}}
-                    Object.keys(parameters).forEach(function(parameterName) {
-                    if(new RegExp('{{&pattern}}').test(parameterName)){
-                    queryParameters[parameterName] = parameters[parameterName];
-                    }
-                    });
-                {{/isPatternType}}
-                {{^isPatternType}}
-                    if(parameters['{{&camelCaseName}}'] !== undefined){
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
-                    }
-                {{/isPatternType}}
-            {{/isSingleton}}
-        {{/isQueryParameter}}
-
-        {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
-        {{/isPathParameter}}
-    {{/parameters}}
-    
-    if(parameters.$queryParameters) {
-        Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
-            queryParameters[parameterName] = parameters.$queryParameters[parameterName];
-        });
-    }
-
-    {{^isBodyParameter}}
-        {{#isPOST}}
-    queryParameters = {};
-        {{/isPOST}}
-    {{/isBodyParameter}}
-
-
-    let keys = Object.keys(queryParameters);
-    return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')): '');
-}
-
 /**
 * {{&summary}}
 * @method
@@ -61,19 +9,14 @@ $domain?: string
     {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
 */
-{{&methodName}}(parameters: {
-{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
-{{/isSingleton}}{{/parameters}}
-    $queryParameters?: any,
-    $domain?: string
-}): Promise<request.Response> {
-    const domain = parameters.$domain ? parameters.$domain : this.domain;
+{{&methodName}}({{#parameters}}{{#isPathParameter}}{{&camelCaseName}}{{&cardinality}}: {{> type}},{{/isPathParameter}}{{/parameters}}parameters: {
+{{#parameters}}{{^isPathParameter}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+{{/isSingleton}}{{/isPathParameter}}{{/parameters}}}): Promise<{{#responses}} {{#200}} {{> type}} {{/200}}{{/responses}}> {
     let path = '{{&path}}';
     let body: any;
-    let queryParameters: any = {};
+    let queryParameters: QueryParameters = {};
     let headers: any = {};
     let form: any = {};
-    return new Promise((resolve, reject) => {
 {{#headers}}
     headers['{{&name}}'] = {{&value}};
 {{/headers}}
@@ -88,20 +31,20 @@ $domain?: string
             {{#isPatternType}}
                 Object.keys(parameters).forEach(function(parameterName) {
                     if(new RegExp('{{&pattern}}').test(parameterName)){
-                        queryParameters[parameterName] = parameters[parameterName];
+                        queryParameters[parameterName] = parameters[parameterName]!;
                     }
                 });
             {{/isPatternType}}
             {{^isPatternType}}
                 if(parameters['{{&camelCaseName}}'] !== undefined) {
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}']!;
                 }
             {{/isPatternType}}
         {{/isSingleton}}
     {{/isQueryParameter}}
 
     {{#isPathParameter}}
-        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
+        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', {{&camelCaseName}}.toString());
     {{/isPathParameter}}
 
     {{#isHeaderParameter}}
@@ -110,7 +53,7 @@ $domain?: string
         {{/isSingleton}}
         {{^isSingleton}}
             if(parameters['{{&camelCaseName}}'] !== undefined) {
-                headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                headers['{{&name}}'] = parameters['{{&camelCaseName}}']!;
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
@@ -133,19 +76,14 @@ $domain?: string
     {{/isFormParameter}}
 
     {{#required}}
+        {{^isPathParameter}}
         if(parameters['{{&camelCaseName}}'] === undefined) {
-            reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return;
+            throw new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
         }
+        {{/isPathParameter}}
     {{/required}}
 
 {{/parameters}}
-
-if(parameters.$queryParameters) {
-    Object.keys(parameters.$queryParameters).forEach(function(parameterName){
-        queryParameters[parameterName] = parameters.$queryParameters[parameterName];
-    });
-}
 
     {{^isBodyParameter}}
         {{#isPOST}}
@@ -154,6 +92,5 @@ if(parameters.$queryParameters) {
         {{/isPOST}}
     {{/isBodyParameter}}
 
-    this.request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve);
-    });
+    return this.request('{{method}}', `${this.baseUrl}${path}`, body, headers, queryParameters, form);
 }

@@ -1,96 +1,83 @@
 /**
  * {{&summary}}
  * @method
- * @name {{&className}}#{{&methodName}}
  * @param {object} parameters - method options and parameters
 {{#parameters}}
-    {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> parameters.{{&camelCaseName}} - {{&description}}{{/isSingleton}}
+  {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{^isPathParameter}}parameters.{{/isPathParameter}}{{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
  */
- {{&className}}.prototype.{{&methodName}} = function(parameters){
-    if(parameters === undefined) {
-        parameters = {};
-    }
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} domain = this.domain,  path = '{{&path}}';
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} body = {}, queryParameters = {}, headers = {}, form = {};
+ {{&methodName}}({{#parameters}}{{#isPathParameter}}{{&camelCaseName}},{{/isPathParameter}}{{/parameters}}parameters = {}) {
+  let path = '{{&path}}';
+  let body = {};
+  let queryParameters = {};
+  let headers = {};
+  let form = {};
 
-    {{#isSecure}}
-        headers = this.setAuthHeaders(headers);
-    {{/isSecure}}
-    {{#headers}}
-        headers['{{&name}}'] = [{{&value}}];
-    {{/headers}}
+  {{#isSecure}}
+    headers = Object.assign({}, headers, this.setAuthHeaders(headers));
+  {{/isSecure}}
+  {{#headers}}
+    headers['{{&name}}'] = [{{&value}}];
+  {{/headers}}
 
-    {{#parameters}}
-        {{#isQueryParameter}}
-            {{#isSingleton}}
-                queryParameters['{{&name}}'] = '{{&singleton}}';
-            {{/isSingleton}}
-            {{^isSingleton}}
-                {{#isPatternType}}
-                    Object.keys(parameters).forEach(function(parameterName) {
-                        if(new RegExp('{{&pattern}}').test(parameterName)){
-                            queryParameters[parameterName] = parameters[parameterName];
-                        }
-                    });
-                {{/isPatternType}}
-                {{#default}}
-                    /** set default value **/
-                    queryParameters['{{&name}}'] = {{&default}};
-                {{/default}}
-
-                {{^isPatternType}}
-                if(parameters['{{&camelCaseName}}'] !== undefined){
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
-                }
-                {{/isPatternType}}
-            {{/isSingleton}}
-        {{/isQueryParameter}}
-        
-        {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', parameters['{{&camelCaseName}}']);
-        {{/isPathParameter}}
-        
-        {{#isHeaderParameter}}
-            {{#isSingleton}}
-                headers['{{&name}}'] = '{{&singleton}}';
-            {{/isSingleton}}
-            {{^isSingleton}}
-                if(parameters['{{&camelCaseName}}'] !== undefined){
-                    headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
-                }
-            {{/isSingleton}}
-        {{/isHeaderParameter}}
-        
-        {{#isBodyParameter}}
-            if(parameters['{{&camelCaseName}}'] !== undefined){
-                body = parameters['{{&camelCaseName}}'];
+  {{#parameters}}
+    {{#isQueryParameter}}
+      {{#isSingleton}}
+        queryParameters['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        {{#isPatternType}}
+          Object.keys(parameters).forEach(function(parameterName) {
+            if(new RegExp('{{&pattern}}').test(parameterName)){
+              queryParameters[parameterName] = parameters[parameterName];
             }
-        {{/isBodyParameter}}
+          });
+        {{/isPatternType}}
+        {{#default}}
+          /** set default value **/
+          queryParameters['{{&name}}'] = '{{&default}}';
+        {{/default}}
 
-         {{#isFormParameter}}
-            {{#isSingleton}}
-                form['{{&name}}'] = '{{&singleton}}';
-            {{/isSingleton}}
-            {{^isSingleton}}
-                if(parameters['{{&camelCaseName}}'] !== undefined){
-                    form['{{&name}}'] = parameters['{{&camelCaseName}}'];
-                }
-            {{/isSingleton}}
-        {{/isFormParameter}}
-
-        {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined){
-            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return deferred.promise;
+        {{^isPatternType}}
+        if(parameters['{{&camelCaseName}}'] !== undefined){
+          queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
         }
-        {{/required}}
+        {{/isPatternType}}
+      {{/isSingleton}}
+    {{/isQueryParameter}}
+    
+    {{#isPathParameter}}
+      path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', {{&camelCaseName}});
+    {{/isPathParameter}}
+    
+    {{#isBodyParameter}}
+      if(parameters['{{&camelCaseName}}'] !== undefined){
+        body = parameters['{{&camelCaseName}}'];
+      }
+    {{/isBodyParameter}}
+
+    {{#isFormParameter}}
+      {{#isSingleton}}
+        form['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        if(parameters['{{&camelCaseName}}'] !== undefined){
+            form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+      {{/isSingleton}}
+    {{/isFormParameter}}
+
+    {{#required}}
+      {{^isPathParameter}}
+        if(parameters['{{&camelCaseName}}'] === undefined) {
+          throw Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
+        }
+      {{/isPathParameter}}
+    {{/required}}
  
-    {{/parameters}}
-    queryParameters = mergeQueryParams(parameters, queryParameters);
+  {{/parameters}}
+  queryParameters = this.mergeQueryParams(parameters, queryParameters);
 
-    this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form, deferred);
+  return this.request('{{method}}', `${this.baseUrl}${path}`, body, headers, queryParameters, form);
+ }
 
-    return deferred.promise;
- };

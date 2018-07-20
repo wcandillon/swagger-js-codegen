@@ -15,7 +15,7 @@ yarn add https://github.com/bart-sk/swagger-js-codegen
 ### CLI
 `npx swagger2js generate {swaggerUrl} --type javascript > api.js`
 
-Be sure to specify absolute swagger url to swagger.json. Resulting class can be retrieved on stdout.
+`SwaggerUrl` should be absolute url. Resulting class can be retrieved on stdout.
 
 ```
 -t, --type

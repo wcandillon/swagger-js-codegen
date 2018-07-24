@@ -1,6 +1,10 @@
 # Swagger to JS & Typescript Codegen
 [![Circle CI](https://circleci.com/gh/wcandillon/swagger-js-codegen.svg?style=svg)](https://circleci.com/gh/wcandillon/swagger-js-codegen) [![NPM version](http://img.shields.io/npm/v/swagger-js-codegen.svg?style=flat)](http://badge.fury.io/js/swagger-js-codegen)
 
+## We are looking for a new maintainer
+
+This project is no longer actively maintained by its creator. Please let us know if you would like to become a maintainer.
+
 This package generates a nodejs, reactjs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
 The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.

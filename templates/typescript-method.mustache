@@ -11,7 +11,7 @@
 */
 {{&methodName}}({{#parameters}}{{#isPathParameter}}{{&camelCaseName}}{{&cardinality}}: {{> type}},{{/isPathParameter}}{{/parameters}}parameters: {
 {{#parameters}}{{^isPathParameter}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
-{{/isSingleton}}{{/isPathParameter}}{{/parameters}}} = {}): Promise<{{#responses}} {{#200}} {{> type}} {{/200}}{{/responses}}> {
+{{/isSingleton}}{{/isPathParameter}}{{/parameters}}} {{&defaultParam}}): Promise<{{#responses}} {{#200}} {{> type}} {{/200}}{{/responses}}> {
     let path = '{{&path}}';
     let body: any;
     let queryParameters: QueryParameters = {};

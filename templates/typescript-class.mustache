@@ -8,7 +8,7 @@ import 'isomorphic-fetch';
 type QueryParameters = { [key: string]: string | number | string[] | number[] };
 
 {{#definitions}}
-type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}
 
 class ApiError {

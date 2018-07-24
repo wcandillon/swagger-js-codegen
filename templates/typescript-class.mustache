@@ -31,7 +31,7 @@ class {{&className}} {
     public token: string;
 
     serializeQueryParams(parameters: QueryParameters) {
-        const str = [];
+        const str: string[] = [];
         for (let p in parameters) {
         if (parameters.hasOwnProperty(p)) {
             str.push(`${encodeURIComponent(p)}=${encodeURIComponent(parameters[p].toString())}`);

@@ -76,11 +76,13 @@
     {{/isFormParameter}}
 
     {{#required}}
-        {{^isPathParameter}}
-        if(parameters['{{&camelCaseName}}'] === undefined) {
-            throw new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
-        }
-        {{/isPathParameter}}
+        {{^isSingleton}}
+            {{^isPathParameter}}
+                if(parameters['{{&camelCaseName}}'] === undefined) {
+                    throw new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
+                }
+            {{/isPathParameter}}
+        {{/isSingleton}}
     {{/required}}
 
 {{/parameters}}

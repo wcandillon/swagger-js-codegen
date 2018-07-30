@@ -9,12 +9,32 @@
     {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
 */
-{{&methodName}}({{#parameters}}{{#isPathParameter}}{{&camelCaseName}}{{&cardinality}}: {{> type}},{{/isPathParameter}}{{/parameters}}parameters: {
-{{#parameters}}{{^isPathParameter}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
-{{/isSingleton}}{{/isPathParameter}}{{/parameters}}} {{&defaultParam}}): Promise<{{#responses}} {{#200}} {{> type}} {{/200}}{{/responses}}> {
+{{&methodName}}(
+    {{#parameters}}
+        {{#isPathParameter}}{{&camelCaseName}}{{&cardinality}}: {{> type}},{{/isPathParameter}}
+    {{/parameters}}
+    queryParameters: {
+        {{#parameters}}
+            {{#isQueryParameter}}
+                {{^isSingleton}}
+                    '{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+                {{/isSingleton}}
+            {{/isQueryParameter}}
+        {{/parameters}}
+    } {{&defaultParam}},
+    {{#hasBody}}
+    body: 
+        {{#parameters}}
+            {{#isBodyParameter}}
+                {{^isSingleton}}
+                    {{> type}},
+                {{/isSingleton}}
+            {{/isBodyParameter}}
+        {{/parameters}}
+    {{/hasBody}}
+): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}>
+{
     let path = '{{&path}}';
-    let body: any;
-    let queryParameters: QueryParameters = {};
     let headers: any = {};
     let form: any = {};
 {{#headers}}
@@ -22,26 +42,6 @@
 {{/headers}}
 
 {{#parameters}}
-
-    {{#isQueryParameter}}
-        {{#isSingleton}}
-            queryParameters['{{&name}}'] = '{{&singleton}}';
-        {{/isSingleton}}
-        {{^isSingleton}}
-            {{#isPatternType}}
-                Object.keys(parameters).forEach(function(parameterName) {
-                    if(new RegExp('{{&pattern}}').test(parameterName)){
-                        queryParameters[parameterName] = parameters[parameterName]!;
-                    }
-                });
-            {{/isPatternType}}
-            {{^isPatternType}}
-                if(parameters['{{&camelCaseName}}'] !== undefined) {
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}']!;
-                }
-            {{/isPatternType}}
-        {{/isSingleton}}
-    {{/isQueryParameter}}
 
     {{#isPathParameter}}
         path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', {{&camelCaseName}}.toString());
@@ -58,12 +58,6 @@
         {{/isSingleton}}
     {{/isHeaderParameter}}
 
-    {{#isBodyParameter}}
-        if(parameters['{{&camelCaseName}}'] !== undefined) {
-            body = parameters['{{&camelCaseName}}'];
-        }
-    {{/isBodyParameter}}
-
     {{#isFormParameter}}
         {{#isSingleton}}
             form['{{&name}}'] = '{{&singleton}}';
@@ -77,11 +71,11 @@
 
     {{#required}}
         {{^isSingleton}}
-            {{^isPathParameter}}
-                if(parameters['{{&camelCaseName}}'] === undefined) {
+            {{#isQueryParameter}}
+                if(queryParameters['{{&camelCaseName}}'] === undefined) {
                     throw new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
                 }
-            {{/isPathParameter}}
+            {{/isQueryParameter}}
         {{/isSingleton}}
     {{/required}}
 
@@ -94,5 +88,12 @@
         {{/isPOST}}
     {{/isBodyParameter}}
 
-    return this.request('{{method}}', `${this.baseUrl}${path}`, body, headers, queryParameters, form);
+    return this.request(
+        '{{method}}',
+        `${this.baseUrl}${path}`,
+        {{#hasBody}}body{{/hasBody}}{{^hasBody}}null{{/hasBody}},
+        headers,
+        queryParameters,
+        form
+    );
 }

@@ -1,0 +1,843 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generates JAVASCRIPT class from Open Api 3.0 spec 1`] = `
+"/* eslint-disable */
+import 'isomorphic-fetch';
+
+class Api {
+  constructor() {
+    this.baseUrl = null;
+    this.token = null;
+  }
+
+  serializeQueryParams(parameters) {
+    const str = [];
+    for (let p in parameters) {
+      if (parameters.hasOwnProperty(p)) {
+        str.push(
+          \`\${encodeURIComponent(p)}=\${encodeURIComponent(parameters[p])}\`,
+        );
+      }
+    }
+    return str.join('&');
+  }
+
+  paramsToObject(params) {
+    let query = params.substr(1);
+    let result = {};
+    query.split('&').forEach(function(part) {
+      let item = part.split('=');
+      result[item[0]] = decodeURIComponent(item[1]);
+    });
+    return result;
+  }
+
+  mergeQueryParams(parameters, queryParameters) {
+    if (parameters.$queryParameters) {
+      Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+        const parameter = parameters.$queryParameters[parameterName];
+        queryParameters[parameterName] = parameter;
+      });
+    }
+    return queryParameters;
+  }
+
+  /**
+   * HTTP Request
+   * @method
+   * @param {string} method - http method
+   * @param {string} url - url to do request
+   * @param {object} body - body parameters / object
+   * @param {object} headers - header parameters
+   * @param {object} queryParameters - querystring parameters
+   */
+  request(
+    method,
+    url,
+    body,
+    headers,
+    queryParameters,
+    form,
+    checkFor401 = true,
+  ) {
+    const queryParams =
+      queryParameters && Object.keys(queryParameters).length
+        ? this.serializeQueryParams(queryParameters)
+        : null;
+    const urlWithParams = url + (queryParams ? '?' + queryParams : '');
+
+    // ugly hack, we need to delete Content-Type header with multipart/form-data
+    // that way, browser will calculate form specific headers on it's own
+    // contentTypeHeader[0] because nearly every header's value is set using array
+    const contentTypeHeader = headers['Content-Type'];
+    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
+      delete headers['Content-Type'];
+    }
+
+    if (body && !Object.keys(body).length) {
+      body = undefined;
+    } else {
+      body = JSON.stringify(body);
+    }
+
+    if (form && Object.keys(form).length) {
+      body = new FormData();
+      for (let k in form) {
+        body.append(k, form[k]);
+      }
+    }
+
+    return fetch(urlWithParams, {
+      method,
+      headers,
+      body,
+    })
+      .then(response => {
+        if (checkFor401) {
+          if (response.status === 401) {
+            if (typeof this._onResponseUnauthorized === 'function') {
+              this._onResponseUnauthorized();
+            } else {
+              let error = new Error(response.statusText);
+              error.response = response;
+              throw error;
+            }
+          }
+        }
+
+        if (response.ok) {
+          if (
+            response.headers.get('Content-Type').includes('application/json')
+          ) {
+            return response.json();
+          } else if (
+            response.headers.get('Content-Type').includes('application/pdf')
+          ) {
+            return response.blob();
+          }
+          return {};
+        } else {
+          let error = new Error(response.statusText);
+          error.response = response;
+          throw error;
+        }
+      })
+      .catch(error => {
+        return error.response.json().then(error_details => {
+          error.details = error_details;
+          throw error;
+        });
+      });
+  }
+
+  /**
+   * Set base url
+   * @method
+   * @param {string} baseUrl
+   */
+  setBaseUrl(baseUrl) {
+    this.baseUrl = baseUrl;
+  }
+
+  set onResponseUnauthorized(callback) {
+    this._onResponseUnauthorized = callback;
+  }
+
+  /**
+   * Redirects a user to a given url
+   * @method
+   * @param {string} url
+   */
+  redirect(url) {
+    window.location = url;
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   */
+  simpleGetOperation(
+    pathParameter1,
+    pathParameter2,
+    pathParameter3,
+    parameters = {},
+  ) {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let body = {};
+    let queryParameters = {};
+    let headers = {};
+    let form = {};
+
+    path = path.replace('{path_parameter_1}', pathParameter1);
+
+    path = path.replace('{path_parameter_2}', pathParameter2);
+
+    path = path.replace('{path_parameter_3}', pathParameter3);
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   * @param {} parameters. -
+   */
+  simplePostOperation(
+    pathParameter1,
+    pathParameter2,
+    pathParameter3,
+    parameters = {},
+  ) {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let body = {};
+    let queryParameters = {};
+    let headers = {};
+    let form = {};
+
+    path = path.replace('{path_parameter_1}', pathParameter1);
+
+    path = path.replace('{path_parameter_2}', pathParameter2);
+
+    path = path.replace('{path_parameter_3}', pathParameter3);
+
+    if (parameters[''] !== undefined) {
+      body = parameters[''];
+    }
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+}
+
+export default new Api();
+"
+`;
+
+exports[`Generates JAVASCRIPT class from Swagger 2 spec 1`] = `
+"/* eslint-disable */
+import 'isomorphic-fetch';
+
+class Api {
+  constructor() {
+    this.baseUrl = null;
+    this.token = null;
+  }
+
+  serializeQueryParams(parameters) {
+    const str = [];
+    for (let p in parameters) {
+      if (parameters.hasOwnProperty(p)) {
+        str.push(
+          \`\${encodeURIComponent(p)}=\${encodeURIComponent(parameters[p])}\`,
+        );
+      }
+    }
+    return str.join('&');
+  }
+
+  paramsToObject(params) {
+    let query = params.substr(1);
+    let result = {};
+    query.split('&').forEach(function(part) {
+      let item = part.split('=');
+      result[item[0]] = decodeURIComponent(item[1]);
+    });
+    return result;
+  }
+
+  mergeQueryParams(parameters, queryParameters) {
+    if (parameters.$queryParameters) {
+      Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+        const parameter = parameters.$queryParameters[parameterName];
+        queryParameters[parameterName] = parameter;
+      });
+    }
+    return queryParameters;
+  }
+
+  /**
+   * HTTP Request
+   * @method
+   * @param {string} method - http method
+   * @param {string} url - url to do request
+   * @param {object} body - body parameters / object
+   * @param {object} headers - header parameters
+   * @param {object} queryParameters - querystring parameters
+   */
+  request(
+    method,
+    url,
+    body,
+    headers,
+    queryParameters,
+    form,
+    checkFor401 = true,
+  ) {
+    const queryParams =
+      queryParameters && Object.keys(queryParameters).length
+        ? this.serializeQueryParams(queryParameters)
+        : null;
+    const urlWithParams = url + (queryParams ? '?' + queryParams : '');
+
+    // ugly hack, we need to delete Content-Type header with multipart/form-data
+    // that way, browser will calculate form specific headers on it's own
+    // contentTypeHeader[0] because nearly every header's value is set using array
+    const contentTypeHeader = headers['Content-Type'];
+    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
+      delete headers['Content-Type'];
+    }
+
+    if (body && !Object.keys(body).length) {
+      body = undefined;
+    } else {
+      body = JSON.stringify(body);
+    }
+
+    if (form && Object.keys(form).length) {
+      body = new FormData();
+      for (let k in form) {
+        body.append(k, form[k]);
+      }
+    }
+
+    return fetch(urlWithParams, {
+      method,
+      headers,
+      body,
+    })
+      .then(response => {
+        if (checkFor401) {
+          if (response.status === 401) {
+            if (typeof this._onResponseUnauthorized === 'function') {
+              this._onResponseUnauthorized();
+            } else {
+              let error = new Error(response.statusText);
+              error.response = response;
+              throw error;
+            }
+          }
+        }
+
+        if (response.ok) {
+          if (
+            response.headers.get('Content-Type').includes('application/json')
+          ) {
+            return response.json();
+          } else if (
+            response.headers.get('Content-Type').includes('application/pdf')
+          ) {
+            return response.blob();
+          }
+          return {};
+        } else {
+          let error = new Error(response.statusText);
+          error.response = response;
+          throw error;
+        }
+      })
+      .catch(error => {
+        return error.response.json().then(error_details => {
+          error.details = error_details;
+          throw error;
+        });
+      });
+  }
+
+  /**
+   * Set base url
+   * @method
+   * @param {string} baseUrl
+   */
+  setBaseUrl(baseUrl) {
+    this.baseUrl = baseUrl;
+  }
+
+  set onResponseUnauthorized(callback) {
+    this._onResponseUnauthorized = callback;
+  }
+
+  /**
+   * Redirects a user to a given url
+   * @method
+   * @param {string} url
+   */
+  redirect(url) {
+    window.location = url;
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   */
+  simpleGetOperation(
+    pathParameter1,
+    pathParameter2,
+    pathParameter3,
+    parameters = {},
+  ) {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let body = {};
+    let queryParameters = {};
+    let headers = {};
+    let form = {};
+
+    headers['Accept'] = ['application/json'];
+
+    path = path.replace('{path_parameter_1}', pathParameter1);
+
+    path = path.replace('{path_parameter_2}', pathParameter2);
+
+    path = path.replace('{path_parameter_3}', pathParameter3);
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
+   * @param {} parameters.body -
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   */
+  simplePostOperation(
+    pathParameter1,
+    pathParameter2,
+    pathParameter3,
+    parameters = {},
+  ) {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let body = {};
+    let queryParameters = {};
+    let headers = {};
+    let form = {};
+
+    headers['Accept'] = ['application/json'];
+    headers['Content-Type'] = ['application/json'];
+
+    if (parameters['body'] !== undefined) {
+      body = parameters['body'];
+    }
+
+    path = path.replace('{path_parameter_1}', pathParameter1);
+
+    path = path.replace('{path_parameter_2}', pathParameter2);
+
+    path = path.replace('{path_parameter_3}', pathParameter3);
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+}
+
+export default new Api();
+"
+`;
+
+exports[`Generates TYPESCRIPT class from Open Api 3.0 spec 1`] = `
+"/* tslint:disable */
+import 'isomorphic-fetch';
+
+type QueryParameters = { [key: string]: string | number | string[] | number[] };
+
+class ApiError {
+  public message: string;
+  public details: Error;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+}
+
+/**
+ *
+ * @class Api
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+class Api {
+  public baseUrl: string = '';
+  public token: string;
+
+  serializeQueryParams(parameters: QueryParameters) {
+    const str: string[] = [];
+    for (let p in parameters) {
+      if (parameters.hasOwnProperty(p)) {
+        str.push(
+          \`\${encodeURIComponent(p)}=\${encodeURIComponent(
+            parameters[p].toString(),
+          )}\`,
+        );
+      }
+    }
+    return str.join('&');
+  }
+
+  private async request(
+    method: string,
+    url: string,
+    body: any,
+    headers: any,
+    queryParameters: QueryParameters,
+    form: any,
+  ) {
+    const queryParams =
+      queryParameters && Object.keys(queryParameters).length
+        ? this.serializeQueryParams(queryParameters)
+        : null;
+    const urlWithParams = url + (queryParams ? '?' + queryParams : '');
+
+    // ugly hack, we need to delete Content-Type header with multipart/form-data
+    // that way, browser will calculate form specific headers on it's own
+    // contentTypeHeader[0] because nearly every header's value is set using array
+    const contentTypeHeader = headers['Content-Type'];
+    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
+      delete headers['Content-Type'];
+    }
+
+    if (body && !Object.keys(body).length) {
+      body = undefined;
+    } else {
+      body = JSON.stringify(body);
+    }
+
+    if (form && Object.keys(form).length) {
+      body = new FormData();
+      for (let k in form) {
+        body.append(k, form[k]);
+      }
+    }
+
+    const response = await fetch(urlWithParams, { method, headers, body });
+    if (response.ok) {
+      return response.json();
+    } else {
+      const err = new ApiError(response.statusText);
+      err.details = await response.json();
+      throw err;
+    }
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#simpleGetOperation
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   */
+  simpleGetOperation(
+    pathParameter1: string,
+    pathParameter2: string,
+    pathParameter3: string,
+    queryParameters: {} = {},
+  ): Promise<{
+    items?: Array<{
+      _id?: string;
+      name?: string;
+      ttl?: number;
+      date?: string;
+    }>;
+  }> {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let headers: any = {};
+    let form: any = {};
+
+    path = path.replace('{path_parameter_1}', pathParameter1.toString());
+
+    path = path.replace('{path_parameter_2}', pathParameter2.toString());
+
+    path = path.replace('{path_parameter_3}', pathParameter3.toString());
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      null,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#simplePostOperation
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   * @param {}  -
+   */
+  simplePostOperation(
+    pathParameter1: string,
+    pathParameter2: string,
+    pathParameter3: string,
+    queryParameters: {} = {},
+    body: {
+      _id?: string;
+      name?: string;
+      ttl?: number;
+      date?: string;
+    },
+  ): Promise<{
+    _id?: string;
+  }> {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let headers: any = {};
+    let form: any = {};
+
+    path = path.replace('{path_parameter_1}', pathParameter1.toString());
+
+    path = path.replace('{path_parameter_2}', pathParameter2.toString());
+
+    path = path.replace('{path_parameter_3}', pathParameter3.toString());
+
+    form = queryParameters;
+    queryParameters = {};
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+}
+
+export default new Api();
+"
+`;
+
+exports[`Generates TYPESCRIPT class from Swagger 2 spec 1`] = `
+"/* tslint:disable */
+import 'isomorphic-fetch';
+
+type QueryParameters = { [key: string]: string | number | string[] | number[] };
+
+class ApiError {
+  public message: string;
+  public details: Error;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+}
+
+/**
+ *
+ * @class Api
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+class Api {
+  public baseUrl: string = '';
+  public token: string;
+
+  serializeQueryParams(parameters: QueryParameters) {
+    const str: string[] = [];
+    for (let p in parameters) {
+      if (parameters.hasOwnProperty(p)) {
+        str.push(
+          \`\${encodeURIComponent(p)}=\${encodeURIComponent(
+            parameters[p].toString(),
+          )}\`,
+        );
+      }
+    }
+    return str.join('&');
+  }
+
+  private async request(
+    method: string,
+    url: string,
+    body: any,
+    headers: any,
+    queryParameters: QueryParameters,
+    form: any,
+  ) {
+    const queryParams =
+      queryParameters && Object.keys(queryParameters).length
+        ? this.serializeQueryParams(queryParameters)
+        : null;
+    const urlWithParams = url + (queryParams ? '?' + queryParams : '');
+
+    // ugly hack, we need to delete Content-Type header with multipart/form-data
+    // that way, browser will calculate form specific headers on it's own
+    // contentTypeHeader[0] because nearly every header's value is set using array
+    const contentTypeHeader = headers['Content-Type'];
+    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
+      delete headers['Content-Type'];
+    }
+
+    if (body && !Object.keys(body).length) {
+      body = undefined;
+    } else {
+      body = JSON.stringify(body);
+    }
+
+    if (form && Object.keys(form).length) {
+      body = new FormData();
+      for (let k in form) {
+        body.append(k, form[k]);
+      }
+    }
+
+    const response = await fetch(urlWithParams, { method, headers, body });
+    if (response.ok) {
+      return response.json();
+    } else {
+      const err = new ApiError(response.statusText);
+      err.details = await response.json();
+      throw err;
+    }
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#simpleGetOperation
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   */
+  simpleGetOperation(
+    pathParameter1: string,
+    pathParameter2: string,
+    pathParameter3: string,
+    queryParameters: {} = {},
+  ): Promise<{
+    items?: Array<{
+      _id?: string;
+      date?: string;
+      name?: string;
+      ttl?: number;
+    }>;
+  }> {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let headers: any = {};
+    let form: any = {};
+    headers['Accept'] = 'application/json';
+
+    path = path.replace('{path_parameter_1}', pathParameter1.toString());
+
+    path = path.replace('{path_parameter_2}', pathParameter2.toString());
+
+    path = path.replace('{path_parameter_3}', pathParameter3.toString());
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      null,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#simplePostOperation
+   * @param {} body -
+   * @param {} pathParameter1 - Parameter 1
+   * @param {} pathParameter2 - Parameter 2
+   * @param {} pathParameter3 - Parameter 3
+   */
+  simplePostOperation(
+    pathParameter1: string,
+    pathParameter2: string,
+    pathParameter3: string,
+    queryParameters: {} = {},
+    body: {
+      _id?: string;
+      date?: string;
+      name?: string;
+      ttl?: number;
+    },
+  ): Promise<{
+    _id?: string;
+  }> {
+    let path =
+      '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
+    let headers: any = {};
+    let form: any = {};
+    headers['Accept'] = 'application/json';
+    headers['Content-Type'] = 'application/json';
+
+    path = path.replace('{path_parameter_1}', pathParameter1.toString());
+
+    path = path.replace('{path_parameter_2}', pathParameter2.toString());
+
+    path = path.replace('{path_parameter_3}', pathParameter3.toString());
+
+    form = queryParameters;
+    queryParameters = {};
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+}
+
+export default new Api();
+"
+`;

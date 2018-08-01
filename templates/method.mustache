@@ -70,7 +70,7 @@
     {{#required}}
       {{^isPathParameter}}
         if(parameters['{{&camelCaseName}}'] === undefined) {
-          throw Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
+          throw Error('Missing required parameter: {{&camelCaseName}}');
         }
       {{/isPathParameter}}
     {{/required}}

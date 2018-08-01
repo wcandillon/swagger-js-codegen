@@ -5,9 +5,6 @@
 * @see {@link {{&url}}|{{#description}}{{&description}}{{/description}}{{^description}}External docs{{/description}}}
 {{/externalDocs}}
 * @name {{&className}}#{{&methodName}}
-{{#parameters}}
-    {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
-{{/parameters}}
 */
 {{&methodName}}(
     {{#parameters}}
@@ -46,6 +43,29 @@
 {{/headers}}
 
 {{#parameters}}
+    {{#isQueryParameter}}
+      {{#isSingleton}}
+        queryParameters['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        {{#isPatternType}}
+          Object.keys(parameters).forEach(function(parameterName) {
+            if(new RegExp('{{&pattern}}').test(parameterName)){
+              queryParameters[parameterName] = parameters[parameterName];
+            }
+          });
+        {{/isPatternType}}
+        {{#default}}
+          /** set default value **/
+          {{#isDefaultQuoted}}
+          queryParameters['{{&name}}'] = '{{default}}';
+          {{/isDefaultQuoted}}
+          {{^isDefaultQuoted}}
+          queryParameters['{{&name}}'] = {{default}};
+          {{/isDefaultQuoted}}
+        {{/default}}
+      {{/isSingleton}}
+    {{/isQueryParameter}}
 
     {{#isPathParameter}}
         path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', {{&camelCaseName}}.toString());
@@ -74,13 +94,11 @@
     {{/isFormParameter}}
 
     {{#required}}
-        {{^isSingleton}}
-            {{#isQueryParameter}}
-                if(queryParameters['{{&camelCaseName}}'] === undefined) {
-                    throw new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
-                }
-            {{/isQueryParameter}}
-        {{/isSingleton}}
+        {{#isQueryParameter}}
+            if(queryParameters['{{&camelCaseName}}'] === undefined) {
+                throw new Error('Missing required parameter: {{&camelCaseName}}');
+            }
+        {{/isQueryParameter}}
     {{/required}}
 
 {{/parameters}}

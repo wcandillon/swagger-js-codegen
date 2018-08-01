@@ -39,7 +39,29 @@
       ],
       "get": {
         "produces": ["application/json"],
-        "parameters": [],
+        "parameters": [
+          {
+            "required": true,
+            "name": "queryParam1",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "queryParam2",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "queryParam3",
+            "in": "query",
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE"],
+            "default": "ACTIVE"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Just simple get operation",

@@ -178,6 +178,9 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
+   * @param {} parameters.queryParam1 -
+   * @param {} parameters.queryParam2 -
+   * @param {} parameters.queryParam3 -
    * @param {} pathParameter1 - Parameter 1
    * @param {} pathParameter2 - Parameter 2
    * @param {} pathParameter3 - Parameter 3
@@ -194,6 +197,27 @@ class Api {
     let queryParameters = {};
     let headers = new Headers();
     let form = {};
+
+    headers.append('Accept', 'application/json');
+
+    if (parameters['queryParam1'] !== undefined) {
+      queryParameters['queryParam1'] = parameters['queryParam1'];
+    }
+
+    if (parameters['queryParam1'] === undefined) {
+      throw Error('Missing required parameter: queryParam1');
+    }
+
+    if (parameters['queryParam2'] !== undefined) {
+      queryParameters['queryParam2'] = parameters['queryParam2'];
+    }
+
+    /** set default value **/
+    queryParameters['queryParam3'] = 'ACTIVE';
+
+    if (parameters['queryParam3'] !== undefined) {
+      queryParameters['queryParam3'] = parameters['queryParam3'];
+    }
 
     path = path.replace('{path_parameter_1}', pathParameter1);
 
@@ -236,6 +260,8 @@ class Api {
     let form = {};
 
     headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
 
     path = path.replace('{path_parameter_1}', pathParameter1);
 
@@ -442,6 +468,9 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
+   * @param {string} parameters.queryParam1 -
+   * @param {array} parameters.queryParam2 -
+   * @param {string} parameters.queryParam3 -
    * @param {string} pathParameter1 -
    * @param {string} pathParameter2 -
    * @param {string} pathParameter3 -
@@ -459,7 +488,26 @@ class Api {
     let headers = new Headers();
     let form = {};
 
-    headers['Accept'] = ['application/json'];
+    headers.append('Accept', 'application/json');
+
+    if (parameters['queryParam1'] !== undefined) {
+      queryParameters['queryParam1'] = parameters['queryParam1'];
+    }
+
+    if (parameters['queryParam1'] === undefined) {
+      throw Error('Missing required parameter: queryParam1');
+    }
+
+    if (parameters['queryParam2'] !== undefined) {
+      queryParameters['queryParam2'] = parameters['queryParam2'];
+    }
+
+    /** set default value **/
+    queryParameters['queryParam3'] = 'ACTIVE';
+
+    if (parameters['queryParam3'] !== undefined) {
+      queryParameters['queryParam3'] = parameters['queryParam3'];
+    }
 
     path = path.replace('{path_parameter_1}', pathParameter1);
 
@@ -502,15 +550,15 @@ class Api {
     let form = {};
 
     headers = this.appendAuthHeaders(headers);
-    headers['Accept'] = ['application/json'];
-    headers['Content-Type'] = ['application/json'];
+    headers.append('Accept', 'application/json');
+    headers.append('Content-Type', 'application/json');
 
     if (parameters['data'] !== undefined) {
       body = parameters['data'];
     }
 
     if (parameters['data'] === undefined) {
-      throw Error('Missing required  parameter: data');
+      throw Error('Missing required parameter: data');
     }
 
     path = path.replace('{path_parameter_1}', pathParameter1);
@@ -639,15 +687,16 @@ class Api {
    *
    * @method
    * @name Api#simpleGetOperation
-   * @param {} pathParameter1 - Parameter 1
-   * @param {} pathParameter2 - Parameter 2
-   * @param {} pathParameter3 - Parameter 3
    */
   simpleGetOperation(
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {} = {},
+    queryParameters: {
+      queryParam1: string;
+      queryParam2?: Array<string>;
+      queryParam3?: 'ACTIVE' | 'INACTIVE';
+    },
   ): Promise<{
     items?: Array<{
       _id?: string;
@@ -660,6 +709,15 @@ class Api {
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
     let form: any = {};
+
+    headers.append('Accept', 'application/json');
+
+    if (queryParameters['queryParam1'] === undefined) {
+      throw new Error('Missing required parameter: queryParam1');
+    }
+
+    /** set default value **/
+    queryParameters['queryParam3'] = 'ACTIVE';
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -681,10 +739,6 @@ class Api {
    *
    * @method
    * @name Api#simplePostOperation
-   * @param {} pathParameter1 - Parameter 1
-   * @param {} pathParameter2 - Parameter 2
-   * @param {} pathParameter3 - Parameter 3
-   * @param {}  -
    */
   simplePostOperation(
     pathParameter1: string,
@@ -706,6 +760,8 @@ class Api {
     let form: any = {};
 
     headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -834,15 +890,16 @@ class Api {
    *
    * @method
    * @name Api#simpleGetOperation
-   * @param {string} pathParameter1 -
-   * @param {string} pathParameter2 -
-   * @param {string} pathParameter3 -
    */
   simpleGetOperation(
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {} = {},
+    queryParameters: {
+      queryParam1: string;
+      queryParam2?: Array<string>;
+      queryParam3?: 'ACTIVE' | 'INACTIVE';
+    },
   ): Promise<{
     items?: Array<{
       _id?: string;
@@ -856,7 +913,14 @@ class Api {
     let headers: Headers = new Headers();
     let form: any = {};
 
-    headers['Accept'] = 'application/json';
+    headers.append('Accept', 'application/json');
+
+    if (queryParameters['queryParam1'] === undefined) {
+      throw new Error('Missing required parameter: queryParam1');
+    }
+
+    /** set default value **/
+    queryParameters['queryParam3'] = ACTIVE;
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -878,10 +942,6 @@ class Api {
    *
    * @method
    * @name Api#simplePostOperation
-   * @param {} data -
-   * @param {string} pathParameter1 -
-   * @param {string} pathParameter2 -
-   * @param {string} pathParameter3 -
    */
   simplePostOperation(
     pathParameter1: string,
@@ -903,8 +963,8 @@ class Api {
     let form: any = {};
 
     headers = this.appendAuthHeaders(headers);
-    headers['Accept'] = 'application/json';
-    headers['Content-Type'] = 'application/json';
+    headers.append('Accept', 'application/json');
+    headers.append('Content-Type', 'application/json');
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 

@@ -1,8 +1,8 @@
 {
   "name": "swagger-js-codegen",
   "main": "./lib/codegen.js",
-  "version": "1.12.1",
-  "description": "A Swagger codegen for JavaScript",
+  "version": "1.12.2",
+  "description": "A Swagger codegen for TypeScript and JavaScript",
   "scripts": {
     "test": "jest"
   },

@@ -699,8 +699,8 @@ class Api {
     },
   ): Promise<{
     items?: Array<{
-      _id?: string;
-      name?: string;
+      _id: string;
+      name: string;
       ttl?: number;
       date?: string;
     }>;
@@ -746,13 +746,13 @@ class Api {
     pathParameter3: string,
     queryParameters: {} = {},
     body: {
-      _id?: string;
-      name?: string;
+      _id: string;
+      name: string;
       ttl?: number;
       date?: string;
     },
   ): Promise<{
-    _id?: string;
+    _id: string;
   }> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
@@ -902,9 +902,9 @@ class Api {
     },
   ): Promise<{
     items?: Array<{
-      _id?: string;
+      _id: string;
       date?: string;
-      name?: string;
+      name: string;
       ttl?: number;
     }>;
   }> {
@@ -949,13 +949,13 @@ class Api {
     pathParameter3: string,
     queryParameters: {},
     body: {
-      _id?: string;
+      _id: string;
       date?: string;
-      name?: string;
+      name: string;
       ttl?: number;
     },
   ): Promise<{
-    _id?: string;
+    _id: string;
   }> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';

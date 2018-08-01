@@ -35,8 +35,12 @@
 ): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}>
 {
     let path = '{{&path}}';
-    let headers: any = {};
+    let headers: Headers = new Headers();
     let form: any = {};
+
+{{#isSecure}}
+    headers = this.appendAuthHeaders(headers);
+{{/isSecure}}
 {{#headers}}
     headers['{{&name}}'] = {{&value}};
 {{/headers}}

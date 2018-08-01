@@ -10,11 +10,11 @@
   let path = '{{&path}}';
   let body = {};
   let queryParameters = {};
-  let headers = {};
+  let headers = new Headers();
   let form = {};
 
   {{#isSecure}}
-    headers = Object.assign({}, headers, this.setAuthHeaders(headers));
+    headers = this.appendAuthHeaders(headers);
   {{/isSecure}}
   {{#headers}}
     headers['{{&name}}'] = [{{&value}}];

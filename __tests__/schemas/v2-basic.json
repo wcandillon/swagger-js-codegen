@@ -1,41 +1,40 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Simple OA3 API",
+    "title": "Simple Swagger 2 API",
     "version": "1.0.0"
+  },
+  "securityDefinitions": {
+    "securityUser": {
+      "type": "oauth2",
+      "authorizationUrl": "https://localhost/auth/authorize",
+      "flow": "implicit",
+      "scopes": {
+        "scope1": "Scope 1 description",
+        "scope2": "Scope 2 description"
+      }
+    }
   },
   "paths": {
     "/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}": {
       "parameters": [
         {
-          "description": "Parameter 1",
           "in": "path",
           "name": "path_parameter_1",
           "required": true,
-          "schema": {
-            "minLength": 1,
-            "type": "string"
-          }
+          "type": "string"
         },
         {
-          "description": "Parameter 2",
           "in": "path",
           "name": "path_parameter_2",
           "required": true,
-          "schema": {
-            "minLength": 1,
-            "type": "string"
-          }
+          "type": "string"
         },
         {
-          "description": "Parameter 3",
           "in": "path",
           "name": "path_parameter_3",
           "required": true,
-          "schema": {
-            "minLength": 1,
-            "type": "string"
-          }
+          "type": "string"
         }
       ],
       "get": {
@@ -104,11 +103,16 @@
       "post": {
         "consumes": ["application/json"],
         "produces": ["application/json"],
+        "security": [
+          {
+            "securityUser": ["scope1"]
+          }
+        ],
         "parameters": [
           {
-            "additionalProperties": false,
             "in": "body",
-            "name": "body",
+            "name": "data",
+            "required": true,
             "schema": {
               "additionalProperties": false,
               "properties": {
@@ -134,7 +138,6 @@
         ],
         "responses": {
           "201": {
-            "additionalProperties": false,
             "description": "Something created",
             "schema": {
               "additionalProperties": false,

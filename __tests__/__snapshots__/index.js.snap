@@ -153,6 +153,28 @@ class Api {
   }
 
   /**
+   * Set Token
+   * @method
+   * @param {string} token - token's value
+   */
+  setToken(token) {
+    this.token = token;
+  }
+
+  /**
+   * Set Auth headers
+   * @method
+   * @param {object} headerParams - headers object
+   */
+  appendAuthHeaders(headerParams) {
+    const headers = Object.assign({}, headerParams);
+    if (this.token) {
+      headers.Authorization = \`Bearer \${this.token}\`;
+    }
+    return headers;
+  }
+
+  /**
    *
    * @method
    * @param {object} parameters - method options and parameters
@@ -170,7 +192,7 @@ class Api {
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let body = {};
     let queryParameters = {};
-    let headers = {};
+    let headers = new Headers();
     let form = {};
 
     path = path.replace('{path_parameter_1}', pathParameter1);
@@ -210,8 +232,10 @@ class Api {
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let body = {};
     let queryParameters = {};
-    let headers = {};
+    let headers = new Headers();
     let form = {};
+
+    headers = this.appendAuthHeaders(headers);
 
     path = path.replace('{path_parameter_1}', pathParameter1);
 
@@ -393,12 +417,34 @@ class Api {
   }
 
   /**
+   * Set Token
+   * @method
+   * @param {string} token - token's value
+   */
+  setToken(token) {
+    this.token = token;
+  }
+
+  /**
+   * Set Auth headers
+   * @method
+   * @param {object} headerParams - headers object
+   */
+  appendAuthHeaders(headerParams) {
+    const headers = Object.assign({}, headerParams);
+    if (this.token) {
+      headers.Authorization = \`Bearer \${this.token}\`;
+    }
+    return headers;
+  }
+
+  /**
    *
    * @method
    * @param {object} parameters - method options and parameters
-   * @param {} pathParameter1 - Parameter 1
-   * @param {} pathParameter2 - Parameter 2
-   * @param {} pathParameter3 - Parameter 3
+   * @param {string} pathParameter1 -
+   * @param {string} pathParameter2 -
+   * @param {string} pathParameter3 -
    */
   simpleGetOperation(
     pathParameter1,
@@ -410,7 +456,7 @@ class Api {
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let body = {};
     let queryParameters = {};
-    let headers = {};
+    let headers = new Headers();
     let form = {};
 
     headers['Accept'] = ['application/json'];
@@ -437,10 +483,10 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
-   * @param {} parameters.body -
-   * @param {} pathParameter1 - Parameter 1
-   * @param {} pathParameter2 - Parameter 2
-   * @param {} pathParameter3 - Parameter 3
+   * @param {} parameters.data -
+   * @param {string} pathParameter1 -
+   * @param {string} pathParameter2 -
+   * @param {string} pathParameter3 -
    */
   simplePostOperation(
     pathParameter1,
@@ -452,14 +498,19 @@ class Api {
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let body = {};
     let queryParameters = {};
-    let headers = {};
+    let headers = new Headers();
     let form = {};
 
+    headers = this.appendAuthHeaders(headers);
     headers['Accept'] = ['application/json'];
     headers['Content-Type'] = ['application/json'];
 
-    if (parameters['body'] !== undefined) {
-      body = parameters['body'];
+    if (parameters['data'] !== undefined) {
+      body = parameters['data'];
+    }
+
+    if (parameters['data'] === undefined) {
+      throw Error('Missing required  parameter: data');
     }
 
     path = path.replace('{path_parameter_1}', pathParameter1);
@@ -506,8 +557,8 @@ class ApiError {
  * @param {(string)} [domainOrOptions] - The project domain.
  */
 class Api {
-  public baseUrl: string = '';
-  public token: string;
+  protected baseUrl: string = '';
+  protected token: string;
 
   serializeQueryParams(parameters: QueryParameters) {
     const str: string[] = [];
@@ -521,6 +572,22 @@ class Api {
       }
     }
     return str.join('&');
+  }
+
+  public setBaseUrl(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  public setToken(token: string) {
+    this.token = token;
+  }
+
+  protected appendAuthHeaders(headerParams: Headers) {
+    const headers = { ...headerParams };
+    if (this.token) {
+      headers.append('Authorization', \`Bearer \${this.token}\`);
+    }
+    return headers;
   }
 
   private async request(
@@ -591,7 +658,7 @@ class Api {
   }> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
-    let headers: any = {};
+    let headers: Headers = new Headers();
     let form: any = {};
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
@@ -635,8 +702,10 @@ class Api {
   }> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
-    let headers: any = {};
+    let headers: Headers = new Headers();
     let form: any = {};
+
+    headers = this.appendAuthHeaders(headers);
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -683,8 +752,8 @@ class ApiError {
  * @param {(string)} [domainOrOptions] - The project domain.
  */
 class Api {
-  public baseUrl: string = '';
-  public token: string;
+  protected baseUrl: string = '';
+  protected token: string;
 
   serializeQueryParams(parameters: QueryParameters) {
     const str: string[] = [];
@@ -698,6 +767,22 @@ class Api {
       }
     }
     return str.join('&');
+  }
+
+  public setBaseUrl(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  public setToken(token: string) {
+    this.token = token;
+  }
+
+  protected appendAuthHeaders(headerParams: Headers) {
+    const headers = { ...headerParams };
+    if (this.token) {
+      headers.append('Authorization', \`Bearer \${this.token}\`);
+    }
+    return headers;
   }
 
   private async request(
@@ -749,9 +834,9 @@ class Api {
    *
    * @method
    * @name Api#simpleGetOperation
-   * @param {} pathParameter1 - Parameter 1
-   * @param {} pathParameter2 - Parameter 2
-   * @param {} pathParameter3 - Parameter 3
+   * @param {string} pathParameter1 -
+   * @param {string} pathParameter2 -
+   * @param {string} pathParameter3 -
    */
   simpleGetOperation(
     pathParameter1: string,
@@ -768,8 +853,9 @@ class Api {
   }> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
-    let headers: any = {};
+    let headers: Headers = new Headers();
     let form: any = {};
+
     headers['Accept'] = 'application/json';
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
@@ -792,16 +878,16 @@ class Api {
    *
    * @method
    * @name Api#simplePostOperation
-   * @param {} body -
-   * @param {} pathParameter1 - Parameter 1
-   * @param {} pathParameter2 - Parameter 2
-   * @param {} pathParameter3 - Parameter 3
+   * @param {} data -
+   * @param {string} pathParameter1 -
+   * @param {string} pathParameter2 -
+   * @param {string} pathParameter3 -
    */
   simplePostOperation(
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {} = {},
+    queryParameters: {},
     body: {
       _id?: string;
       date?: string;
@@ -813,8 +899,10 @@ class Api {
   }> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
-    let headers: any = {};
+    let headers: Headers = new Headers();
     let form: any = {};
+
+    headers = this.appendAuthHeaders(headers);
     headers['Accept'] = 'application/json';
     headers['Content-Type'] = 'application/json';
 

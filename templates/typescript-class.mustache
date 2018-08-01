@@ -27,8 +27,12 @@ class ApiError {
  */
 class {{&className}} {
 
-    public baseUrl: string = "{{&domain}}";
-    public token: string;
+    protected baseUrl: string = "{{&domain}}";
+    {{#isSecure}}
+        {{#isSecureToken}}
+    protected token: string;
+        {{/isSecureToken}}
+    {{/isSecure}}
 
     serializeQueryParams(parameters: QueryParameters) {
         const str: string[] = [];
@@ -40,6 +44,29 @@ class {{&className}} {
         return str.join('&');
     }
 
+    public setBaseUrl(baseUrl: string) {
+        this.baseUrl = baseUrl;
+    }
+
+    {{#isSecure}}
+        {{#isSecureToken}}
+    public setToken(token: string) {
+        this.token = token;
+    }
+
+        {{/isSecureToken}}
+
+    protected appendAuthHeaders(headerParams: Headers) {
+      const headers = {...headerParams};
+    {{#isSecureToken}}
+      if (this.token) {
+        headers.append('Authorization', `Bearer ${this.token}`);
+      }
+    {{/isSecureToken}}
+      return headers;
+    }
+    {{/isSecure}}
+
     private async request(method: string, url: string, body: any, headers: any, queryParameters: QueryParameters, form: any) {
         const queryParams = queryParameters && Object.keys(queryParameters).length ? this.serializeQueryParams(queryParameters) : null ;
         const urlWithParams = url + (queryParams ? '?' + queryParams : '');
@@ -49,20 +76,20 @@ class {{&className}} {
         // contentTypeHeader[0] because nearly every header's value is set using array
         const contentTypeHeader = headers['Content-Type'];
         if(contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-        delete headers['Content-Type'];
+            delete headers['Content-Type'];
         }
 
         if (body && !Object.keys(body).length) {
-        body = undefined;
+            body = undefined;
         } else {
-        body = JSON.stringify(body);
+            body = JSON.stringify(body);
         }
 
         if (form && Object.keys(form).length) {
-        body = new FormData();
-        for (let k in form) {
-            body.append(k, form[k]);
-        }
+            body = new FormData();
+            for (let k in form) {
+                body.append(k, form[k]);
+            }
         }
 
         const response = await fetch(urlWithParams, { method, headers, body });

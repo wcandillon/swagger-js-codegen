@@ -86,6 +86,7 @@
       },
       "post": {
         "operationId": "simplePostOperation",
+        "security": [{ "securityUser": [] }],
         "requestBody": {
           "content": {
             "application/json": {
@@ -151,6 +152,22 @@
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "securityUser": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://localhost/auth/authorize",
+            "scopes": {
+              "scope1": "Scope 1 description",
+              "scope2": "Scope 2 description"
             }
           }
         }

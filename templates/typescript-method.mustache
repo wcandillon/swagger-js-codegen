@@ -42,7 +42,7 @@
     headers = this.appendAuthHeaders(headers);
 {{/isSecure}}
 {{#headers}}
-    headers['{{&name}}'] = {{&value}};
+    headers.append('{{&name}}', '{{&value}}');
 {{/headers}}
 
 {{#parameters}}
@@ -95,7 +95,7 @@
     return this.request(
         '{{method}}',
         `${this.baseUrl}${path}`,
-        {{#hasBody}}body{{/hasBody}}{{^hasBody}}null{{/hasBody}},
+        {{#hasBody}}body{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
         headers,
         queryParameters,
         form

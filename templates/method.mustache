@@ -17,7 +17,7 @@
     headers = this.appendAuthHeaders(headers);
   {{/isSecure}}
   {{#headers}}
-    headers['{{&name}}'] = [{{&value}}];
+    headers.append('{{&name}}', '{{&value}}');
   {{/headers}}
 
   {{#parameters}}

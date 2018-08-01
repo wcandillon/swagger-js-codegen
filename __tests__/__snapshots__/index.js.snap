@@ -167,7 +167,7 @@ class Api {
    * @param {object} headerParams - headers object
    */
   appendAuthHeaders(headerParams) {
-    const headers = Object.assign({}, headerParams);
+    const headers = new Headers(headerParams);
     if (this.token) {
       headers.Authorization = \`Bearer \${this.token}\`;
     }
@@ -431,7 +431,7 @@ class Api {
    * @param {object} headerParams - headers object
    */
   appendAuthHeaders(headerParams) {
-    const headers = Object.assign({}, headerParams);
+    const headers = new Headers(headerParams);
     if (this.token) {
       headers.Authorization = \`Bearer \${this.token}\`;
     }
@@ -583,7 +583,7 @@ class Api {
   }
 
   protected appendAuthHeaders(headerParams: Headers) {
-    const headers = { ...headerParams };
+    const headers = new Headers(headerParams);
     if (this.token) {
       headers.append('Authorization', \`Bearer \${this.token}\`);
     }
@@ -670,7 +670,7 @@ class Api {
     return this.request(
       'GET',
       \`\${this.baseUrl}\${path}\`,
-      null,
+      {},
       headers,
       queryParameters,
       form,
@@ -778,7 +778,7 @@ class Api {
   }
 
   protected appendAuthHeaders(headerParams: Headers) {
-    const headers = { ...headerParams };
+    const headers = new Headers(headerParams);
     if (this.token) {
       headers.append('Authorization', \`Bearer \${this.token}\`);
     }
@@ -867,7 +867,7 @@ class Api {
     return this.request(
       'GET',
       \`\${this.baseUrl}\${path}\`,
-      null,
+      {},
       headers,
       queryParameters,
       form,

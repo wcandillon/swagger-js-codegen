@@ -57,7 +57,7 @@ class {{&className}} {
         {{/isSecureToken}}
 
     protected appendAuthHeaders(headerParams: Headers) {
-      const headers = {...headerParams};
+      const headers = new Headers(headerParams);
     {{#isSecureToken}}
       if (this.token) {
         headers.append('Authorization', `Bearer ${this.token}`);

@@ -153,7 +153,7 @@ class {{&className}} {
     * @param {object} headerParams - headers object
     */
     appendAuthHeaders(headerParams) {
-      const headers = Object.assign({}, headerParams);
+      const headers = new Headers(headerParams);
     {{#isSecureToken}}
       if (this.token) {
         headers.Authorization = `Bearer ${this.token}`;

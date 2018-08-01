@@ -1,0 +1,204 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Simple OA3 API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}": {
+      "parameters": [
+        {
+          "description": "Parameter 1",
+          "in": "path",
+          "name": "path_parameter_1",
+          "required": true,
+          "schema": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        {
+          "description": "Parameter 2",
+          "in": "path",
+          "name": "path_parameter_2",
+          "required": true,
+          "schema": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        {
+          "description": "Parameter 3",
+          "in": "path",
+          "name": "path_parameter_3",
+          "required": true,
+          "schema": {
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Just simple get operation",
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "_id": {
+                        "readOnly": true,
+                        "type": "string"
+                      },
+                      "date": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "name": {
+                        "readOnly": true,
+                        "type": "string"
+                      },
+                      "ttl": {
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "Generic error response",
+            "schema": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "payload": {
+                  "type": "object"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "userinfo": {
+                  "type": "string"
+                }
+              },
+              "required": ["status", "name"],
+              "type": "object"
+            }
+          }
+        },
+        "operationId": "simpleGetOperation"
+      },
+      "post": {
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "additionalProperties": false,
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "_id": {
+                  "readOnly": true,
+                  "type": "string"
+                },
+                "date": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "name": {
+                  "readOnly": true,
+                  "type": "string"
+                },
+                "ttl": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "additionalProperties": false,
+            "description": "Something created",
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "_id": {
+                  "readOnly": true,
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "409": {
+            "description": "Something already exists",
+            "schema": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "payload": {
+                  "type": "object"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "userinfo": {
+                  "type": "string"
+                }
+              },
+              "required": ["status", "name"],
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "Generic error response",
+            "schema": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "payload": {
+                  "type": "object"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "userinfo": {
+                  "type": "string"
+                }
+              },
+              "required": ["status", "name"],
+              "type": "object"
+            }
+          }
+        },
+        "operationId": "simplePostOperation"
+      },
+      "x-exegesis-controller": "controllers/ctrl"
+    }
+  }
+}

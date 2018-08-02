@@ -4,7 +4,16 @@
 <%#isRef%><%target%><%/isRef%><%!
 %><%#isAtomic%><%&tsType%><%/isAtomic%><%!
 %><%#isObject%>{<%#properties%>
-<%name%><%#optional%>?<%/optional%>: <%>type%>;<%/properties%>
+<%! if its body parameter, then we don't want to generate only readOnly properties (so they don't get send to API)%>
+  <%#isBodyParameter%>
+    <%^readOnly%>
+      <%name%><%#optional%>?<%/optional%>: <%>type%>;
+    <%/readOnly%>
+  <%/isBodyParameter%>
+  <%^isBodyParameter%>
+    <%name%><%#optional%>?<%/optional%>: <%>type%>;
+  <%/isBodyParameter%>
+<%/properties%>
 }<%/isObject%><%!
 %><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%>
 <%={{ }}=%>

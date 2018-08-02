@@ -700,8 +700,11 @@ class Api {
   ): Promise<{
     items?: Array<{
       _id?: string;
+
       name?: string;
+
       ttl?: number;
+
       date?: string;
     }>;
   }> {
@@ -746,9 +749,8 @@ class Api {
     pathParameter3: string,
     queryParameters: {} = {},
     body: {
-      _id?: string;
-      name?: string;
       ttl?: number;
+
       date?: string;
     },
   ): Promise<{
@@ -903,8 +905,11 @@ class Api {
   ): Promise<{
     items?: Array<{
       _id?: string;
+
       date?: string;
+
       name?: string;
+
       ttl?: number;
     }>;
   }> {
@@ -949,9 +954,8 @@ class Api {
     pathParameter3: string,
     queryParameters: {},
     body: {
-      _id?: string;
       date?: string;
-      name?: string;
+
       ttl?: number;
     },
   ): Promise<{

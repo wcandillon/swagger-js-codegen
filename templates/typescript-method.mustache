@@ -76,8 +76,8 @@
             headers['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined) {
-                headers['{{&name}}'] = parameters['{{&camelCaseName}}']!;
+            if(queryParameters['{{&camelCaseName}}'] !== undefined) {
+                headers['{{&name}}'] = queryParameters['{{&camelCaseName}}']!;
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
@@ -87,8 +87,8 @@
             form['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined) {
-                form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+            if(queryParameters['{{&camelCaseName}}'] !== undefined) {
+                form['{{&name}}'] = queryParameters['{{&camelCaseName}}'];
             }
         {{/isSingleton}}
     {{/isFormParameter}}
@@ -103,10 +103,11 @@
 
 {{/parameters}}
 
+    queryParameters = queryParametersToSnakeCase(queryParameters);
+
     {{^isBodyParameter}}
         {{#isPOST}}
             form = queryParameters;
-            queryParameters = {};
         {{/isPOST}}
     {{/isBodyParameter}}
 

@@ -99,29 +99,14 @@ class {{&className}} {
     }
     {{/isSecure}}
 
-    private async request(method: string, url: string, body: any, headers: any, queryParameters: QueryParameters, form: any) {
+    private async request(method: string, url: string, body: any, headers: any, queryParameters: QueryParameters) {
         const queryParams = queryParameters && Object.keys(queryParameters).length ? this.serializeQueryParams(queryParameters) : null ;
         const urlWithParams = url + (queryParams ? '?' + queryParams : '');
-
-        // ugly hack, we need to delete Content-Type header with multipart/form-data
-        // that way, browser will calculate form specific headers on it's own
-        // contentTypeHeader[0] because nearly every header's value is set using array
-        const contentTypeHeader = headers['Content-Type'];
-        if(contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-            delete headers['Content-Type'];
-        }
 
         if (body && !Object.keys(body).length) {
             body = undefined;
         } else {
             body = JSON.stringify(body);
-        }
-
-        if (form && Object.keys(form).length) {
-            body = new FormData();
-            for (let k in form) {
-                body.append(k, form[k]);
-            }
         }
 
         const response = await fetch(urlWithParams, { method, headers, body });

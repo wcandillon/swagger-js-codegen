@@ -5,7 +5,7 @@ import 'isomorphic-fetch';
 /// <reference path="{{&.}}" />
 {{/imports}}
 
-type QueryParameters = { [key: string]: string | number | string[] | number[] };
+type QueryParameters = { [key: string]: string | number | string[] | number[] | undefined };
 
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
@@ -18,6 +18,35 @@ class ApiError {
   constructor(message: string) {
     this.message = message;
   }
+}
+
+const queryParametersToSnakeCase = (parameters: QueryParameters) => {
+    const snakeCaseParams: any = {};
+
+    Object.keys(parameters).map(key => {
+        const value = parameters[key];
+
+        snakeCaseParams[toSnakeCase(key)] = value;
+    });
+
+    return snakeCaseParams;
+}
+
+const toSnakeCase = (msg: string) => {
+    const upperChars = msg.match(/([A-Z])/g);
+    if (! upperChars) {
+        return msg;
+    }
+
+    let str = msg.toString();
+    for (var i = 0, n = upperChars.length; i < n; i++) {
+        str = str.replace(new RegExp(upperChars[i]), '_' + upperChars[i].toLowerCase());
+    }
+
+    if (str.slice(0, 1) === '_') {
+        str = str.slice(1);
+    }
+    return str;
 }
 
 /**
@@ -37,9 +66,12 @@ class {{&className}} {
     serializeQueryParams(parameters: QueryParameters) {
         const str: string[] = [];
         for (let p in parameters) {
-        if (parameters.hasOwnProperty(p)) {
-            str.push(`${encodeURIComponent(p)}=${encodeURIComponent(parameters[p].toString())}`);
-        }
+            if (parameters.hasOwnProperty(p)) {
+                if(parameters[p] !== undefined) {    
+                    const parameter = parameters[p] || "";
+                    str.push(`${encodeURIComponent(p)}=${encodeURIComponent(parameter.toString())}`);
+                }
+            }
         }
         return str.join('&');
     }
@@ -67,29 +99,14 @@ class {{&className}} {
     }
     {{/isSecure}}
 
-    private async request(method: string, url: string, body: any, headers: any, queryParameters: QueryParameters, form: any) {
+    private async request(method: string, url: string, body: any, headers: any, queryParameters: QueryParameters) {
         const queryParams = queryParameters && Object.keys(queryParameters).length ? this.serializeQueryParams(queryParameters) : null ;
         const urlWithParams = url + (queryParams ? '?' + queryParams : '');
-
-        // ugly hack, we need to delete Content-Type header with multipart/form-data
-        // that way, browser will calculate form specific headers on it's own
-        // contentTypeHeader[0] because nearly every header's value is set using array
-        const contentTypeHeader = headers['Content-Type'];
-        if(contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-            delete headers['Content-Type'];
-        }
 
         if (body && !Object.keys(body).length) {
             body = undefined;
         } else {
             body = JSON.stringify(body);
-        }
-
-        if (form && Object.keys(form).length) {
-            body = new FormData();
-            for (let k in form) {
-                body.append(k, form[k]);
-            }
         }
 
         const response = await fetch(urlWithParams, { method, headers, body });

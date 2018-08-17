@@ -33,7 +33,6 @@
 {
     let path = '{{&path}}';
     let headers: Headers = new Headers();
-    let form: any = {};
 
 {{#isSecure}}
     headers = this.appendAuthHeaders(headers);
@@ -73,25 +72,14 @@
 
     {{#isHeaderParameter}}
         {{#isSingleton}}
-            headers['{{&name}}'] = '{{&singleton}}';
+            headers.append('{{&name}}', '{{&singleton}}');
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined) {
-                headers['{{&name}}'] = parameters['{{&camelCaseName}}']!;
+            if(queryParameters['{{&camelCaseName}}'] !== undefined) {
+                headers.append('{{&name}}', queryParameters['{{&camelCaseName}}']!);
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
-
-    {{#isFormParameter}}
-        {{#isSingleton}}
-            form['{{&name}}'] = '{{&singleton}}';
-        {{/isSingleton}}
-        {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined) {
-                form['{{&name}}'] = parameters['{{&camelCaseName}}'];
-            }
-        {{/isSingleton}}
-    {{/isFormParameter}}
 
     {{#required}}
         {{#isQueryParameter}}
@@ -103,19 +91,21 @@
 
 {{/parameters}}
 
+    queryParameters = queryParametersToSnakeCase(queryParameters);
+
+
     {{^isBodyParameter}}
         {{#isPOST}}
-            form = queryParameters;
-            queryParameters = {};
+            // queryParameters = {};
         {{/isPOST}}
     {{/isBodyParameter}}
+
 
     return this.request(
         '{{method}}',
         `${this.baseUrl}${path}`,
         {{#hasBody}}body{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
         headers,
-        queryParameters,
-        form
+        queryParameters
     );
 }

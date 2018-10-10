@@ -4,7 +4,7 @@
   "version": "1.5.1",
   "description": "A Swagger Codegenerator tailored for typescript.",
   "scripts": {
-    "test": "grunt",
+    "test": "grunt && jest",
     "clean": "rm -rf tmp-*"
   },
   "bin": {
@@ -41,6 +41,7 @@
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-jsonlint": "^1.0.4",
     "grunt-vows": "^0.4.1",
+    "jest": "^23.6.0",
     "matchdep": "^1.0.1 ",
     "q": "^1.0.1",
     "request": "^2.40.0",

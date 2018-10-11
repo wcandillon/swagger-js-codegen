@@ -1,0 +1,65 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.0",
+        "title": "myApp"
+    },
+    "basePath": "/api",
+    "consumes": ["application/json", "application/x-www-form-urlencoded", "application/xml", "text/xml"],
+    "produces": ["application/json", "application/xml", "text/xml", "application/javascript", "text/javascript"],
+    "paths": {
+
+        "/Users/{id}": {
+            "head": {
+                "tags": ["User"],
+                "summary": "Check whether a model instance exists in the data source.",
+                "externalDocs": {
+                    "description": "More info on the WIKI",
+                    "url": "https://example.atlassian.net/wiki/pages/example"
+                },
+                "operationId": "User.exists__head_Users_{id}",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "description": "Model id",
+                    "required": true,
+                    "type": "string",
+                    "format": "JSON"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Request was successful",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        }
+   },
+    "definitions": {
+        "xany": {
+            "properties": {}
+        },
+        "ObjectID": {
+            "type": "string",
+            "pattern": "^[a-fA-F\\d]{24}$"
+        },
+        "User": {
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "number",
+                    "format": "double"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "tags": [{
+        "name": "User"
+    }]
+}

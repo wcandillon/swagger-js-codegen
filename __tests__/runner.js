@@ -20,6 +20,10 @@ var testCases = [
   {
     desc: 'Real world: users',
     fixture: 'users',
+  },
+  {
+    desc: 'Real world: petshop',
+    fixture: 'petshop',
   }
 ]
 

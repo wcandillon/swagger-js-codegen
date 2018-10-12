@@ -5,65 +5,65 @@ import {
 
 type CallbackHandler = (err: any, res ? : request.Response) => void;
 type Product = {
-    'product_id': string
+    'product_id' ? : string
 
-    'description': string
+    'description' ? : string
 
-    'display_name': string
+    'display_name' ? : string
 
-    'capacity': string
+    'capacity' ? : string
 
-    'image': string
+    'image' ? : string
 
 };
 type PriceEstimate = {
-    'product_id': string
+    'product_id' ? : string
 
-    'currency_code': string
+    'currency_code' ? : string
 
-    'display_name': string
+    'display_name' ? : string
 
-    'estimate': string
+    'estimate' ? : string
 
-    'low_estimate': number
+    'low_estimate' ? : number
 
-    'high_estimate': number
+    'high_estimate' ? : number
 
-    'surge_multiplier': number
+    'surge_multiplier' ? : number
 
 };
 type Profile = {
-    'first_name': string
+    'first_name' ? : string
 
-    'last_name': string
+    'last_name' ? : string
 
-    'email': string
+    'email' ? : string
 
-    'picture': string
+    'picture' ? : string
 
-    'promo_code': string
+    'promo_code' ? : string
 
 };
 type Activity = {
-    'uuid': string
+    'uuid' ? : string
 
 };
 type Activities = {
-    'offset': number
+    'offset' ? : number
 
-    'limit': number
+    'limit' ? : number
 
-    'count': number
+    'count' ? : number
 
-    'history': Activity
+    'history' ? : Activity
 
 };
 type Error = {
-    'code': number
+    'code' ? : number
 
-    'message': string
+    'message' ? : string
 
-    'fields': string
+    'fields' ? : string
 
 };
 

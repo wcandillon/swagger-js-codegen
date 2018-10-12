@@ -4,7 +4,7 @@
 <%#isRef%><%target%><%/isRef%><%!
 %><%#isAtomic%><%&tsType%><%/isAtomic%><%!
 %><%#isObject%>{<%#properties%>
-'<%name%>': <%>type%><%/properties%>
+'<%name%>'<%^isRequired%>?<%/isRequired%>: <%>type%><%/properties%>
 }<%/isObject%><%!
 %><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>>|<%#elementType%><%>type%><%/elementType%><%/isArray%><%!
 %><%#isDictionary%>{[key: string]: <%#elementType%><%>type%><%/elementType%>}<%/isDictionary%>

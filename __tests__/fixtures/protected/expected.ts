@@ -5,29 +5,29 @@ import {
 
 type CallbackHandler = (err: any, res ? : request.Response) => void;
 type Authentication = {
-    'token_type': "bearer"
+    'token_type' ? : "bearer"
 
-    'expiration_date': {}
+    'expiration_date' ? : {}
 
-    'access_token': string
+    'access_token' ? : string
 
-    'refresh_token': string
+    'refresh_token' ? : string
 
-    'project_tokens': {}
+    'project_tokens' ? : {}
 
 };
 type Error = {
-    'code': string
+    'code' ? : string
 
-    'message': string
+    'message' ? : string
 
-    'description': string
+    'description' ? : string
 
-    'module': string
+    'module' ? : string
 
-    'line-number': string
+    'line-number' ? : string
 
-    'column-number': string
+    'column-number' ? : string
 
 };
 

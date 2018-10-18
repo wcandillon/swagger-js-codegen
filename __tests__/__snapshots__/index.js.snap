@@ -11,15 +11,20 @@ class Api {
   }
 
   serializeQueryParams(parameters) {
-    const str = [];
-    for (let p in parameters) {
-      if (parameters.hasOwnProperty(p)) {
-        str.push(
-          \`\${encodeURIComponent(p)}=\${encodeURIComponent(parameters[p])}\`,
-        );
-      }
-    }
-    return str.join('&');
+    return Object.keys(parameters)
+      .reduce((acc, p) => {
+        const param = parameters[p];
+        if (typeof param === 'undefined' || param === '') {
+          return acc;
+        }
+        return [
+          ...acc,
+          \`\${encodeURIComponent(p)}=\${encodeURIComponent(
+            String(parameters[p]),
+          )}\`,
+        ];
+      }, [])
+      .join('&');
   }
 
   paramsToObject(params) {
@@ -321,15 +326,20 @@ class Api {
   }
 
   serializeQueryParams(parameters) {
-    const str = [];
-    for (let p in parameters) {
-      if (parameters.hasOwnProperty(p)) {
-        str.push(
-          \`\${encodeURIComponent(p)}=\${encodeURIComponent(parameters[p])}\`,
-        );
-      }
-    }
-    return str.join('&');
+    return Object.keys(parameters)
+      .reduce((acc, p) => {
+        const param = parameters[p];
+        if (typeof param === 'undefined' || param === '') {
+          return acc;
+        }
+        return [
+          ...acc,
+          \`\${encodeURIComponent(p)}=\${encodeURIComponent(
+            String(parameters[p]),
+          )}\`,
+        ];
+      }, [])
+      .join('&');
   }
 
   paramsToObject(params) {
@@ -666,7 +676,7 @@ class Api {
     return Object.keys(parameters)
       .reduce((acc, p) => {
         const param = parameters[p];
-        if (typeof param === 'undefined') {
+        if (typeof param === 'undefined' || param === '') {
           return acc;
         }
         return [
@@ -887,7 +897,7 @@ class Api {
     return Object.keys(parameters)
       .reduce((acc, p) => {
         const param = parameters[p];
-        if (typeof param === 'undefined') {
+        if (typeof param === 'undefined' || param === '') {
           return acc;
         }
         return [

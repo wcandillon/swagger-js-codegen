@@ -38,7 +38,7 @@ class {{&className}} {
         return Object.keys(parameters)
             .reduce((acc, p) => {
                 const param = parameters[p];
-                if(typeof param === 'undefined') {
+                if(typeof param === 'undefined' || param === '') {
                     return acc;
                 }
                 return [...acc, `${encodeURIComponent(p)}=${encodeURIComponent(

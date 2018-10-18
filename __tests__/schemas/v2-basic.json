@@ -60,6 +60,16 @@
             "type": "string",
             "enum": ["ACTIVE", "INACTIVE"],
             "default": "ACTIVE"
+          },
+          {
+            "name": "queryParam4",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "pipes",
+            "default": [1, "Two", "Three", 4]
           }
         ],
         "responses": {

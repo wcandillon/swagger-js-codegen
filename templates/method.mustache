@@ -33,15 +33,16 @@
             }
           });
         {{/isPatternType}}
-        {{#default}}
-          /** set default value **/
-          queryParameters['{{&name}}'] = '{{&default}}';
-        {{/default}}
+        {{#defaultSerialized}}
+          queryParameters['{{&name}}'] = {{&defaultSerialized}};
+        {{/defaultSerialized}}
 
         {{^isPatternType}}
-        if(parameters['{{&camelCaseName}}'] !== undefined){
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
           queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
         }
+
+        queryParameters['{{&name}}'] = this.transformParameter(queryParameters['{{&camelCaseName}}']{{#transformOperation}}, '{{&transformOperation}}'{{/transformOperation}});
         {{/isPatternType}}
       {{/isSingleton}}
     {{/isQueryParameter}}
@@ -51,7 +52,7 @@
     {{/isPathParameter}}
     
     {{#isBodyParameter}}
-      if(parameters['{{&camelCaseName}}'] !== undefined){
+      if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
         body = parameters['{{&camelCaseName}}'];
       }
     {{/isBodyParameter}}
@@ -61,7 +62,7 @@
         form['{{&name}}'] = '{{&singleton}}';
       {{/isSingleton}}
       {{^isSingleton}}
-        if(parameters['{{&camelCaseName}}'] !== undefined){
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
             form['{{&name}}'] = parameters['{{&camelCaseName}}'];
         }
       {{/isSingleton}}
@@ -69,7 +70,7 @@
 
     {{#required}}
       {{^isPathParameter}}
-        if(parameters['{{&camelCaseName}}'] === undefined) {
+        if(typeof parameters['{{&camelCaseName}}'] === 'undefined') {
           throw Error('Missing required parameter: {{&camelCaseName}}');
         }
       {{/isPathParameter}}

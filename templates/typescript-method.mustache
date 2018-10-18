@@ -10,7 +10,7 @@
     {{#parameters}}
         {{#isPathParameter}}{{&camelCaseName}}{{&cardinality}}: {{> type}},{{/isPathParameter}}
     {{/parameters}}
-    queryParameters: {
+    parameters: {
         {{#parameters}}
             {{#isQueryParameter}}
                 {{^isSingleton}}
@@ -33,6 +33,7 @@
 {
     let path = '{{&path}}';
     let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
 
 {{#isSecure}}
     headers = this.appendAuthHeaders(headers);
@@ -54,15 +55,17 @@
             }
           });
         {{/isPatternType}}
-        {{#default}}
-          /** set default value **/
-          {{#isDefaultQuoted}}
-          queryParameters['{{&name}}'] = '{{default}}';
-          {{/isDefaultQuoted}}
-          {{^isDefaultQuoted}}
-          queryParameters['{{&name}}'] = {{default}};
-          {{/isDefaultQuoted}}
-        {{/default}}
+        {{#defaultSerialized}}
+          queryParameters['{{&name}}'] = {{&defaultSerialized}};
+        {{/defaultSerialized}}
+
+        {{^isPatternType}}
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
+            queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+
+        queryParameters['{{&name}}'] = this.transformParameter(queryParameters['{{&camelCaseName}}']{{#transformOperation}}, '{{&transformOperation}}'{{/transformOperation}});
+        {{/isPatternType}}
       {{/isSingleton}}
     {{/isQueryParameter}}
 
@@ -75,7 +78,7 @@
             headers.append('{{&name}}', '{{&singleton}}');
         {{/isSingleton}}
         {{^isSingleton}}
-            if(queryParameters['{{&camelCaseName}}'] !== undefined) {
+            if(typeof queryParameters['{{&camelCaseName}}'] !== 'undefined') {
                 headers.append('{{&name}}', queryParameters['{{&camelCaseName}}']!);
             }
         {{/isSingleton}}
@@ -83,20 +86,13 @@
 
     {{#required}}
         {{#isQueryParameter}}
-            if(queryParameters['{{&camelCaseName}}'] === undefined) {
+            if(typeof queryParameters['{{&camelCaseName}}'] === 'undefined') {
                 throw new Error('Missing required parameter: {{&camelCaseName}}');
             }
         {{/isQueryParameter}}
     {{/required}}
 
 {{/parameters}}
-
-    {{^isBodyParameter}}
-        {{#isPOST}}
-            // queryParameters = {};
-        {{/isPOST}}
-    {{/isBodyParameter}}
-
 
     return this.request(
         '{{method}}',

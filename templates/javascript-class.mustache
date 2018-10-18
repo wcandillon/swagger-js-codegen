@@ -39,6 +39,15 @@ class {{&className}} {
     return queryParameters;
   }
 
+  transformParameter(value, transformOperation = null) {
+    switch(transformOperation) {
+      case 'joinUsingPipes':
+        return value.join('|');
+      default:
+        return value;
+    }
+  }
+
    /**
     * HTTP Request
     * @method

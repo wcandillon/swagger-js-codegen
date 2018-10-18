@@ -47,6 +47,15 @@ class {{&className}} {
         return str.join('&');
     }
 
+    protected transformParameter(value: any, transformOperation: string = null) {
+        switch(transformOperation) {
+            case 'joinUsingPipes':
+                return value.join('|');
+            default:
+                return value;
+        }
+    }
+
     public setBaseUrl(baseUrl: string) {
         this.baseUrl = baseUrl;
     }

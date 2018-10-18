@@ -42,6 +42,15 @@ class Api {
     return queryParameters;
   }
 
+  transformParameter(value, transformOperation = null) {
+    switch (transformOperation) {
+      case 'joinUsingPipes':
+        return value.join('|');
+      default:
+        return value;
+    }
+  }
+
   /**
    * HTTP Request
    * @method
@@ -200,24 +209,35 @@ class Api {
 
     headers.append('Accept', 'application/json');
 
-    if (parameters['queryParam1'] !== undefined) {
+    if (typeof parameters['queryParam1'] !== 'undefined') {
       queryParameters['queryParam1'] = parameters['queryParam1'];
     }
 
-    if (parameters['queryParam1'] === undefined) {
+    queryParameters['queryParam1'] = this.transformParameter(
+      queryParameters['queryParam1'],
+    );
+
+    if (typeof parameters['queryParam1'] === 'undefined') {
       throw Error('Missing required parameter: queryParam1');
     }
 
-    if (parameters['queryParam2'] !== undefined) {
+    if (typeof parameters['queryParam2'] !== 'undefined') {
       queryParameters['queryParam2'] = parameters['queryParam2'];
     }
 
-    /** set default value **/
+    queryParameters['queryParam2'] = this.transformParameter(
+      queryParameters['queryParam2'],
+    );
+
     queryParameters['queryParam3'] = 'ACTIVE';
 
-    if (parameters['queryParam3'] !== undefined) {
+    if (typeof parameters['queryParam3'] !== 'undefined') {
       queryParameters['queryParam3'] = parameters['queryParam3'];
     }
+
+    queryParameters['queryParam3'] = this.transformParameter(
+      queryParameters['queryParam3'],
+    );
 
     path = path.replace('{path_parameter_1}', pathParameter1);
 
@@ -269,7 +289,7 @@ class Api {
 
     path = path.replace('{path_parameter_3}', pathParameter3);
 
-    if (parameters[''] !== undefined) {
+    if (typeof parameters[''] !== 'undefined') {
       body = parameters[''];
     }
 
@@ -330,6 +350,15 @@ class Api {
       });
     }
     return queryParameters;
+  }
+
+  transformParameter(value, transformOperation = null) {
+    switch (transformOperation) {
+      case 'joinUsingPipes':
+        return value.join('|');
+      default:
+        return value;
+    }
   }
 
   /**
@@ -471,6 +500,7 @@ class Api {
    * @param {string} parameters.queryParam1 -
    * @param {array} parameters.queryParam2 -
    * @param {string} parameters.queryParam3 -
+   * @param {array} parameters.queryParam4 -
    * @param {string} pathParameter1 -
    * @param {string} pathParameter2 -
    * @param {string} pathParameter3 -
@@ -490,24 +520,46 @@ class Api {
 
     headers.append('Accept', 'application/json');
 
-    if (parameters['queryParam1'] !== undefined) {
+    if (typeof parameters['queryParam1'] !== 'undefined') {
       queryParameters['queryParam1'] = parameters['queryParam1'];
     }
 
-    if (parameters['queryParam1'] === undefined) {
+    queryParameters['queryParam1'] = this.transformParameter(
+      queryParameters['queryParam1'],
+    );
+
+    if (typeof parameters['queryParam1'] === 'undefined') {
       throw Error('Missing required parameter: queryParam1');
     }
 
-    if (parameters['queryParam2'] !== undefined) {
+    if (typeof parameters['queryParam2'] !== 'undefined') {
       queryParameters['queryParam2'] = parameters['queryParam2'];
     }
 
-    /** set default value **/
+    queryParameters['queryParam2'] = this.transformParameter(
+      queryParameters['queryParam2'],
+    );
+
     queryParameters['queryParam3'] = 'ACTIVE';
 
-    if (parameters['queryParam3'] !== undefined) {
+    if (typeof parameters['queryParam3'] !== 'undefined') {
       queryParameters['queryParam3'] = parameters['queryParam3'];
     }
+
+    queryParameters['queryParam3'] = this.transformParameter(
+      queryParameters['queryParam3'],
+    );
+
+    queryParameters['queryParam4'] = [1, 'Two', 'Three', 4];
+
+    if (typeof parameters['queryParam4'] !== 'undefined') {
+      queryParameters['queryParam4'] = parameters['queryParam4'];
+    }
+
+    queryParameters['queryParam4'] = this.transformParameter(
+      queryParameters['queryParam4'],
+      'joinUsingPipes',
+    );
 
     path = path.replace('{path_parameter_1}', pathParameter1);
 
@@ -553,11 +605,11 @@ class Api {
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json');
 
-    if (parameters['data'] !== undefined) {
+    if (typeof parameters['data'] !== 'undefined') {
       body = parameters['data'];
     }
 
-    if (parameters['data'] === undefined) {
+    if (typeof parameters['data'] === 'undefined') {
       throw Error('Missing required parameter: data');
     }
 
@@ -627,6 +679,15 @@ class Api {
     return str.join('&');
   }
 
+  protected transformParameter(value: any, transformOperation: string = null) {
+    switch (transformOperation) {
+      case 'joinUsingPipes':
+        return value.join('|');
+      default:
+        return value;
+    }
+  }
+
   public setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
@@ -681,7 +742,7 @@ class Api {
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {
+    parameters: {
       queryParam1: string;
       queryParam2?: Array<string>;
       queryParam3?: 'ACTIVE' | 'INACTIVE';
@@ -700,15 +761,39 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
 
     headers.append('Accept', 'application/json');
 
-    if (queryParameters['queryParam1'] === undefined) {
+    if (typeof parameters['queryParam1'] !== 'undefined') {
+      queryParameters['queryParam1'] = parameters['queryParam1'];
+    }
+
+    queryParameters['queryParam1'] = this.transformParameter(
+      queryParameters['queryParam1'],
+    );
+
+    if (typeof queryParameters['queryParam1'] === 'undefined') {
       throw new Error('Missing required parameter: queryParam1');
     }
 
-    /** set default value **/
+    if (typeof parameters['queryParam2'] !== 'undefined') {
+      queryParameters['queryParam2'] = parameters['queryParam2'];
+    }
+
+    queryParameters['queryParam2'] = this.transformParameter(
+      queryParameters['queryParam2'],
+    );
+
     queryParameters['queryParam3'] = 'ACTIVE';
+
+    if (typeof parameters['queryParam3'] !== 'undefined') {
+      queryParameters['queryParam3'] = parameters['queryParam3'];
+    }
+
+    queryParameters['queryParam3'] = this.transformParameter(
+      queryParameters['queryParam3'],
+    );
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -734,7 +819,7 @@ class Api {
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {} = {},
+    parameters: {} = {},
     body: {
       ttl?: number;
 
@@ -746,6 +831,7 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
 
     headers = this.appendAuthHeaders(headers);
     headers.append('Content-Type', 'application/json');
@@ -756,8 +842,6 @@ class Api {
     path = path.replace('{path_parameter_2}', pathParameter2.toString());
 
     path = path.replace('{path_parameter_3}', pathParameter3.toString());
-
-    // queryParameters = {};
 
     return this.request(
       'POST',
@@ -816,6 +900,15 @@ class Api {
     return str.join('&');
   }
 
+  protected transformParameter(value: any, transformOperation: string = null) {
+    switch (transformOperation) {
+      case 'joinUsingPipes':
+        return value.join('|');
+      default:
+        return value;
+    }
+  }
+
   public setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
@@ -870,10 +963,11 @@ class Api {
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {
+    parameters: {
       queryParam1: string;
       queryParam2?: Array<string>;
       queryParam3?: 'ACTIVE' | 'INACTIVE';
+      queryParam4?: Array<string>;
     },
   ): Promise<{
     items?: Array<{
@@ -889,15 +983,50 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
 
     headers.append('Accept', 'application/json');
 
-    if (queryParameters['queryParam1'] === undefined) {
+    if (typeof parameters['queryParam1'] !== 'undefined') {
+      queryParameters['queryParam1'] = parameters['queryParam1'];
+    }
+
+    queryParameters['queryParam1'] = this.transformParameter(
+      queryParameters['queryParam1'],
+    );
+
+    if (typeof queryParameters['queryParam1'] === 'undefined') {
       throw new Error('Missing required parameter: queryParam1');
     }
 
-    /** set default value **/
+    if (typeof parameters['queryParam2'] !== 'undefined') {
+      queryParameters['queryParam2'] = parameters['queryParam2'];
+    }
+
+    queryParameters['queryParam2'] = this.transformParameter(
+      queryParameters['queryParam2'],
+    );
+
     queryParameters['queryParam3'] = 'ACTIVE';
+
+    if (typeof parameters['queryParam3'] !== 'undefined') {
+      queryParameters['queryParam3'] = parameters['queryParam3'];
+    }
+
+    queryParameters['queryParam3'] = this.transformParameter(
+      queryParameters['queryParam3'],
+    );
+
+    queryParameters['queryParam4'] = [1, 'Two', 'Three', 4];
+
+    if (typeof parameters['queryParam4'] !== 'undefined') {
+      queryParameters['queryParam4'] = parameters['queryParam4'];
+    }
+
+    queryParameters['queryParam4'] = this.transformParameter(
+      queryParameters['queryParam4'],
+      'joinUsingPipes',
+    );
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -923,7 +1052,7 @@ class Api {
     pathParameter1: string,
     pathParameter2: string,
     pathParameter3: string,
-    queryParameters: {},
+    parameters: {},
     body: {
       date?: string;
 
@@ -935,6 +1064,7 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
 
     headers = this.appendAuthHeaders(headers);
     headers.append('Accept', 'application/json');
@@ -945,8 +1075,6 @@ class Api {
     path = path.replace('{path_parameter_2}', pathParameter2.toString());
 
     path = path.replace('{path_parameter_3}', pathParameter3.toString());
-
-    // queryParameters = {};
 
     return this.request(
       'POST',

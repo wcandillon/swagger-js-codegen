@@ -20,35 +20,6 @@ class ApiError {
   }
 }
 
-const queryParametersToSnakeCase = (parameters: QueryParameters) => {
-    const snakeCaseParams: any = {};
-
-    Object.keys(parameters).map(key => {
-        const value = parameters[key];
-
-        snakeCaseParams[toSnakeCase(key)] = value;
-    });
-
-    return snakeCaseParams;
-}
-
-const toSnakeCase = (msg: string) => {
-    const upperChars = msg.match(/([A-Z])/g);
-    if (! upperChars) {
-        return msg;
-    }
-
-    let str = msg.toString();
-    for (var i = 0, n = upperChars.length; i < n; i++) {
-        str = str.replace(new RegExp(upperChars[i]), '_' + upperChars[i].toLowerCase());
-    }
-
-    if (str.slice(0, 1) === '_') {
-        str = str.slice(1);
-    }
-    return str;
-}
-
 /**
  * {{&description}}
  * @class {{&className}}

@@ -588,7 +588,9 @@ exports[`Generates TYPESCRIPT class from Open Api 3.0 spec 1`] = `
 "/* tslint:disable */
 import 'isomorphic-fetch';
 
-type QueryParameters = { [key: string]: string | number | string[] | number[] };
+type QueryParameters = {
+  [key: string]: string | number | string[] | number[] | undefined;
+};
 
 class ApiError {
   public message: string;
@@ -612,11 +614,14 @@ class Api {
     const str: string[] = [];
     for (let p in parameters) {
       if (parameters.hasOwnProperty(p)) {
-        str.push(
-          \`\${encodeURIComponent(p)}=\${encodeURIComponent(
-            parameters[p].toString(),
-          )}\`,
-        );
+        if (parameters[p] !== undefined) {
+          const parameter = parameters[p] || '';
+          str.push(
+            \`\${encodeURIComponent(p)}=\${encodeURIComponent(
+              parameter.toString(),
+            )}\`,
+          );
+        }
       }
     }
     return str.join('&');
@@ -644,7 +649,6 @@ class Api {
     body: any,
     headers: any,
     queryParameters: QueryParameters,
-    form: any,
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -652,25 +656,10 @@ class Api {
         : null;
     const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-    // ugly hack, we need to delete Content-Type header with multipart/form-data
-    // that way, browser will calculate form specific headers on it's own
-    // contentTypeHeader[0] because nearly every header's value is set using array
-    const contentTypeHeader = headers['Content-Type'];
-    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-      delete headers['Content-Type'];
-    }
-
     if (body && !Object.keys(body).length) {
       body = undefined;
     } else {
       body = JSON.stringify(body);
-    }
-
-    if (form && Object.keys(form).length) {
-      body = new FormData();
-      for (let k in form) {
-        body.append(k, form[k]);
-      }
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });
@@ -711,7 +700,6 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
-    let form: any = {};
 
     headers.append('Accept', 'application/json');
 
@@ -734,7 +722,6 @@ class Api {
       {},
       headers,
       queryParameters,
-      form,
     );
   }
 
@@ -759,7 +746,6 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
-    let form: any = {};
 
     headers = this.appendAuthHeaders(headers);
     headers.append('Content-Type', 'application/json');
@@ -771,8 +757,7 @@ class Api {
 
     path = path.replace('{path_parameter_3}', pathParameter3.toString());
 
-    form = queryParameters;
-    queryParameters = {};
+    // queryParameters = {};
 
     return this.request(
       'POST',
@@ -780,7 +765,6 @@ class Api {
       body,
       headers,
       queryParameters,
-      form,
     );
   }
 }
@@ -793,7 +777,9 @@ exports[`Generates TYPESCRIPT class from Swagger 2 spec 1`] = `
 "/* tslint:disable */
 import 'isomorphic-fetch';
 
-type QueryParameters = { [key: string]: string | number | string[] | number[] };
+type QueryParameters = {
+  [key: string]: string | number | string[] | number[] | undefined;
+};
 
 class ApiError {
   public message: string;
@@ -817,11 +803,14 @@ class Api {
     const str: string[] = [];
     for (let p in parameters) {
       if (parameters.hasOwnProperty(p)) {
-        str.push(
-          \`\${encodeURIComponent(p)}=\${encodeURIComponent(
-            parameters[p].toString(),
-          )}\`,
-        );
+        if (parameters[p] !== undefined) {
+          const parameter = parameters[p] || '';
+          str.push(
+            \`\${encodeURIComponent(p)}=\${encodeURIComponent(
+              parameter.toString(),
+            )}\`,
+          );
+        }
       }
     }
     return str.join('&');
@@ -849,7 +838,6 @@ class Api {
     body: any,
     headers: any,
     queryParameters: QueryParameters,
-    form: any,
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -857,25 +845,10 @@ class Api {
         : null;
     const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-    // ugly hack, we need to delete Content-Type header with multipart/form-data
-    // that way, browser will calculate form specific headers on it's own
-    // contentTypeHeader[0] because nearly every header's value is set using array
-    const contentTypeHeader = headers['Content-Type'];
-    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-      delete headers['Content-Type'];
-    }
-
     if (body && !Object.keys(body).length) {
       body = undefined;
     } else {
       body = JSON.stringify(body);
-    }
-
-    if (form && Object.keys(form).length) {
-      body = new FormData();
-      for (let k in form) {
-        body.append(k, form[k]);
-      }
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });
@@ -916,7 +889,6 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
-    let form: any = {};
 
     headers.append('Accept', 'application/json');
 
@@ -925,7 +897,7 @@ class Api {
     }
 
     /** set default value **/
-    queryParameters['queryParam3'] = ACTIVE;
+    queryParameters['queryParam3'] = 'ACTIVE';
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
@@ -939,7 +911,6 @@ class Api {
       {},
       headers,
       queryParameters,
-      form,
     );
   }
 
@@ -964,7 +935,6 @@ class Api {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
-    let form: any = {};
 
     headers = this.appendAuthHeaders(headers);
     headers.append('Accept', 'application/json');
@@ -976,8 +946,7 @@ class Api {
 
     path = path.replace('{path_parameter_3}', pathParameter3.toString());
 
-    form = queryParameters;
-    queryParameters = {};
+    // queryParameters = {};
 
     return this.request(
       'POST',
@@ -985,7 +954,6 @@ class Api {
       body,
       headers,
       queryParameters,
-      form,
     );
   }
 }

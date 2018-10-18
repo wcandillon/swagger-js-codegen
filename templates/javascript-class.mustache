@@ -49,7 +49,7 @@ class {{&className}} {
   transformParameter(value, transformOperation = null) {
     switch(transformOperation) {
       case 'joinUsingPipes':
-        return value.join('|');
+        return Array.isArray(value) ? value.join('|') : value;
       default:
         return value;
     }

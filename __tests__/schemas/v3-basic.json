@@ -185,6 +185,24 @@
           }
         }
       }
+    },
+    "/endpoint-without-ok-response": {
+      "x-exegesis-controller": "controllers/ctrl2",
+      "get": {
+        "operationId": "endpointWithoutOkResponse",
+        "responses": {
+          "302": {
+            "description": "Just simple get redirect operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

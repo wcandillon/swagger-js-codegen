@@ -29,7 +29,7 @@
             {{/isBodyParameter}}
         {{/parameters}}
     {{/hasBody}}
-): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}>
+): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}{{^successResponses}}void{{/successResponses}}>
 {
     let path = '{{&path}}';
     let headers: Headers = new Headers();

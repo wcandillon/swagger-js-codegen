@@ -234,6 +234,21 @@
         "operationId": "simplePostOperation"
       },
       "x-exegesis-controller": "controllers/ctrl"
+    },
+    "/endpoint-without-ok-response": {
+      "get": {
+        "produces": ["application/json"],
+        "responses": {
+          "302": {
+            "description": "Just simple get redirect operation",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "operationId": "endpointWithoutOkResponse"
+      },
+      "x-exegesis-controller": "controllers/ctrl2"
     }
   }
 }

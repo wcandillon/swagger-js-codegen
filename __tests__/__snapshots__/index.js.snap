@@ -640,6 +640,32 @@ class Api {
       form,
     );
   }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
+   */
+  endpointWithoutOkResponse(parameters = {}) {
+    let path = '/endpoint-without-ok-response';
+    let body = {};
+    let queryParameters = {};
+    let headers = new Headers();
+    let form = {};
+
+    headers.append('Accept', 'application/json');
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
 }
 
 export default new Api();
@@ -1090,6 +1116,27 @@ class Api {
       'POST',
       \`\${this.baseUrl}\${path}\`,
       body,
+      headers,
+      queryParameters,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#endpointWithoutOkResponse
+   */
+  endpointWithoutOkResponse(parameters: {} = {}): Promise<void> {
+    let path = '/endpoint-without-ok-response';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+    headers.append('Accept', 'application/json');
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      {},
       headers,
       queryParameters,
     );

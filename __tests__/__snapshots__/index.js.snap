@@ -689,7 +689,7 @@ class Api {
       .join('&');
   }
 
-  protected transformParameter(value: any, transformOperation: string = null) {
+  protected transformParameter(value: any, transformOperation?: string) {
     switch (transformOperation) {
       case 'joinUsingPipes':
         return Array.isArray(value) ? value.join('|') : value;
@@ -910,7 +910,7 @@ class Api {
       .join('&');
   }
 
-  protected transformParameter(value: any, transformOperation: string = null) {
+  protected transformParameter(value: any, transformOperation?: string) {
     switch (transformOperation) {
       case 'joinUsingPipes':
         return Array.isArray(value) ? value.join('|') : value;

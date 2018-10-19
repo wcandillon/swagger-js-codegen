@@ -5,7 +5,7 @@ import 'isomorphic-fetch';
 /// <reference path="{{&.}}" />
 {{/imports}}
 
-type QueryParameters = { [key: string]: string | number | string[] | number[] | undefined };
+type QueryParameters = { [key: string]: string | number | string[] | number[] | boolean | boolean[] | undefined };
 
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};

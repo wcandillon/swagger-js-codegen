@@ -677,7 +677,14 @@ exports[`Generates TYPESCRIPT class from Open Api 3.0 spec 1`] = `
 import 'isomorphic-fetch';
 
 type QueryParameters = {
-  [key: string]: string | number | string[] | number[] | undefined;
+  [key: string]:
+    | string
+    | number
+    | string[]
+    | number[]
+    | boolean
+    | boolean[]
+    | undefined;
 };
 
 class ApiError {
@@ -898,7 +905,14 @@ exports[`Generates TYPESCRIPT class from Swagger 2 spec 1`] = `
 import 'isomorphic-fetch';
 
 type QueryParameters = {
-  [key: string]: string | number | string[] | number[] | undefined;
+  [key: string]:
+    | string
+    | number
+    | string[]
+    | number[]
+    | boolean
+    | boolean[]
+    | undefined;
 };
 
 class ApiError {

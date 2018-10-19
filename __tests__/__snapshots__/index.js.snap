@@ -335,6 +335,32 @@ class Api {
       form,
     );
   }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
+   */
+  endpointWithAllOf(parameters = {}) {
+    let path = '/endpoint-with-all-of';
+    let body = {};
+    let queryParameters = {};
+    let headers = new Headers();
+    let form = {};
+
+    headers.append('Accept', 'application/json');
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
 }
 
 export default new Api();
@@ -928,6 +954,35 @@ class Api {
    */
   endpointWithoutOkResponse(parameters: {} = {}): Promise<void> {
     let path = '/endpoint-without-ok-response';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+    headers.append('Accept', 'application/json');
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      {},
+      headers,
+      queryParameters,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#endpointWithAllOf
+   */
+  endpointWithAllOf(
+    parameters: {} = {},
+  ): Promise<
+    Array<{
+      _id: string;
+
+      name?: string;
+    }>
+  > {
+    let path = '/endpoint-with-all-of';
     let headers: Headers = new Headers();
     let queryParameters: QueryParameters = {};
 

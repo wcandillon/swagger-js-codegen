@@ -203,6 +203,42 @@
           }
         }
       }
+    },
+    "/endpoint-with-all-of": {
+      "x-exegesis-controller": "controllers/ctrl2",
+      "get": {
+        "operationId": "endpointWithAllOf",
+        "responses": {
+          "200": {
+            "description": "Just simple get redirect operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      {
+                        "required": ["_id"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

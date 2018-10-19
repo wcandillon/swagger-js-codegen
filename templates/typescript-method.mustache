@@ -78,7 +78,7 @@
             headers.append('{{&name}}', '{{&singleton}}');
         {{/isSingleton}}
         {{^isSingleton}}
-            if(typeof queryParameters['{{&camelCaseName}}'] !== 'undefined') {
+            if(typeof parameters['{{&camelCaseName}}'] !== 'undefined') {
                 headers.append('{{&name}}', queryParameters['{{&camelCaseName}}']!);
             }
         {{/isSingleton}}
@@ -86,7 +86,7 @@
 
     {{#required}}
         {{#isQueryParameter}}
-            if(typeof queryParameters['{{&camelCaseName}}'] === 'undefined') {
+            if(typeof parameters['{{&camelCaseName}}'] === 'undefined') {
                 throw new Error('Missing required parameter: {{&camelCaseName}}');
             }
         {{/isQueryParameter}}

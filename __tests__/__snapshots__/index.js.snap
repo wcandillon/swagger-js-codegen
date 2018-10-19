@@ -868,7 +868,7 @@ class Api {
       queryParameters['queryParam1'],
     );
 
-    if (typeof queryParameters['queryParam1'] === 'undefined') {
+    if (typeof parameters['queryParam1'] === 'undefined') {
       throw new Error('Missing required parameter: queryParam1');
     }
 
@@ -1147,7 +1147,7 @@ class Api {
       queryParameters['queryParam1'],
     );
 
-    if (typeof queryParameters['queryParam1'] === 'undefined') {
+    if (typeof parameters['queryParam1'] === 'undefined') {
       throw new Error('Missing required parameter: queryParam1');
     }
 

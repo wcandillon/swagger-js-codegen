@@ -234,14 +234,14 @@ class Api {
       queryParameters['queryParam2'],
     );
 
-    queryParameters['queryParam3'] = 'ACTIVE';
+    queryParameters['query_param_3'] = 'ACTIVE';
 
     if (typeof parameters['queryParam3'] !== 'undefined') {
-      queryParameters['queryParam3'] = parameters['queryParam3'];
+      queryParameters['query_param_3'] = parameters['queryParam3'];
     }
 
-    queryParameters['queryParam3'] = this.transformParameter(
-      queryParameters['queryParam3'],
+    queryParameters['query_param_3'] = this.transformParameter(
+      queryParameters['query_param_3'],
     );
 
     path = path.replace('{path_parameter_1}', pathParameter1);
@@ -602,14 +602,14 @@ class Api {
       queryParameters['queryParam2'],
     );
 
-    queryParameters['queryParam3'] = 'ACTIVE';
+    queryParameters['query_param_3'] = 'ACTIVE';
 
     if (typeof parameters['queryParam3'] !== 'undefined') {
-      queryParameters['queryParam3'] = parameters['queryParam3'];
+      queryParameters['query_param_3'] = parameters['queryParam3'];
     }
 
-    queryParameters['queryParam3'] = this.transformParameter(
-      queryParameters['queryParam3'],
+    queryParameters['query_param_3'] = this.transformParameter(
+      queryParameters['query_param_3'],
     );
 
     queryParameters['queryParam4'] = [1, 'Two', 'Three', 4];
@@ -880,14 +880,14 @@ class Api {
       queryParameters['queryParam2'],
     );
 
-    queryParameters['queryParam3'] = 'ACTIVE';
+    queryParameters['query_param_3'] = 'ACTIVE';
 
     if (typeof parameters['queryParam3'] !== 'undefined') {
-      queryParameters['queryParam3'] = parameters['queryParam3'];
+      queryParameters['query_param_3'] = parameters['queryParam3'];
     }
 
-    queryParameters['queryParam3'] = this.transformParameter(
-      queryParameters['queryParam3'],
+    queryParameters['query_param_3'] = this.transformParameter(
+      queryParameters['query_param_3'],
     );
 
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
@@ -1159,14 +1159,14 @@ class Api {
       queryParameters['queryParam2'],
     );
 
-    queryParameters['queryParam3'] = 'ACTIVE';
+    queryParameters['query_param_3'] = 'ACTIVE';
 
     if (typeof parameters['queryParam3'] !== 'undefined') {
-      queryParameters['queryParam3'] = parameters['queryParam3'];
+      queryParameters['query_param_3'] = parameters['queryParam3'];
     }
 
-    queryParameters['queryParam3'] = this.transformParameter(
-      queryParameters['queryParam3'],
+    queryParameters['query_param_3'] = this.transformParameter(
+      queryParameters['query_param_3'],
     );
 
     queryParameters['queryParam4'] = [1, 'Two', 'Three', 4];

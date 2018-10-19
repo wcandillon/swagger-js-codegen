@@ -42,7 +42,7 @@
           queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
         }
 
-        queryParameters['{{&name}}'] = this.transformParameter(queryParameters['{{&camelCaseName}}']{{#transformOperation}}, '{{&transformOperation}}'{{/transformOperation}});
+        queryParameters['{{&name}}'] = this.transformParameter(queryParameters['{{&name}}']{{#transformOperation}}, '{{&transformOperation}}'{{/transformOperation}});
         {{/isPatternType}}
       {{/isSingleton}}
     {{/isQueryParameter}}

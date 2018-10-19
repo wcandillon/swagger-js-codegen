@@ -55,7 +55,7 @@
             }
           },
           {
-            "name": "queryParam3",
+            "name": "query_param_3",
             "in": "query",
             "type": "string",
             "enum": ["ACTIVE", "INACTIVE"],

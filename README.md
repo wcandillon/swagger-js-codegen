@@ -103,6 +103,12 @@ className:
 domain:
   type: string
   description: If all options defined: swagger.schemes[0] + '://' + swagger.host + swagger.basePath
+useES6Promises:
+  type: boolean
+  description: false unless enabled in your options field, removes Q and enables regular ES6 promises in Node or React code
+useES6Modules:
+  type: boolean
+  description: false unless enabled in your options field, removes exports-loader and enables regular ES6 module exports in Node or React code
 methods:
   type: array
   items:

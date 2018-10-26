@@ -11,7 +11,7 @@
     if(parameters === undefined) {
         parameters = {};
     }
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
+    {{^useES6Promises}}{{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();{{/useES6Promises}}
     {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} domain = this.domain,  path = '{{&path}}';
     {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} body = {}, queryParameters = {}, headers = {}, form = {};
 
@@ -82,15 +82,26 @@
 
         {{#required}}
         if(parameters['{{&camelCaseName}}'] === undefined){
-            deferred.reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
+            {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} error = new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}');
+            {{#useES6Promises}}
+            throw error;
+            {{/useES6Promises}}
+            {{^useES6Promises}}
+            deferred.reject(error);
             return deferred.promise;
+            {{/useES6Promises}}
         }
         {{/required}}
  
     {{/parameters}}
     queryParameters = mergeQueryParams(parameters, queryParameters);
-
+    
+    {{#useES6Promises}}
+    return this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form);
+    {{/useES6Promises}}
+    {{^useES6Promises}}
     this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form, deferred);
 
     return deferred.promise;
+    {{/useES6Promises}}
  };

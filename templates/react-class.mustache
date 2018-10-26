@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 /*global fetch, btoa */
-import Q from 'q';
+{{^useES6Promises}}import Q from 'q';{{/useES6Promises}}
 /**
  * {{&description}}
  * @class {{&className}}
@@ -62,9 +62,11 @@ let {{&className}} = (function(){
       * @param {object} headers - header parameters
       * @param {object} queryParameters - querystring parameters
       * @param {object} form - form data object
+      {{^useES6Promises}}
       * @param {object} deferred - promise object
+      {{/useES6Promises}}
       */
-    {{&className}}.prototype.request = function(method, url, parameters, body, headers, queryParameters, form, deferred){
+    {{&className}}.prototype.request = function(method, url, parameters, body, headers, queryParameters, form{{^useES6Promises}}, deferred{{/useES6Promises}}){
         const queryParams = queryParameters && Object.keys(queryParameters).length ? serializeQueryParams(queryParameters) : null ;
         const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
@@ -72,17 +74,17 @@ let {{&className}} = (function(){
             body = undefined;
         }
 
-        fetch(urlWithParams, {
+        {{#useES6Promises}}return {{/useES6Promises}}fetch(urlWithParams, {
             method,
             headers,
             body: JSON.stringify(body)
         }).then((response) => {
             return response.json();
-        }).then((body) => {
+        }){{^useES6Promises}}.then((body) => {
             deferred.resolve(body);
         }).catch((error) => {
             deferred.reject(error);
-        });
+        }){{/useES6Promises}};
     };
 
     {{#isSecure}}
@@ -167,4 +169,9 @@ let {{&className}} = (function(){
     return {{&className}};
 })();
 
+{{#useES6Modules}}
+export default {{&className}};
+{{/useES6Modules}}
+{{^useES6Modules}}
 exports.{{&className}} = {{&className}};
+{{/useES6Modules}}

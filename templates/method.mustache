@@ -96,12 +96,7 @@
     {{/parameters}}
     queryParameters = mergeQueryParams(parameters, queryParameters);
     
-    {{#useES6Promises}}
-    return this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form);
-    {{/useES6Promises}}
-    {{^useES6Promises}}
-    this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form, deferred);
+    {{#useES6Promises}}return {{/useES6Promises}}this.request('{{method}}', domain + path, parameters, body, headers, queryParameters, form{{^useES6Promises}}, deferred{{/useES6Promises}});
 
-    return deferred.promise;
-    {{/useES6Promises}}
+    {{^useES6Promises}}return deferred.promise;{{/useES6Promises}}
  };

@@ -4,6 +4,10 @@
 
 import request, { SuperAgentStatic, Response } from "superagent";
 
+export type RequestHeaders = {
+    [header: string]: string;
+}
+export type RequestHeadersHandler = (headers: RequestHeaders) => RequestHeaders;
 export type CallbackHandler = (err: any, res?: request.Response) => void;
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
@@ -24,6 +28,7 @@ export class {{&className}} {
 
     private domain: string = "{{&domain}}";
     private errorHandlers: CallbackHandler[] = [];
+    private requestHeadersHandler?: RequestHeadersHandler;
 
     constructor(domain?: string, private logger?: Logger) {
         if(domain) {
@@ -39,16 +44,17 @@ export class {{&className}} {
         this.errorHandlers.push(handler);
     }
 
-    private request(method: string, url: string, body: any, headers: any, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler) {
+    setRequestHeadersHandler(handler: RequestHeadersHandler) {
+        this.requestHeadersHandler = handler;
+    }
+
+    private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler) {
         if(this.logger) {
           this.logger.log(`Call ${method} ${url}`);
         }
 
         let req = (request as SuperAgentStatic)(method, url).query(queryParameters);
 
-        Object.keys(headers).forEach(key => {
-            req.set(key, headers[key]);
-        });
 
         if(body) {
             req.send(body);
@@ -62,6 +68,14 @@ export class {{&className}} {
             req.type('form');
             req.send(form);
         }
+
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({...headers});
+        }
+
+        Object.keys(headers).forEach(key => {
+            req.set(key, headers[key]);
+        });
 
         req.end((error, response) => {
             if(error || !response.ok) {

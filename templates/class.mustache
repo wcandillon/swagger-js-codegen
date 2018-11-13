@@ -7,7 +7,7 @@ import {SuperAgentStatic} from "superagent";
 
 type CallbackHandler = (err: any, res?: request.Response) => void;
 {{#definitions}}
-type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}
 
 export type Logger = { log: (line: string) => any };

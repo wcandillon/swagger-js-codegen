@@ -10,7 +10,7 @@ type CallbackHandler = (err: any, res?: request.Response) => void;
 type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}
 
-type Logger = { log: (line: string) => any };
+export type Logger = { log: (line: string) => any };
 
 /**
  * {{&description}}

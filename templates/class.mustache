@@ -8,6 +8,7 @@ export type RequestHeaders = {
     [header: string]: string;
 }
 export type RequestHeadersHandler = (headers: RequestHeaders) => RequestHeaders;
+export type ConfigureAgentHandler = (agent: SuperAgentStatic) => SuperAgentStatic;
 export type CallbackHandler = (err: any, res?: request.Response) => void;
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
@@ -29,6 +30,7 @@ export class {{&className}} {
     private domain: string = "{{&domain}}";
     private errorHandlers: CallbackHandler[] = [];
     private requestHeadersHandler?: RequestHeadersHandler;
+    private configureAgentHandler?: ConfigureAgentHandler;
 
     constructor(domain?: string, private logger?: Logger) {
         if(domain) {
@@ -48,13 +50,21 @@ export class {{&className}} {
         this.requestHeadersHandler = handler;
     }
 
+    setConfigureAgentHandler(handler: ConfigureAgentHandler) {
+        this.configureAgentHandler = handler;
+    }
+
     private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler) {
         if(this.logger) {
           this.logger.log(`Call ${method} ${url}`);
         }
 
-        let req = (request as SuperAgentStatic)(method, url).query(queryParameters);
+        let agent = this.configureAgentHandler
+            ? this.configureAgentHandler(request)
+            : request;
 
+        let req = agent(method, url);
+        req = req.query(queryParameters);
 
         if(body) {
             req.send(body);

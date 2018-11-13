@@ -2,13 +2,14 @@
 /// <reference path="{{&.}}" />
 {{/imports}}
 
-import request, { SuperAgentStatic, Response } from "superagent";
+import request, { SuperAgentStatic, SuperAgentRequest, Response } from "superagent";
 
 export type RequestHeaders = {
     [header: string]: string;
 }
 export type RequestHeadersHandler = (headers: RequestHeaders) => RequestHeaders;
 export type ConfigureAgentHandler = (agent: SuperAgentStatic) => SuperAgentStatic;
+export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRequest;
 export type CallbackHandler = (err: any, res?: request.Response) => void;
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
@@ -31,6 +32,7 @@ export class {{&className}} {
     private errorHandlers: CallbackHandler[] = [];
     private requestHeadersHandler?: RequestHeadersHandler;
     private configureAgentHandler?: ConfigureAgentHandler;
+    private configureRequestHandler?: ConfigureRequestHandler;
 
     constructor(domain?: string, private logger?: Logger) {
         if(domain) {
@@ -54,6 +56,10 @@ export class {{&className}} {
         this.configureAgentHandler = handler;
     }
 
+    setConfigureRequestHandler(handler: ConfigureRequestHandler) {
+        this.configureRequestHandler = handler;
+    }
+
     private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler) {
         if(this.logger) {
           this.logger.log(`Call ${method} ${url}`);
@@ -64,6 +70,10 @@ export class {{&className}} {
             : request;
 
         let req = agent(method, url);
+        if (this.configureRequestHandler) {
+            req = this.configureRequestHandler(req);
+        }
+     
         req = req.query(queryParameters);
 
         if(body) {

@@ -2,7 +2,7 @@
 /// <reference path="{{&.}}" />
 {{/imports}}
 
-import request, { SuperAgentStatic } from "superagent";
+import request, { SuperAgentStatic, Response } from "superagent";
 
 type CallbackHandler = (err: any, res?: request.Response) => void;
 {{#definitions}}
@@ -10,6 +10,10 @@ export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}
 
 export type Logger = { log: (line: string) => any };
+
+interface ResponseWithBody<T> extends Response {
+  body: T;
+}
 
 /**
  * {{&description}}

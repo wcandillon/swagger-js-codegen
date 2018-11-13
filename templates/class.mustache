@@ -17,7 +17,7 @@ export type Logger = { log: (line: string) => any };
  * @class {{&className}}
  * @param {(string)} [domainOrOptions] - The project domain.
  */
-export default class {{&className}} {
+export class {{&className}} {
 
     private domain: string = "{{&domain}}";
     private errorHandlers: CallbackHandler[] = [];
@@ -75,3 +75,5 @@ export default class {{&className}} {
 
 {{/methods}}
 }
+
+export default {{&className}};

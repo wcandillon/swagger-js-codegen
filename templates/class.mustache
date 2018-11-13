@@ -4,7 +4,7 @@
 
 import request, { SuperAgentStatic, Response } from "superagent";
 
-type CallbackHandler = (err: any, res?: request.Response) => void;
+export type CallbackHandler = (err: any, res?: request.Response) => void;
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 {{/definitions}}

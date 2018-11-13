@@ -78,10 +78,10 @@ export class {{&className}} {
 
         if(body) {
             req.send(body);
-        }
         
-        if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-            req.set('Content-Type', 'application/json');
+            if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                headers['Content-Type'] = 'application/json';
+            }
         }
 
         if(Object.keys(form).length > 0) {

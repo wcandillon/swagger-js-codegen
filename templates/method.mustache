@@ -2,11 +2,15 @@
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
 $queryParameters?: any, 
-$domain?: string
+$domain?: string,
+$path?: string | ((path: string) => string)
 }): string {
     let queryParameters: any = {};
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';
+    if (parameters.$path) {
+        path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+    } 
     {{#parameters}}
         {{#isQueryParameter}}
             {{#isSingleton}}
@@ -65,10 +69,14 @@ $domain?: string
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
     $queryParameters?: any,
-    $domain?: string
+    $domain?: string,
+    $path?: string | ((path: string) => string)
 }): Promise<ResponseWithBody<{{&successfulResponseType}}>> {
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';
+    if (parameters.$path) {
+        path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+    } 
     let body: any;
     let queryParameters: any = {};
     let headers: any = {};

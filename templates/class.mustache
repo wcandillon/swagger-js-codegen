@@ -65,7 +65,7 @@ export class {{&className}} {
           this.logger.log(`Call ${method} ${url}`);
         }
 
-        let agent = this.configureAgentHandler
+        const agent = this.configureAgentHandler
             ? this.configureAgentHandler(request)
             : request;
 

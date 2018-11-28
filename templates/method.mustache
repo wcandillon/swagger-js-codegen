@@ -33,7 +33,7 @@ $domain?: string
         {{/isPathParameter}}
     {{/parameters}}
     
-    if (parameters.$queryParameters != undefined) {
+    if (parameters.$queryParameters !== undefined && parameters.$queryParameters !== null) {
         queryParameters = {
             ...queryParameters,
             ...parameters.$queryParameters

@@ -1,10 +1,7 @@
 {{&methodName}}URL(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-$queryParameters?: any, 
-$domain?: string,
-$path?: string | ((path: string) => string)
-}): string {
+} & CommonRequestOptions): string {
     let queryParameters: any = {};
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';

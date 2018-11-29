@@ -8,11 +8,16 @@ export type RequestHeaders = {
     [header: string]: string;
 }
 export type RequestHeadersHandler = (headers: RequestHeaders) => RequestHeaders;
+
 export type ConfigureAgentHandler = (agent: SuperAgentStatic) => SuperAgentStatic;
+
 export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRequest;
+
 export type CallbackHandler = (err: any, res?: request.Response) => void;
+
 {{#definitions}}
 export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+
 {{/definitions}}
 
 export type Logger = { log: (line: string) => any };

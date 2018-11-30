@@ -26,6 +26,12 @@ export interface ResponseWithBody<T> extends Response {
     body: T;
 }
 
+export interface CommonRequestOptions {
+  $queryParameters?: {[param: string]: any};
+  $domain?: string;
+  $path?: string | ((path: string) => string);
+}
+
 /**
  * {{&description}}
  * @class {{&className}}

@@ -9,7 +9,7 @@
 %><%#isObject%>{
 <%#properties%>    '<%name%>'<%^isRequired%>?<%/isRequired%>: <%>type%><%/properties%>}<%/isObject%><%!
 
-%><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>>|<%#elementType%><%>type%><%/elementType%><%/isArray%><%!
+%><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%><%!
 
 %><%#isDictionary%>{[key: string]: <%#elementType%><%>type%><%/elementType%>}<%/isDictionary%><%!
 

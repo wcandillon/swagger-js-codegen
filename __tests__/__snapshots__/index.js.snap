@@ -183,7 +183,7 @@ class Api {
   appendAuthHeaders(headerParams) {
     const headers = new Headers(headerParams);
     if (this.token) {
-      headers.Authorization = \`Bearer \${this.token}\`;
+     headers.append('Authorization', `Bearer ${this.token}`);
     }
     return headers;
   }

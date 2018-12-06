@@ -172,7 +172,7 @@ class {{&className}} {
       const headers = new Headers(headerParams);
     {{#isSecureToken}}
       if (this.token) {
-        headers.Authorization = `Bearer ${this.token}`;
+         headers.append('Authorization', `Bearer ${this.token}`);
       }
     {{/isSecureToken}}
       return headers;

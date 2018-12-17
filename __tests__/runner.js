@@ -41,11 +41,6 @@ testCases.forEach(function(testCase) {
             beautify: true
         });
 
-        if (fs.existsSync(expectedPath)) {
-            var expected = fs.readFileSync(expectedPath, 'UTF-8');
-            expect(actual).toBe(expected)
-        } else {
-            fs.writeFileSync(expectedPath, actual)
-        }
+        expect(actual).toMatchSnapshot()
     })
 })

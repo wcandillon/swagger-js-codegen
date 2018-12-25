@@ -1,0 +1,229 @@
+import { ViewData, LatestMethodVersion, Method } from './codegen.types';
+import * as _ from 'lodash';
+import * as ts from './typescript';
+import { Security } from './Swagger';
+import { CodeGenOptions } from './options/options';
+
+var defaultSuccessfulResponseType = 'void';
+
+var normalizeName = function(id: string): string {
+    return id.replace(/\.|\-|\{|\}/g, '_');
+};
+
+var getPathToMethodName = function(__: CodeGenOptions, m: string, path: string): string {
+    if(path === '/' || path === '') {
+        return m;
+    }
+
+    // clean url path for requests ending with '/'
+    var cleanPath = path.replace(/\/$/, '');
+
+    var segments = cleanPath.split('/').slice(1);
+    segments = _.transform(segments, function (result, segment) {
+        if (segment[0] === '{' && segment[segment.length - 1] === '}') {
+            segment = 'by' + segment[1].toUpperCase() + segment.substring(2, segment.length - 1);
+        }
+        result.push(segment);
+    });
+    var result = _.camelCase(segments.join('-'));
+    return m.toLowerCase() + result[0].toUpperCase() + result.substring(1);
+};
+
+var versionRegEx = /\/api\/(v\d+)\//;
+
+var getVersion = function(path: string){
+    var m = versionRegEx.exec(path);
+    return (m && m[1]) || 'v0';
+};
+
+export var getViewForSwagger2 = function(opts: CodeGenOptions): ViewData{
+    var swagger = opts.swagger;
+    var authorizedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'];
+    var data: ViewData = {
+        isES6: opts.isES6,
+        description: swagger.info.description,
+        isSecure: swagger.securityDefinitions !== undefined,
+        isSecureToken: false,
+        isSecureApiKey: false,
+        isSecureBasic: false,
+        moduleName: opts.moduleName,
+        className: opts.className,
+        imports: opts.imports,
+        domain: (swagger.schemes && swagger.schemes.length > 0 && swagger.host && swagger.basePath) ? swagger.schemes[0] + '://' + swagger.host + swagger.basePath.replace(/\/+$/g,'') : '',
+        methods: [],
+        definitions: []
+    };
+
+    var latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
+
+    function isParamter(__: any, m: string): __ is ReadonlyArray<any> {
+        return m.toLowerCase() === 'parameters';
+    }
+
+    _.forEach(swagger.paths, function(api, path){
+        var globalParams: ReadonlyArray<any> = [];
+        /**
+         * @param {Object} op - meta data for the request
+         * @param {string} m - HTTP method name - eg: 'get', 'post', 'put', 'delete'
+         */
+        _.forEach(api, function(op, m){
+            if(isParamter(op, m)) {
+                globalParams = op;
+            }
+        });
+        _.forEach(api, function (op, m){
+            var M = m.toUpperCase();
+            if(M === '' || authorizedMethods.indexOf(M) === -1) {
+                return;
+            }
+
+            // Ignore deprecated endpoints
+
+            if (op.deprecated) {
+                return;
+            }
+
+            var secureTypes = [];
+            if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
+                var mergedSecurity = _.merge([], swagger.security, op.security).map(function(security: Security){
+                    return Object.keys(security);
+                });
+                if(swagger.securityDefinitions) {
+                    for(var sk in swagger.securityDefinitions) {
+                        if (mergedSecurity.join(',').indexOf(sk) !== -1){
+                            secureTypes.push(swagger.securityDefinitions[sk].type);
+                        }
+                    }
+                }
+            }
+
+            var successfulResponseTypeIsRef = false;
+            var successfulResponseType;
+            try {
+                const convertedType = ts.convertType(op.responses['200'], swagger);
+
+                if(convertedType.target){
+                    successfulResponseTypeIsRef = true;
+                }
+    
+                successfulResponseType = convertedType.target || convertedType.tsType || defaultSuccessfulResponseType;
+            } catch (error) {
+                successfulResponseType = defaultSuccessfulResponseType;
+            }
+
+            var version = getVersion(path);
+            var intVersion = parseInt(version.substr(1));
+
+            var method: Method = {
+                path: path,
+                pathFormatString: path.replace(/{/g, '${parameters.'),
+                className: opts.className,
+                methodName:  op.operationId ? normalizeName(op.operationId) : getPathToMethodName(opts, m, path),
+                version: version,
+                intVersion: intVersion,
+                method: M,
+                isGET: M === 'GET',
+                isPOST: M === 'POST',
+                summary: op.description || op.summary,
+                externalDocs: op.externalDocs,
+                isSecure: swagger.security !== undefined || op.security !== undefined,
+                isSecureToken: secureTypes.indexOf('oauth2') !== -1,
+                isSecureApiKey: secureTypes.indexOf('apiKey') !== -1,
+                isSecureBasic: secureTypes.indexOf('basic') !== -1,
+                parameters: [],
+                headers: [],
+                successfulResponseType,
+                successfulResponseTypeIsRef,
+                isLatestVersion: false,
+            };
+
+            latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, intVersion);
+
+            if(method.isSecure && method.isSecureToken) {
+                data.isSecureToken = method.isSecureToken;
+            }
+
+            if(method.isSecure && method.isSecureApiKey) {
+                data.isSecureApiKey = method.isSecureApiKey;
+            }
+
+            if(method.isSecure && method.isSecureBasic) {
+                data.isSecureBasic = method.isSecureBasic;
+            }
+
+            var produces = op.produces || swagger.produces;
+            if(produces) {
+                method.headers.push({
+                  name: 'Accept',
+                  value: `'${produces.map(function(value) { return value; }).join(', ')}'`,
+                });
+            }
+
+            var consumes = op.consumes || swagger.consumes;
+            if(consumes) {
+                var preferredContentType = consumes[0] || '';
+                method.headers.push({name: 'Content-Type', value: '\'' + preferredContentType + '\''});
+            }
+
+            var params = [];
+            if(_.isArray(op.parameters)) {
+                params = op.parameters;
+            }
+            params = params.concat(globalParams);
+            _.forEach(params, function(parameter) {
+                //Ignore parameters which contain the x-exclude-from-bindings extension
+                if(parameter['x-exclude-from-bindings'] === true) {
+                    return;
+                }
+
+                // Ignore headers which are injected by proxies & app servers
+                // eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
+                if (parameter['x-proxy-header']) {
+                    return;
+                }
+                if (_.isString(parameter.$ref)) {
+                    var segments = parameter.$ref.split('/');
+                    parameter = swagger.parameters[segments.length === 1 ? segments[0] : segments[2] ];
+                }
+                parameter.camelCaseName = _.camelCase(parameter.name);
+                if(parameter.enum && parameter.enum.length === 1) {
+                    parameter.isSingleton = true;
+                    parameter.singleton = parameter.enum[0];
+                }
+                if(parameter.in === 'body'){
+                    parameter.isBodyParameter = true;
+                } else if(parameter.in === 'path'){
+                    parameter.isPathParameter = true;
+                } else if(parameter.in === 'query'){
+                    if(parameter['x-name-pattern']){
+                        parameter.isPatternType = true;
+                        parameter.pattern = parameter['x-name-pattern'];
+                    }
+                    parameter.isQueryParameter = true;
+                } else if(parameter.in === 'header'){
+                    parameter.isHeaderParameter = true;
+                } else if(parameter.in === 'formData'){
+                    parameter.isFormParameter = true;
+                }
+                parameter.tsType = ts.convertType(parameter, swagger);
+                parameter.cardinality = parameter.required ? '' : '?';
+                method.parameters.push(parameter);
+            });
+            data.methods.push(method);
+        });
+    });
+
+    _.forEach(data.methods, function(method){
+        method.isLatestVersion = (method.intVersion === latestMethodVersion[method.methodName]);
+    });
+
+    _.forEach(swagger.definitions, function(definition, name){
+        data.definitions.push({
+            name: name,
+            description: definition.description,
+            tsType: ts.convertType(definition, swagger)
+        });
+    });
+
+    return data;
+};

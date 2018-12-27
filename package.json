@@ -8,6 +8,7 @@
     "test": "grunt && jest",
     "clean": "rm -rf tmp-*",
     "build": "tsc --project tsconfig.json",
+    "build:watch": "yarn build --watch",
     "test:watch": "jest --watch",
     "prepublish": "yarn build"
   },

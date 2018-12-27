@@ -1,4 +1,7 @@
 # Swagger to Typescript Codegen
+
+[![Build Status](https://travis-ci.com/Markionium/swagger-typescript-codegen.svg?branch=master)](https://travis-ci.com/Markionium/swagger-typescript-codegen)
+
 This package generates a TypeScript class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/mtennoe/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
 The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
@@ -225,4 +228,18 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
           2 character country code.
           If not specified, will default to the country provided in the X-AppEngine-Country header
       ...
+```
+
+## Development
+
+To run the typescript compiler on the source files run. This will start a watch process on the sources and build them into the `lib` folder.
+
+```bash
+npm run build:watch
+```
+
+In addition you can run the test watcher in a separate tab to run the tests in watch mode on the files in the `lib` folder.
+
+```bash
+npm run test:watch
 ```

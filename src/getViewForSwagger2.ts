@@ -1,51 +1,111 @@
-'use strict';
+// TODO: This file needs some love <3
+import {
+    transform,
+    forEach,
+    camelCase,
+    merge,
+    isArray,
+    isString
+} from 'lodash';
+import { convertType } from './typescript';
+import { Security } from './swagger/Swagger';
+import { CodeGenOptions } from './options/options';
+import { TypeSpec } from './typespec';
 
-var fs = require('fs');
-var Mustache = require('mustache');
-var beautify = require('js-beautify').js_beautify;
-var lint = require('jshint').JSHINT;
-var _ = require('lodash');
-var ts = require('./typescript');
+export type GenerationTargetType = 'typescript' | 'custom';
 
-var defaultSuccessfulResponseType = 'void';
+interface Header {}
 
-var normalizeName = function(id) {
+interface Method {
+    methodName: string;
+    intVersion: number;
+    isLatestVersion: boolean;
+    isSecure: boolean;
+    isSecureToken: boolean;
+    isSecureApiKey: boolean;
+    isSecureBasic: boolean;
+    path: string;
+    pathFormatString: string;
+    className: string;
+    version: string;
+    method: string;
+    isGET: boolean;
+    isPOST: boolean;
+    summary: string;
+    externalDocs: string;
+    parameters: string[];
+    headers: Header[];
+    successfulResponseType: string;
+    successfulResponseTypeIsRef: boolean;
+}
+
+interface Definition {
+    name: string; 
+    description: string | undefined;
+    tsType: TypeSpec
+}
+
+export interface ViewData {
+    isES6: boolean;
+    description: string;
+    isSecure: boolean;
+    moduleName: string;
+    className: string;
+    imports: ReadonlyArray<string>;
+    domain: string;
+    isSecureToken: boolean;
+    isSecureApiKey: boolean;
+    isSecureBasic: boolean;
+    methods: Method[];
+    definitions: Definition[];
+}
+
+interface LatestMethodVersion {
+    [index: string]: number;
+}
+
+const defaultSuccessfulResponseType = 'void';
+
+function normalizeName(id: string): string {
     return id.replace(/\.|\-|\{|\}/g, '_');
 };
 
-var getPathToMethodName = function(opts, m, path){
+function getPathToMethodName(__: CodeGenOptions, m: string, path: string): string {
     if(path === '/' || path === '') {
         return m;
     }
 
     // clean url path for requests ending with '/'
-    var cleanPath = path.replace(/\/$/, '');
+    const cleanPath = path.replace(/\/$/, '');
 
-    var segments = cleanPath.split('/').slice(1);
-    segments = _.transform(segments, function (result, segment) {
+    let segments = cleanPath.split('/').slice(1);
+    segments = transform(segments, function (result, segment) {
         if (segment[0] === '{' && segment[segment.length - 1] === '}') {
             segment = 'by' + segment[1].toUpperCase() + segment.substring(2, segment.length - 1);
         }
         result.push(segment);
     });
-    var result = _.camelCase(segments.join('-'));
+    const result = camelCase(segments.join('-'));
     return m.toLowerCase() + result[0].toUpperCase() + result.substring(1);
 };
 
-var versionRegEx = /\/api\/(v\d+)\//;
+const versionRegEx = /\/api\/(v\d+)\//;
 
-var getVersion = function(path){
-    var m = versionRegEx.exec(path);
+function getVersion(path: string){
+    const m = versionRegEx.exec(path);
     return (m && m[1]) || 'v0';
 };
 
-var getViewForSwagger2 = function(opts){
-    var swagger = opts.swagger;
-    var authorizedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'];
-    var data = {
+export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
+    const swagger = opts.swagger;
+    const authorizedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'];
+    const data: ViewData = {
         isES6: opts.isES6,
         description: swagger.info.description,
         isSecure: swagger.securityDefinitions !== undefined,
+        isSecureToken: false,
+        isSecureApiKey: false,
+        isSecureBasic: false,
         moduleName: opts.moduleName,
         className: opts.className,
         imports: opts.imports,
@@ -54,37 +114,42 @@ var getViewForSwagger2 = function(opts){
         definitions: []
     };
 
-    var latestMethodVersion = {}; /* Maps method name => max version */
+    const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
 
-    _.forEach(swagger.paths, function(api, path){
-        var globalParams = [];
+    function isParamter(__: any, m: string): __ is ReadonlyArray<any> {
+        return m.toLowerCase() === 'parameters';
+    }
+
+    forEach(swagger.paths, function(api, path){
+        let globalParams: ReadonlyArray<any> = [];
         /**
          * @param {Object} op - meta data for the request
          * @param {string} m - HTTP method name - eg: 'get', 'post', 'put', 'delete'
          */
-        _.forEach(api, function(op, m){
-            if(m.toLowerCase() === 'parameters') {
+        forEach(api, function(op, m){
+            if(isParamter(op, m)) {
                 globalParams = op;
             }
         });
-        _.forEach(api, function(op, m){
-            var M = m.toUpperCase();
+        forEach(api, function (op, m){
+            const M = m.toUpperCase();
             if(M === '' || authorizedMethods.indexOf(M) === -1) {
                 return;
             }
 
             // Ignore deprecated endpoints
+
             if (op.deprecated) {
                 return;
             }
 
-            var secureTypes = [];
+            const secureTypes = [];
             if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
-                var mergedSecurity = _.merge([], swagger.security, op.security).map(function(security){
+                const mergedSecurity = merge([], swagger.security, op.security).map((security: Security) => {
                     return Object.keys(security);
                 });
                 if(swagger.securityDefinitions) {
-                    for(var sk in swagger.securityDefinitions) {
+                    for(const sk in swagger.securityDefinitions) {
                         if (mergedSecurity.join(',').indexOf(sk) !== -1){
                             secureTypes.push(swagger.securityDefinitions[sk].type);
                         }
@@ -92,10 +157,10 @@ var getViewForSwagger2 = function(opts){
                 }
             }
 
-            var successfulResponseTypeIsRef = false;
-            var successfulResponseType;
+            let successfulResponseTypeIsRef = false;
+            let successfulResponseType;
             try {
-                const convertedType = ts.convertType(op.responses['200'], swagger);
+                const convertedType = convertType(op.responses['200'], swagger);
 
                 if(convertedType.target){
                     successfulResponseTypeIsRef = true;
@@ -106,10 +171,10 @@ var getViewForSwagger2 = function(opts){
                 successfulResponseType = defaultSuccessfulResponseType;
             }
 
-            var version = getVersion(path);
-            var intVersion = parseInt(version.substr(1));
+            const version = getVersion(path);
+            const intVersion = parseInt(version.substr(1));
 
-            var method = {
+            const method: Method = {
                 path: path,
                 pathFormatString: path.replace(/{/g, '${parameters.'),
                 className: opts.className,
@@ -128,7 +193,8 @@ var getViewForSwagger2 = function(opts){
                 parameters: [],
                 headers: [],
                 successfulResponseType,
-                successfulResponseTypeIsRef
+                successfulResponseTypeIsRef,
+                isLatestVersion: false,
             };
 
             latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, intVersion);
@@ -145,26 +211,26 @@ var getViewForSwagger2 = function(opts){
                 data.isSecureBasic = method.isSecureBasic;
             }
 
-            var produces = op.produces || swagger.produces;
+            const produces = op.produces || swagger.produces;
             if(produces) {
                 method.headers.push({
                   name: 'Accept',
-                  value: `'${produces.map(function(value) { return value; }).join(', ')}'`,
+                  value: `'${produces.join(', ')}'`,
                 });
             }
 
-            var consumes = op.consumes || swagger.consumes;
+            const consumes = op.consumes || swagger.consumes;
             if(consumes) {
-                var preferredContentType = consumes[0] || '';
+                const preferredContentType = consumes[0] || '';
                 method.headers.push({name: 'Content-Type', value: '\'' + preferredContentType + '\''});
             }
 
-            var params = [];
-            if(_.isArray(op.parameters)) {
+            let params = [];
+            if(isArray(op.parameters)) {
                 params = op.parameters;
             }
             params = params.concat(globalParams);
-            _.forEach(params, function(parameter) {
+            forEach(params, (parameter) => {
                 //Ignore parameters which contain the x-exclude-from-bindings extension
                 if(parameter['x-exclude-from-bindings'] === true) {
                     return;
@@ -175,11 +241,11 @@ var getViewForSwagger2 = function(opts){
                 if (parameter['x-proxy-header']) {
                     return;
                 }
-                if (_.isString(parameter.$ref)) {
-                    var segments = parameter.$ref.split('/');
+                if (isString(parameter.$ref)) {
+                    const segments = parameter.$ref.split('/');
                     parameter = swagger.parameters[segments.length === 1 ? segments[0] : segments[2] ];
                 }
-                parameter.camelCaseName = _.camelCase(parameter.name);
+                parameter.camelCaseName = camelCase(parameter.name);
                 if(parameter.enum && parameter.enum.length === 1) {
                     parameter.isSingleton = true;
                     parameter.singleton = parameter.enum[0];
@@ -199,104 +265,26 @@ var getViewForSwagger2 = function(opts){
                 } else if(parameter.in === 'formData'){
                     parameter.isFormParameter = true;
                 }
-                parameter.tsType = ts.convertType(parameter, swagger);
+                parameter.tsType = convertType(parameter, swagger);
                 parameter.cardinality = parameter.required ? '' : '?';
                 method.parameters.push(parameter);
             });
+
             data.methods.push(method);
         });
     });
 
-    _.forEach(data.methods, function(method){
+    forEach(data.methods, function(method){
         method.isLatestVersion = (method.intVersion === latestMethodVersion[method.methodName]);
     });
 
-    _.forEach(swagger.definitions, function(definition, name){
+    forEach(swagger.definitions, function(definition, name){
         data.definitions.push({
             name: name,
             description: definition.description,
-            tsType: ts.convertType(definition, swagger)
+            tsType: convertType(definition, swagger)
         });
     });
 
     return data;
-};
-
-function enhanceCode(source, opts, type){
-    var lintOptions = {
-        browser: type === 'custom',
-        undef: true,
-        strict: true,
-        trailing: true,
-        smarttabs: true,
-        maxerr: 999
-    };
-
-    if (opts.esnext) {
-        lintOptions.esnext = true;
-    }
-
-    if (opts.lint === true) {
-        lint(source, lintOptions);
-        lint.errors.forEach(function(error) {
-            if (error.code[0] === 'E') {
-                throw new Error(error.reason + ' in ' + error.evidence + ' (' + error.code + ')');
-            }
-        });
-    }
-
-    if (opts.beautify === undefined || opts.beautify === true) {
-        var beautifyOptions = _.defaults(opts.beautifyOptions || {}, { indent_size: 4, max_preserve_newlines: 2 });
-        return beautify(source, beautifyOptions);
-    } else {
-        return source;
-    }
-}
-
-function transformToCodeWithMustache(data, opts, type){
-    if (type === 'custom') {
-        if (!_.isObject(opts.template) || !_.isString(opts.template.class)  || !_.isString(opts.template.method)) {
-            throw new Error('Unprovided custom template. Please use the following template: template: { class: "...", method: "...", request: "..." }');
-        }
-    } else {
-        if (!_.isObject(opts.template)) {
-            opts.template = {};
-        }
-        var templates = __dirname + '/../templates/';
-        opts.template.class = opts.template.class || fs.readFileSync(templates + 'class.mustache', 'utf-8');
-        opts.template.method = opts.template.method || fs.readFileSync(templates + 'method.mustache', 'utf-8');
-        opts.template.type = opts.template.type || fs.readFileSync(templates + 'type.mustache', 'utf-8');
-    }
-
-    if (opts.mustache) {
-        _.assign(data, opts.mustache);
-    }
-
-    // Ensure we don't encode special characters
-    Mustache.escape = (value) => value;
-
-    var code = Mustache.render(opts.template.class, data, opts.template);
-    return code;
-}
-
-var getCode = function(opts, type) {
-    if (opts.swagger.swagger !== '2.0') {
-        throw new Error('Only Swagger 2 specs are supported');
-    }
-
-    var data = getViewForSwagger2(opts);
-    var code = transformToCodeWithMustache(data, opts, type);
-    var enhancedCode = enhanceCode(code, opts, type);
-    return enhancedCode;
-};
-
-exports.CodeGen = {
-    transformToViewData: getViewForSwagger2,
-    transformToCodeWithMustache: transformToCodeWithMustache,
-    getTypescriptCode: function(opts){
-        return getCode(opts, 'typescript');
-    },
-    getCustomCode: function(opts){
-        return getCode(opts, 'custom');
-    }
 };

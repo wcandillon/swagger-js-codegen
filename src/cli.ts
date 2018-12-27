@@ -1,14 +1,13 @@
-'use strict';
+import * as fs from 'fs';
+import * as cli from 'commander';
+import { CodeGen } from './codegen';
 
-const fs = require('fs');
 const pkg = require('../package.json');
-const cli = require('commander');
-const CodeGen = require('./codegen').CodeGen;
 
 cli
     .command('generate <file>')
     .description('Generate from Swagger file')
-    .action(file => {
+    .action((file: string) => {
         const result = CodeGen.getTypescriptCode({
             moduleName: 'Test',
             className: 'Test',

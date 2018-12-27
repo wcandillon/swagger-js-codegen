@@ -4,8 +4,13 @@
   "version": "1.8.1",
   "description": "A Swagger Codegenerator tailored for typescript.",
   "scripts": {
+    "pretest": "npm run build",
     "test": "grunt && jest",
-    "clean": "rm -rf tmp-*"
+    "clean": "rm -rf tmp-*",
+    "build": "tsc --project tsconfig.json",
+    "build:watch": "npm run build -- --watch",
+    "test:watch": "jest --watch",
+    "prepublish": "npm run build"
   },
   "bin": {
     "swagger2ts": "bin/swagger2ts.js"
@@ -28,6 +33,12 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/mtennoe/swagger-typescript-codegen",
   "dependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/jest": "^23.3.10",
+    "@types/js-beautify": "^1.8.0",
+    "@types/lodash": "^4.14.119",
+    "@types/mustache": "^0.8.32",
+    "@types/node": "^10.12.18",
     "commander": "^2.19.0",
     "js-beautify": "^1.8.9",
     "jshint": "^2.9.7",

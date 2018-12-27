@@ -7,12 +7,6 @@ module.exports = function (grunt) {
  
     // Project configuration.
     grunt.initConfig({
-        jshint: {
-            all: ['Gruntfile.js', 'lib/**/*.js', 'tests/**/*.js'],
-            options: {
-                jshintrc: '.jshintrc'
-            }
-        },
         vows: {
             all: {
                 options: {
@@ -34,5 +28,5 @@ module.exports = function (grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', ['jsonlint', 'jshint', 'vows']);
+    grunt.registerTask('default', ['jsonlint', 'vows']);
 };

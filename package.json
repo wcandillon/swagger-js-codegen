@@ -4,10 +4,12 @@
   "version": "1.8.1",
   "description": "A Swagger Codegenerator tailored for typescript.",
   "scripts": {
+    "pretest": "yarn build",
     "test": "grunt && jest",
     "clean": "rm -rf tmp-*",
     "build": "tsc --project tsconfig.json",
-    "jest": "jest"
+    "test:watch": "jest --watch",
+    "prepublish": "yarn build"
   },
   "bin": {
     "swagger2ts": "bin/swagger2ts.js"

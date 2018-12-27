@@ -1,8 +1,8 @@
 import * as Mustache from 'mustache';
 import * as path from 'path';
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
 import { transformToCodeWithMustache, Templates, DEFAULT_TEMPLATE_PATH } from './transformToCodeWithMustache';
-import { ViewData } from '../codegen.types';
+import { ViewData } from '../getViewForSwagger2';
 
 // jest.mock('mustache');
 
@@ -14,9 +14,9 @@ describe('transformToCodeWithMustache', (): void => {
         jest.spyOn(Mustache, 'render');     
 
         templates = {
-            class:fs.readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'class.mustache'), 'utf-8'),
-            method:fs.readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'method.mustache'), 'utf-8'),
-            type:fs.readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'type.mustache'), 'utf-8'),
+            class: readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'class.mustache'), 'utf-8'),
+            method: readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'method.mustache'), 'utf-8'),
+            type: readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'type.mustache'), 'utf-8'),
         };
     });
     

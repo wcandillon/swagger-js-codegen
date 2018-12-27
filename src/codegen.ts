@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isObject, isString } from 'lodash';
 import { CodeGenOptions, ProvidedCodeGenOptions, makeOptions } from './options/options';
 import { getViewForSwagger2 } from './getViewForSwagger2';
 import { transformToCodeWithMustache } from './transform/transformToCodeWithMustache';
@@ -31,7 +31,7 @@ export const CodeGen = {
 
 function verifyThatWeHaveRequiredTemplatesForCustomGenerationTarget(opts: ProvidedCodeGenOptions) {
     // TODO: Why do we not check for the existence of the type template?
-    if (!opts.template || !_.isObject(opts.template) || !_.isString(opts.template.class)  || !_.isString(opts.template.method)) {
+    if (!opts.template || !isObject(opts.template) || !isString(opts.template.class)  || !isString(opts.template.method)) {
         throw new Error('Unprovided custom template. Please use the following template: template: { class: "...", method: "...", request: "..." }');
     }
 }

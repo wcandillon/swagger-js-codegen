@@ -1,11 +1,11 @@
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
 import * as Mustache from 'mustache';
 import {  } from 'mustache';
-import * as _ from 'lodash';
+import { assign, identity } from 'lodash';
 import { TemplateLocations } from '../options/options';
-import * as path from 'path';
+import { join } from 'path';
 
-export const DEFAULT_TEMPLATE_PATH = path.join(__dirname, '..', '..', 'templates');
+export const DEFAULT_TEMPLATE_PATH = join(__dirname, '..', '..', 'templates');
 
 export type Templates = Record<keyof TemplateLocations, string>;
 
@@ -16,17 +16,17 @@ type Renderer = {
 
 export function transformToCodeWithMustache<T, C extends {}>(data: T, templates: Partial<Templates>, additionalViewOptions: Partial<C> = {}, codeRenderer: Renderer = Mustache): string {
     // Ensure we don't encode special characters
-    codeRenderer.escape = _.identity;
+    codeRenderer.escape = identity;
 
     const loadedTemplates = loadTemplates(templates);
 
-    return codeRenderer.render(loadedTemplates.class, _.assign(data, additionalViewOptions), loadedTemplates);
+    return codeRenderer.render(loadedTemplates.class, assign(data, additionalViewOptions), loadedTemplates);
 }
 
 function loadTemplates(templateLocations: Partial<Templates> = {}): Templates {
     return {
-        class: templateLocations.class || fs.readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'class.mustache'), 'utf-8'),
-        method: templateLocations.method || fs.readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'method.mustache'), 'utf-8'),
-        type: templateLocations.type || fs.readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'type.mustache'), 'utf-8'),
+        class: templateLocations.class || readFileSync(join(DEFAULT_TEMPLATE_PATH, 'class.mustache'), 'utf-8'),
+        method: templateLocations.method || readFileSync(join(DEFAULT_TEMPLATE_PATH, 'method.mustache'), 'utf-8'),
+        type: templateLocations.type || readFileSync(join(DEFAULT_TEMPLATE_PATH, 'type.mustache'), 'utf-8'),
     }
 }

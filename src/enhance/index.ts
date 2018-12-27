@@ -1,4 +1,4 @@
-import { GenerationTargetType } from '../codegen.types';
+import { GenerationTargetType } from '../getViewForSwagger2';
 import { lintCode, LintOptions } from './lintCode';
 import { beautifyCode, Beautify, BeautifyOptions } from './beautify';
 

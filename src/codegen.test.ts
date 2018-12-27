@@ -1,5 +1,5 @@
 import { CodeGen } from "./codegen";
-import { Swagger } from "./Swagger";
+import { Swagger } from "./swagger/Swagger";
 import { Templates } from "./transform/transformToCodeWithMustache";
 
 describe("CodeGen", () => {

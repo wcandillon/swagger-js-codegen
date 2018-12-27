@@ -1,5 +1,5 @@
 import { js_beautify } from 'js-beautify';
-import * as _ from 'lodash';
+import { defaults } from 'lodash';
 
 const DEFAULT_BEAUTIFY_OPTIONS: JsBeautifyOptions = {
     indent_size: 4, 
@@ -13,7 +13,7 @@ export type BeautifyOptions = JsBeautifyOptions;
 export function beautifyCode(beautify: Beautify, source: string, options: BeautifyOptions = {}): string {
     // Backwards compatible js_beautify
     if (beautify === undefined || beautify === true) {
-        return js_beautify(source, _.defaults(options, DEFAULT_BEAUTIFY_OPTIONS));
+        return js_beautify(source, defaults(options, DEFAULT_BEAUTIFY_OPTIONS));
     }
     
     // Run the beautify function if it has been provided

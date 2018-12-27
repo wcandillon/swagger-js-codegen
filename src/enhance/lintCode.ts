@@ -1,6 +1,6 @@
-import { GenerationTargetType } from '../codegen.types';
+import { GenerationTargetType } from '../getViewForSwagger2';
 
-var lint: any = require('jshint').JSHINT;
+const lint: any = require('jshint').JSHINT;
 
 export interface LintOptions {
     esnext: boolean;
@@ -14,7 +14,7 @@ export interface LintError {
 }
 
 export function lintCode(opts: LintOptions, type: GenerationTargetType, source: string): void {
-    var lintOptions = {
+    const lintOptions = {
         // TODO: This seems like a weird leftover from the typescript cleanup? We probably don't need to support lint at all?
         // Maybe run the result through tsc to make sure it's valid typescript and then beautify by providing a beautify function?
         browser: type === 'custom',
@@ -31,7 +31,7 @@ export function lintCode(opts: LintOptions, type: GenerationTargetType, source: 
     }
 
     lint(source, lintOptions);
-        lint.errors.forEach(function(error: LintError) {
+        lint.errors.forEach((error: LintError) => {
             if (error.code[0] === 'E') {
                 throw new Error(error.reason + ' in ' + error.evidence + ' (' + error.code + ')');
             }

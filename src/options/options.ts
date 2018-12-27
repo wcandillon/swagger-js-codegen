@@ -1,28 +1,27 @@
 import * as Mustache from 'mustache';
-import { Swagger } from '../Swagger';
+import { Swagger } from '../swagger/Swagger';
 
-// TODO: Make readonly
 export interface TemplateLocations {
-    class: string;
-    method: string;
-    type: string;
+    readonly class: string;
+    readonly method: string;
+    readonly type: string;
 }
 
 interface Options {
-    isES6: boolean;
-    moduleName: string;
-    imports: ReadonlyArray<string>;
-    className: string;
-    template: Partial<TemplateLocations>;
-    mustache: typeof Mustache;
-    esnext: boolean;
-    lint: boolean;
-    beautify: ((source: string) => string) | boolean;
-    beautifyOptions: JsBeautifyOptions;
+    readonly isES6: boolean;
+    readonly moduleName: string;
+    readonly imports: ReadonlyArray<string>;
+    readonly className: string;
+    readonly template: Partial<TemplateLocations>;
+    readonly mustache: typeof Mustache;
+    readonly esnext: boolean;
+    readonly lint: boolean;
+    readonly beautify: ((source: string) => string) | boolean;
+    readonly beautifyOptions: JsBeautifyOptions;
 }
 
 interface SwaggerOption {
-    swagger: Swagger;
+    readonly swagger: Swagger;
 }
 
 const DEFAULT_OPTIONS: Options = {
@@ -39,9 +38,9 @@ const DEFAULT_OPTIONS: Options = {
     beautifyOptions: {},
 };
 
-// This is the internal interface we use to reference to the Options that 
+// This is the internal interface we use to reference to the full Options object with defaults
 export interface CodeGenOptions extends Options, SwaggerOption {}
-// All options except the swagger object are optional
+// All options except the swagger object are optional when passing in options
 export interface ProvidedCodeGenOptions extends Partial<Options>, SwaggerOption {}
 
 export function makeOptions(options: ProvidedCodeGenOptions): CodeGenOptions {

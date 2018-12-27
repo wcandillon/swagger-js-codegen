@@ -1,6 +1,6 @@
 import { makeOptions } from './options';
 import * as Mustache from 'mustache';
-import { Swagger } from '../Swagger';
+import { Swagger } from '../swagger/Swagger';
 
 const defaultOptions = {
     isES6: false,

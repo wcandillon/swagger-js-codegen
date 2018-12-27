@@ -232,11 +232,11 @@ eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
 To run the typescript compiler on the source files run. This will start a watch process on the sources and build them into the `lib` folder.
 
 ```bash
-yarn build:watch
+npm run build:watch
 ```
 
 In addition you can run the test watcher in a separate tab to run the tests in watch mode on the files in the `lib` folder.
 
 ```bash
-yarn test:watch
+npm run test:watch
 ```

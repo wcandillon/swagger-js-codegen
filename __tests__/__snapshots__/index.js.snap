@@ -183,7 +183,7 @@ class Api {
   appendAuthHeaders(headerParams) {
     const headers = new Headers(headerParams);
     if (this.token) {
-     headers.append('Authorization', `Bearer ${this.token}`);
+      headers.append('Authorization', \`Bearer \${this.token}\`);
     }
     return headers;
   }
@@ -550,7 +550,7 @@ class Api {
   appendAuthHeaders(headerParams) {
     const headers = new Headers(headerParams);
     if (this.token) {
-      headers.Authorization = \`Bearer \${this.token}\`;
+      headers.append('Authorization', \`Bearer \${this.token}\`);
     }
     return headers;
   }
@@ -1209,6 +1209,8 @@ class Api {
       date?: string;
 
       ttl?: number;
+
+      ips?: Array<string | null> | null;
     },
   ): Promise<{
     _id?: string;

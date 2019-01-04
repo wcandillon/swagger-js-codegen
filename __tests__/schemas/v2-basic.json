@@ -162,6 +162,12 @@
                 },
                 "ttl": {
                   "type": "integer"
+                },
+                "ips": {
+                  "type": ["array", "null"],
+                  "items": {
+                    "type": ["string", "null"]
+                  }
                 }
               },
               "type": "object"

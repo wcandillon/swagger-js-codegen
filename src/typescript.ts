@@ -52,6 +52,6 @@ export function convertType(swaggerType: SwaggerType, swagger: Swagger): TypeSpe
         return makeAnyTypeSpec(swaggerType);
     }
 
-     //remaining types are created as objects
+     // Remaining types are created as objects
     return makeObjectTypeSpec(swaggerType, swagger);
 }

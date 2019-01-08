@@ -5,13 +5,13 @@ export interface SwaggerType {
     readonly description?: string;
     readonly required: boolean | ReadonlyArray<string>;
     readonly type: SwaggerTypes;
-    readonly properties: {
-        [index: string]: SwaggerType;
-    };
     readonly allOf?: ReadonlyArray<SwaggerType>;
     readonly minItems: number;
     readonly title?: string;
     readonly $ref?: string;
+    readonly properties: {
+        [index: string]: SwaggerType;
+    };
 }
 
 export interface SwaggerArray extends SwaggerType {

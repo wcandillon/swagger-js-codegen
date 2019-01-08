@@ -19,7 +19,6 @@ export function makeSwaggerType(overrides: Partial<SwaggerEnum | SwaggerType | S
     }, overrides);
 }
 
-
 export function makeEmptyTypeSpec(): TypeSpec {
     return {
         name: undefined,

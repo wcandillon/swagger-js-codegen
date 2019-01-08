@@ -8,7 +8,6 @@ import {
     isString
 } from 'lodash';
 import { convertType } from './typescript';
-import { Security } from './swagger/Swagger';
 import { CodeGenOptions } from './options/options';
 import { TypeSpec } from './typespec';
 
@@ -66,8 +65,9 @@ interface LatestMethodVersion {
 
 const defaultSuccessfulResponseType = 'void';
 
+const charactersToBeReplacedWithUnderscore = /\.|\-|\{|\}/g;
 function normalizeName(id: string): string {
-    return id.replace(/\.|\-|\{|\}/g, '_');
+    return id.replace(charactersToBeReplacedWithUnderscore, '_');
 };
 
 function getPathToMethodName(__: CodeGenOptions, m: string, path: string): string {
@@ -79,21 +79,23 @@ function getPathToMethodName(__: CodeGenOptions, m: string, path: string): strin
     const cleanPath = path.replace(/\/$/, '');
 
     let segments = cleanPath.split('/').slice(1);
-    segments = transform(segments, function (result, segment) {
+    segments = transform(segments, (result, segment) => {
         if (segment[0] === '{' && segment[segment.length - 1] === '}') {
-            segment = 'by' + segment[1].toUpperCase() + segment.substring(2, segment.length - 1);
+            segment = `by${segment[1].toUpperCase()}${segment.substring(2, segment.length - 1)}`;
         }
         result.push(segment);
     });
+
     const result = camelCase(segments.join('-'));
-    return m.toLowerCase() + result[0].toUpperCase() + result.substring(1);
+    return `${m.toLowerCase()}${result[0].toUpperCase()}${result.substring(1)}`;
 };
 
 const versionRegEx = /\/api\/(v\d+)\//;
 
 function getVersion(path: string){
-    const m = versionRegEx.exec(path);
-    return (m && m[1]) || 'v0';
+    const version = versionRegEx.exec(path);
+    // TODO: This only supports versions until v9, v10 will return 1?
+    return (version && version[1]) || 'v0';
 };
 
 export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
@@ -109,14 +111,14 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
         moduleName: opts.moduleName,
         className: opts.className,
         imports: opts.imports,
-        domain: (swagger.schemes && swagger.schemes.length > 0 && swagger.host && swagger.basePath) ? swagger.schemes[0] + '://' + swagger.host + swagger.basePath.replace(/\/+$/g,'') : '',
+        domain: (swagger.schemes && swagger.schemes.length > 0 && swagger.host && swagger.basePath) ? `${swagger.schemes[0]}://${swagger.host}${swagger.basePath.replace(/\/+$/g,'')}` : '',
         methods: [],
         definitions: []
     };
 
     const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
 
-    function isParamter(__: any, m: string): __ is ReadonlyArray<any> {
+    function isParameter(__: any, m: string): __ is ReadonlyArray<any> {
         return m.toLowerCase() === 'parameters';
     }
 
@@ -127,10 +129,11 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
          * @param {string} m - HTTP method name - eg: 'get', 'post', 'put', 'delete'
          */
         forEach(api, function(op, m){
-            if(isParamter(op, m)) {
+            if(isParameter(op, m)) {
                 globalParams = op;
             }
         });
+
         forEach(api, function (op, m){
             const M = m.toUpperCase();
             if(M === '' || authorizedMethods.indexOf(M) === -1) {
@@ -138,14 +141,13 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
             }
 
             // Ignore deprecated endpoints
-
             if (op.deprecated) {
                 return;
             }
 
             const secureTypes = [];
             if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
-                const mergedSecurity = merge([], swagger.security, op.security).map((security: Security) => {
+                const mergedSecurity = merge([], swagger.security, op.security).map((security) => {
                     return Object.keys(security);
                 });
                 if(swagger.securityDefinitions) {
@@ -222,13 +224,14 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
             const consumes = op.consumes || swagger.consumes;
             if(consumes) {
                 const preferredContentType = consumes[0] || '';
-                method.headers.push({name: 'Content-Type', value: '\'' + preferredContentType + '\''});
+                method.headers.push({name: 'Content-Type', value: `'${preferredContentType}'`});
             }
 
             let params = [];
             if(isArray(op.parameters)) {
                 params = op.parameters;
             }
+
             params = params.concat(globalParams);
             forEach(params, (parameter) => {
                 //Ignore parameters which contain the x-exclude-from-bindings extension
@@ -241,15 +244,19 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
                 if (parameter['x-proxy-header']) {
                     return;
                 }
+
                 if (isString(parameter.$ref)) {
                     const segments = parameter.$ref.split('/');
                     parameter = swagger.parameters[segments.length === 1 ? segments[0] : segments[2] ];
                 }
+
                 parameter.camelCaseName = camelCase(parameter.name);
+
                 if(parameter.enum && parameter.enum.length === 1) {
                     parameter.isSingleton = true;
                     parameter.singleton = parameter.enum[0];
                 }
+
                 if(parameter.in === 'body'){
                     parameter.isBodyParameter = true;
                 } else if(parameter.in === 'path'){

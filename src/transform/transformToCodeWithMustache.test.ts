@@ -4,8 +4,6 @@ import { readFileSync } from 'fs';
 import { transformToCodeWithMustache, Templates, DEFAULT_TEMPLATE_PATH } from './transformToCodeWithMustache';
 import { ViewData } from '../getViewForSwagger2';
 
-// jest.mock('mustache');
-
 describe('transformToCodeWithMustache', (): void => {
     let viewData: ViewData;
     let templates: Templates;
@@ -19,7 +17,6 @@ describe('transformToCodeWithMustache', (): void => {
             type: readFileSync(path.join(DEFAULT_TEMPLATE_PATH, 'type.mustache'), 'utf-8'),
         };
     });
-    
 
     beforeEach(() => {
         viewData = {
@@ -32,7 +29,7 @@ describe('transformToCodeWithMustache', (): void => {
             moduleName: '',
             className: '',
             imports: [],
-            domain: '', // (swagger.schemes && swagger.schemes.length > 0 && swagger.host && swagger.basePath) ? swagger.schemes[0] + '://' + swagger.host + swagger.basePath.replace(/\/+$/g,'') : '',
+            domain: '',
             methods: [],
             definitions: []
         };

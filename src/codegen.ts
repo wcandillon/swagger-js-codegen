@@ -11,7 +11,6 @@ function getCode(opts: CodeGenOptions): string {
     return transformToCodeWithMustache(data, opts.template, opts.mustache);
 };
 
-
 export const CodeGen = {
     transformToViewData: getViewForSwagger2,
     transformToCodeWithMustache,

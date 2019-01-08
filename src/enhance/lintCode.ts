@@ -33,7 +33,7 @@ export function lintCode(opts: LintOptions, type: GenerationTargetType, source: 
     lint(source, lintOptions);
         lint.errors.forEach((error: LintError) => {
             if (error.code[0] === 'E') {
-                throw new Error(error.reason + ' in ' + error.evidence + ' (' + error.code + ')');
+                throw new Error(`${error.reason} in ${error.evidence} (${error.code})`);
             }
         });
 }

@@ -52,7 +52,7 @@ export interface SwaggerEnum extends SwaggerType {
 export interface Parameter extends SwaggerType {
     readonly name: string;
     // TODO: Make readonly when we have our own type
-    camelCaseName?: string;
+    readonly camelCaseName: string;
     readonly 'x-exclude-from-bindings'?: boolean;
     readonly 'x-proxy-header'?: string;
     readonly 'x-name-pattern'?: string;
@@ -60,7 +60,7 @@ export interface Parameter extends SwaggerType {
     readonly enum: ReadonlyArray<any>;
     isSingleton: boolean;
     singleton: any;
-    in: 'body' | 'query' | 'header' | 'formData' | 'path';
+    readonly in: 'body' | 'query' | 'header' | 'formData' | 'path';
     required: boolean;
 }
 

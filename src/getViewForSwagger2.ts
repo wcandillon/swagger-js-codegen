@@ -4,18 +4,17 @@ import {
     forEach,
     camelCase,
     merge,
-    isArray,
-    isString,
     map,
     entries,
     first,
-    identity,
+    identity
 } from 'lodash';
 import * as fp from 'lodash/fp';
 import { convertType } from './typescript';
 import { CodeGenOptions } from './options/options';
 import { TypeSpec } from './typespec';
 import { SwaggerType, Swagger, HttpOperation, Parameter } from './swagger/Swagger';
+import { TypeSpecParameter, makeTypeSpecTypeParameter } from './view-data/Parameter';
 
 export type GenerationTargetType = 'typescript' | 'custom';
 
@@ -38,7 +37,7 @@ interface Method {
     isPOST: boolean;
     summary: string;
     externalDocs: string;
-    parameters: string[];
+    parameters: TypeSpecParameter[];
     headers: Header[];
     successfulResponseType: string;
     successfulResponseTypeIsRef: boolean;
@@ -65,9 +64,9 @@ export interface ViewData {
     definitions: Definition[];
 }
 
-interface LatestMethodVersion {
-    [index: string]: number;
-}
+// interface LatestMethodVersion {
+//     [index: string]: number;
+// }
 
 const defaultSuccessfulResponseType = 'void';
 
@@ -99,11 +98,24 @@ function getPathToMethodName(__: CodeGenOptions, m: string, path: string): strin
 
 const versionRegEx = /\/api\/(v\d+)\//;
 
-function getVersion(path: string): string {
+const getVersion = (path: string): string => {
     const version = versionRegEx.exec(path);
     // TODO: This only supports versions until v9, v10 will return 1?
     return (version && version[1]) || 'v0';
 };
+
+const groupMethodsByMethodName = (methods: Method[]): Method[][] => fp.values(fp.groupBy('methodName', methods));
+const sortByVersion = (methods: Method[]): Method[] => fp.sortBy('intVersion', methods);
+const pickLast = (methods: Method[]): Method | undefined => methods[methods.length - 1];
+const isNotUndefined = (method: Method | undefined): method is Method => !fp.isUndefined(method);
+
+const getValuesFromList = fp.filter(isNotUndefined);
+
+const getLatestVersionOfMethod = fp.map(fp.compose(pickLast, sortByVersion));
+const getLatestVersionOfMethods = fp.compose(
+    fp.compose(getValuesFromList, getLatestVersionOfMethod),
+    groupMethodsByMethodName,
+);
 
 export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
     const swagger = opts.swagger;
@@ -124,6 +136,12 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
     };
 
     makeMethodsFromPaths(data, opts, swagger);
+
+    const latestVersionsOfMethods = getLatestVersionOfMethods(data.methods);
+
+    latestVersionsOfMethods.forEach((method: Method) => {
+        method.isLatestVersion = true;
+    });
 
     data.definitions = makeDefinitionsFromSwaggerDefinitions(swagger.definitions, swagger);
 
@@ -195,8 +213,21 @@ function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVe
     };
 }
 
+//Ignore parameters which contain the x-exclude-from-bindings extension
+const isExcludeFromBindingHeader = (parameter: Parameter) => parameter['x-exclude-from-bindings'] === true;
+
+// Ignore headers which are injected by proxies & app servers
+// eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
+const isProxyHeader = (parameter: Parameter) => parameter['x-exclude-from-bindings'] === true;
+
+const isNotParameterToBeIgnored = (parameter: Parameter) => !isExcludeFromBindingHeader(parameter) && !isProxyHeader(parameter);
+
+// TODO: Remove any
+const getParams = (globalParams: ReadonlyArray<any>, params: any = []): TypeSpecParameter[] => params.concat(globalParams)
+        .filter(isNotParameterToBeIgnored);
+
 function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swagger) {
-    const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
+    // const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
 
     forEach(swagger.paths, function(api, path){
         const globalParams = getGlobalParams(api);
@@ -228,7 +259,7 @@ function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swa
 
             const method: Method = makeMethod(path, opts, swagger, httpVerb, op, secureTypes);
 
-            latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, getIntVersion(path));
+            // latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, getIntVersion(path));
 
             // TODO: It seems the if statements below are pretty weird... 
             // This runs in a for loop which is run for every "method"
@@ -262,58 +293,17 @@ function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swa
                 method.headers.push({name: 'Content-Type', value: `'${preferredContentType}'`});
             }
 
-            let params = [];
-            if(isArray(op.parameters)) {
-                params = op.parameters;
-            }
+            const params = getParams(globalParams, op.parameters);
 
-            params = params.concat(globalParams);
-            forEach(params, (parameter) => {
-                //Ignore parameters which contain the x-exclude-from-bindings extension
-                if(parameter['x-exclude-from-bindings'] === true) {
-                    return;
-                }
-
-                // Ignore headers which are injected by proxies & app servers
-                // eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
-                if (parameter['x-proxy-header']) {
-                    return;
-                }
-
-                if (isString(parameter.$ref)) {
-                    const segments = parameter.$ref.split('/');
-                    parameter = swagger.parameters[segments.length === 1 ? segments[0] : segments[2] ];
-                }
-
-                parameter.camelCaseName = camelCase(parameter.name);
+            forEach(params, (parameter: Parameter) => {
+                let typeSpecParameter = makeTypeSpecTypeParameter(parameter, swagger);
 
                 if(parameter.enum && parameter.enum.length === 1) {
-                    parameter.isSingleton = true;
-                    parameter.singleton = parameter.enum[0];
+                    typeSpecParameter.isSingleton = true;
+                    typeSpecParameter.singleton = parameter.enum[0];
                 }
 
-                if(parameter.in === 'body'){
-                    parameter.isBodyParameter = true;
-                } else if(parameter.in === 'path'){
-                    parameter.isPathParameter = true;
-                } else if(parameter.in === 'query'){
-                    if(parameter['x-name-pattern']){
-                        parameter.isPatternType = true;
-                        parameter.pattern = parameter['x-name-pattern'];
-                    }
-                    parameter.isQueryParameter = true;
-                } else if(parameter.in === 'header'){
-                    parameter.isHeaderParameter = true;
-                } else if(parameter.in === 'formData'){
-                    parameter.isFormParameter = true;
-                }
-                parameter.tsType = convertType(parameter, swagger);
-                parameter.cardinality = parameter.required ? '' : '?';
-                method.parameters.push(parameter);
-            });
-
-            forEach(data.methods, function(method){
-                method.isLatestVersion = (method.intVersion === latestMethodVersion[method.methodName]);
+                method.parameters.push(typeSpecParameter);
             });
 
             data.methods.push(method);

@@ -5,11 +5,17 @@ import {
     camelCase,
     merge,
     isArray,
-    isString
+    isString,
+    map,
+    entries,
+    first,
+    identity,
 } from 'lodash';
+import * as fp from 'lodash/fp';
 import { convertType } from './typescript';
 import { CodeGenOptions } from './options/options';
 import { TypeSpec } from './typespec';
+import { SwaggerType, Swagger, HttpOperation, Parameter } from './swagger/Swagger';
 
 export type GenerationTargetType = 'typescript' | 'custom';
 
@@ -66,6 +72,7 @@ interface LatestMethodVersion {
 const defaultSuccessfulResponseType = 'void';
 
 const charactersToBeReplacedWithUnderscore = /\.|\-|\{|\}/g;
+
 function normalizeName(id: string): string {
     return id.replace(charactersToBeReplacedWithUnderscore, '_');
 };
@@ -92,7 +99,7 @@ function getPathToMethodName(__: CodeGenOptions, m: string, path: string): strin
 
 const versionRegEx = /\/api\/(v\d+)\//;
 
-function getVersion(path: string){
+function getVersion(path: string): string {
     const version = versionRegEx.exec(path);
     // TODO: This only supports versions until v9, v10 will return 1?
     return (version && version[1]) || 'v0';
@@ -100,7 +107,7 @@ function getVersion(path: string){
 
 export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
     const swagger = opts.swagger;
-    const authorizedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'];
+    
     const data: ViewData = {
         isES6: opts.isES6,
         description: swagger.info.description,
@@ -116,27 +123,86 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
         definitions: []
     };
 
-    const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
+    makeMethodsFromPaths(data, opts, swagger);
 
-    function isParameter(__: any, m: string): __ is ReadonlyArray<any> {
-        return m.toLowerCase() === 'parameters';
+    data.definitions = makeDefinitionsFromSwaggerDefinitions(swagger.definitions, swagger);
+
+    return {
+        ...data,
+    };
+};
+
+function makeDefinitionsFromSwaggerDefinitions(swaggerDefinitions: { [index: string]: SwaggerType }, swagger: Swagger): Definition[] {
+    return map(entries(swaggerDefinitions), ([name, swaggerDefinition]) => ({
+        name,
+        description: swaggerDefinition.description,
+        tsType: convertType(swaggerDefinition, swagger)
+    })); 
+}
+
+const isParameters = (value: [string, HttpOperation | ReadonlyArray<ReadonlyArray<Parameter>>]): value is [string, ReadonlyArray<ReadonlyArray<Parameter>>] => value[0].toLowerCase() === 'parameters';
+
+const getGlobalParams = <T>(api: { [index: string]: HttpOperation | ReadonlyArray<ReadonlyArray<T>>}): ReadonlyArray<T> => fp.compose(
+    fp.filter<T>(identity),
+    fp.map(([_, value]) => first(value)),
+    fp.filter(isParameters),
+    fp.entries
+)(api);
+
+const authorizedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'];
+const isAuthorizedMethod = (method: string) => authorizedMethods.indexOf(method.toUpperCase()) > -1 
+
+function getIntVersion(path: string): number {
+    return parseInt(getVersion(path).substr(1));
+}
+
+function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVerb: string, op: HttpOperation, secureTypes: string[]): Method {
+    let successfulResponseTypeIsRef = false;
+    let successfulResponseType;
+    try {
+        const convertedType = convertType(op.responses['200'], swagger);
+
+        if(convertedType.target){
+            successfulResponseTypeIsRef = true;
+        }
+
+        successfulResponseType = convertedType.target || convertedType.tsType || defaultSuccessfulResponseType;
+    } catch (error) {
+        successfulResponseType = defaultSuccessfulResponseType;
     }
 
-    forEach(swagger.paths, function(api, path){
-        let globalParams: ReadonlyArray<any> = [];
-        /**
-         * @param {Object} op - meta data for the request
-         * @param {string} m - HTTP method name - eg: 'get', 'post', 'put', 'delete'
-         */
-        forEach(api, function(op, m){
-            if(isParameter(op, m)) {
-                globalParams = op;
-            }
-        });
+    return {
+        path: path,
+        pathFormatString: path.replace(/{/g, '${parameters.'),
+        className: opts.className,
+        methodName:  op.operationId ? normalizeName(op.operationId) : getPathToMethodName(opts, httpVerb, path),
+        version: getVersion(path),
+        intVersion: getIntVersion(path),
+        method: httpVerb.toUpperCase(),
+        isGET: httpVerb.toUpperCase() === 'GET',
+        isPOST: httpVerb.toUpperCase() === 'POST',
+        summary: op.description || op.summary,
+        externalDocs: op.externalDocs,
+        isSecure: swagger.security !== undefined || op.security !== undefined,
+        isSecureToken: secureTypes.indexOf('oauth2') !== -1,
+        isSecureApiKey: secureTypes.indexOf('apiKey') !== -1,
+        isSecureBasic: secureTypes.indexOf('basic') !== -1,
+        parameters: [],
+        headers: [],
+        successfulResponseType,
+        successfulResponseTypeIsRef,
+        isLatestVersion: false,
+    };
+}
 
-        forEach(api, function (op, m){
-            const M = m.toUpperCase();
-            if(M === '' || authorizedMethods.indexOf(M) === -1) {
+function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swagger) {
+    const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
+
+    forEach(swagger.paths, function(api, path){
+        const globalParams = getGlobalParams(api);
+
+        forEach(api, function (op, httpVerb){
+            if(!isAuthorizedMethod(httpVerb)) {
                 return;
             }
 
@@ -159,48 +225,17 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
                 }
             }
 
-            let successfulResponseTypeIsRef = false;
-            let successfulResponseType;
-            try {
-                const convertedType = convertType(op.responses['200'], swagger);
 
-                if(convertedType.target){
-                    successfulResponseTypeIsRef = true;
-                }
-    
-                successfulResponseType = convertedType.target || convertedType.tsType || defaultSuccessfulResponseType;
-            } catch (error) {
-                successfulResponseType = defaultSuccessfulResponseType;
-            }
+            const method: Method = makeMethod(path, opts, swagger, httpVerb, op, secureTypes);
 
-            const version = getVersion(path);
-            const intVersion = parseInt(version.substr(1));
+            latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, getIntVersion(path));
 
-            const method: Method = {
-                path: path,
-                pathFormatString: path.replace(/{/g, '${parameters.'),
-                className: opts.className,
-                methodName:  op.operationId ? normalizeName(op.operationId) : getPathToMethodName(opts, m, path),
-                version: version,
-                intVersion: intVersion,
-                method: M,
-                isGET: M === 'GET',
-                isPOST: M === 'POST',
-                summary: op.description || op.summary,
-                externalDocs: op.externalDocs,
-                isSecure: swagger.security !== undefined || op.security !== undefined,
-                isSecureToken: secureTypes.indexOf('oauth2') !== -1,
-                isSecureApiKey: secureTypes.indexOf('apiKey') !== -1,
-                isSecureBasic: secureTypes.indexOf('basic') !== -1,
-                parameters: [],
-                headers: [],
-                successfulResponseType,
-                successfulResponseTypeIsRef,
-                isLatestVersion: false,
-            };
-
-            latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, intVersion);
-
+            // TODO: It seems the if statements below are pretty weird... 
+            // This runs in a for loop which is run for every "method"
+            // in every "api" but we modify the parameter passed in to the
+            // function, therefore changing the global state by setting it to
+            // the last api + method combination?
+            // No test covers this scenario at the moment.
             if(method.isSecure && method.isSecureToken) {
                 data.isSecureToken = method.isSecureToken;
             }
@@ -277,21 +312,11 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
                 method.parameters.push(parameter);
             });
 
+            forEach(data.methods, function(method){
+                method.isLatestVersion = (method.intVersion === latestMethodVersion[method.methodName]);
+            });
+
             data.methods.push(method);
         });
     });
-
-    forEach(data.methods, function(method){
-        method.isLatestVersion = (method.intVersion === latestMethodVersion[method.methodName]);
-    });
-
-    forEach(swagger.definitions, function(definition, name){
-        data.definitions.push({
-            name: name,
-            description: definition.description,
-            tsType: convertType(definition, swagger)
-        });
-    });
-
-    return data;
-};
+}

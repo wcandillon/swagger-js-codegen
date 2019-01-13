@@ -22,7 +22,7 @@ describe('getViewForSwagger2', () => {
             basePath: '/api',
             produces: ['json'],
             consumes: ['json'],
-            parameters: []
+            parameters: {}
         };
     });
 

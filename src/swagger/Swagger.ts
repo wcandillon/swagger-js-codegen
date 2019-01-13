@@ -49,7 +49,20 @@ export interface SwaggerEnum extends SwaggerType {
     readonly enum: ReadonlyArray<string>;
 }
 
-interface Parameter {}
+export interface Parameter extends SwaggerType {
+    readonly name: string;
+    // TODO: Make readonly when we have our own type
+    camelCaseName?: string;
+    readonly 'x-exclude-from-bindings'?: boolean;
+    readonly 'x-proxy-header'?: string;
+    readonly 'x-name-pattern'?: string;
+    readonly $ref: string;
+    readonly enum: ReadonlyArray<any>;
+    isSingleton: boolean;
+    singleton: any;
+    in: 'body' | 'query' | 'header' | 'formData' | 'path';
+    required: boolean;
+}
 
 export interface Scheme {}
 
@@ -72,7 +85,7 @@ export interface HttpOperation {
     externalDocs: string;
     produces: ReadonlyArray<string>;
     consumes:  ReadonlyArray<string>;
-    parameters: ReadonlyArray<string>;
+    parameters: ReadonlyArray<Parameter>;
 }
 
 export interface Swagger {
@@ -95,7 +108,9 @@ export interface Swagger {
     definitions: {
         [index: string]: SwaggerType;
     },
-    parameters: ReadonlyArray<Parameter>;
+    parameters: {
+        [index: string]: Parameter;
+    };
     produces: ReadonlyArray<string>;
     consumes:  ReadonlyArray<string>;
 }

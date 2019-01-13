@@ -17,7 +17,24 @@ export interface TypeSpecParameter extends Parameter {
     cardinality: '' | '?';
 }
 
+
+//Ignore parameters which contain the x-exclude-from-bindings extension
+const isExcludeFromBindingHeader = (parameter: Parameter) => parameter['x-exclude-from-bindings'] === true;
+
+// Ignore headers which are injected by proxies & app servers
+// eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
+const isProxyHeader = (parameter: Parameter) => parameter['x-exclude-from-bindings'] === true;
+
+const isNotParameterToBeIgnored = (parameter: Parameter) => !isExcludeFromBindingHeader(parameter) && !isProxyHeader(parameter);
+
+// TODO: Remove any
+export const getParametersForMethod = (globalParams: ReadonlyArray<any>, params: any = [], swagger: Swagger): TypeSpecParameter[] => params.concat(globalParams)
+        .filter(isNotParameterToBeIgnored)
+        .map((parameter: Parameter) => makeTypeSpecParameter(parameter, swagger));
+
 function makeTypespecParameterFromSwaggerParameter(parameter: Parameter, swagger: Swagger): TypeSpecParameter {
+    const isSingleton = parameter.enum && parameter.enum.length === 1;
+
     return {
         ...parameter,
         camelCaseName: camelCase(parameter.name),
@@ -28,10 +45,12 @@ function makeTypespecParameterFromSwaggerParameter(parameter: Parameter, swagger
         isFormParameter: false,
         cardinality: parameter.required ? '' : '?',
         tsType: convertType(parameter, swagger),
+        isSingleton,
+        singleton: isSingleton ? parameter.enum[0] : undefined,
     };
 }
 
-export function makeTypeSpecTypeParameter(parameter: Parameter, swagger: Swagger): TypeSpecParameter {
+function makeTypeSpecParameter(parameter: Parameter, swagger: Swagger): TypeSpecParameter {
     if (isString(parameter.$ref)) {
         const segments = parameter.$ref.split('/');
         parameter = swagger.parameters[segments.length === 1 ? segments[0] : segments[2] ];

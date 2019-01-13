@@ -14,7 +14,7 @@ import { convertType } from './typescript';
 import { CodeGenOptions } from './options/options';
 import { TypeSpec } from './typespec';
 import { SwaggerType, Swagger, HttpOperation, Parameter } from './swagger/Swagger';
-import { TypeSpecParameter, makeTypeSpecTypeParameter } from './view-data/Parameter';
+import { TypeSpecParameter, getParametersForMethod } from './view-data/Parameter';
 
 export type GenerationTargetType = 'typescript' | 'custom';
 
@@ -135,13 +135,12 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
         definitions: []
     };
 
-    makeMethodsFromPaths(data, opts, swagger);
+    data.methods = makeMethodsFromPaths(data, opts, swagger);
 
-    const latestVersionsOfMethods = getLatestVersionOfMethods(data.methods);
-
-    latestVersionsOfMethods.forEach((method: Method) => {
-        method.isLatestVersion = true;
-    });
+    getLatestVersionOfMethods(data.methods)
+        .forEach((method: Method) => {
+            method.isLatestVersion = true;
+        });
 
     data.definitions = makeDefinitionsFromSwaggerDefinitions(swagger.definitions, swagger);
 
@@ -160,9 +159,8 @@ function makeDefinitionsFromSwaggerDefinitions(swaggerDefinitions: { [index: str
 
 const isParameters = (value: [string, HttpOperation | ReadonlyArray<ReadonlyArray<Parameter>>]): value is [string, ReadonlyArray<ReadonlyArray<Parameter>>] => value[0].toLowerCase() === 'parameters';
 
-const getGlobalParams = <T>(api: { [index: string]: HttpOperation | ReadonlyArray<ReadonlyArray<T>>}): ReadonlyArray<T> => fp.compose(
-    fp.filter<T>(identity),
-    fp.map(([_, value]) => first(value)),
+const getGlobalParams = <T extends Parameter>(api: { [index: string]: HttpOperation | ReadonlyArray<ReadonlyArray<T>>}): ReadonlyArray<T> => fp.compose(
+    fp.compose(fp.filter<T>(identity), fp.map(([_, value]) => first(value))),
     fp.filter(isParameters),
     fp.entries
 )(api);
@@ -174,7 +172,69 @@ function getIntVersion(path: string): number {
     return parseInt(getVersion(path).substr(1));
 }
 
-function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVerb: string, op: HttpOperation, secureTypes: string[]): Method {
+function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swagger) {
+    let methods: Method[] = [];
+
+    // TODO: Remind me to fix this :P
+    // const desc = fp.flatten(
+    //     fp.entries(swagger.paths)
+    //         .map(([path, api]) => fp.entries(api)
+    //             .map(([httpVerb, httpOperationDescription]) => [path, httpVerb, httpOperationDescription])
+    //         )
+    //     );
+
+    forEach(swagger.paths, function(api, path){
+        const globalParams = getGlobalParams(api);
+
+        methods = fp.concat(methods, fp.entries(api)
+            .filter(([httpVerb]) => isAuthorizedMethod(httpVerb))
+            // Ignore deprecated endpoints
+            .filter(([_httpVerb, op]) => !op.deprecated)
+            .map(([httpVerb, op]) => {
+            const secureTypes = [];
+            if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
+                const mergedSecurity = merge([], swagger.security, op.security).map((security) => {
+                    return Object.keys(security);
+                });
+                if(swagger.securityDefinitions) {
+                    for(const sk in swagger.securityDefinitions) {
+                        if (mergedSecurity.join(',').indexOf(sk) !== -1){
+                            secureTypes.push(swagger.securityDefinitions[sk].type);
+                        }
+                    }
+                }
+            }
+
+
+            const method: Method = makeMethod(path, opts, swagger, httpVerb, op, secureTypes, globalParams);
+
+            // TODO: It seems the if statements below are pretty weird... 
+            // This runs in a for loop which is run for every "method"
+            // in every "api" but we modify the parameter passed in to the
+            // function, therefore changing the global state by setting it to
+            // the last api + method combination?
+            // No test covers this scenario at the moment.
+            if(method.isSecure && method.isSecureToken) {
+                data.isSecureToken = method.isSecureToken;
+            }
+
+            if(method.isSecure && method.isSecureApiKey) {
+                data.isSecureApiKey = method.isSecureApiKey;
+            }
+
+            if(method.isSecure && method.isSecureBasic) {
+                data.isSecureBasic = method.isSecureBasic;
+            }
+            // End of weird statements
+
+            return method;
+        }));
+    });
+
+    return methods;
+}
+
+function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVerb: string, op: HttpOperation, secureTypes: string[], globalParams: ReadonlyArray<Parameter>): Method {
     let successfulResponseTypeIsRef = false;
     let successfulResponseType;
     try {
@@ -205,108 +265,30 @@ function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVe
         isSecureToken: secureTypes.indexOf('oauth2') !== -1,
         isSecureApiKey: secureTypes.indexOf('apiKey') !== -1,
         isSecureBasic: secureTypes.indexOf('basic') !== -1,
-        parameters: [],
-        headers: [],
+        parameters: getParametersForMethod(globalParams, op.parameters, swagger),
+        headers: getHeadersForMethod(op, swagger),
         successfulResponseType,
         successfulResponseTypeIsRef,
         isLatestVersion: false,
     };
 }
 
-//Ignore parameters which contain the x-exclude-from-bindings extension
-const isExcludeFromBindingHeader = (parameter: Parameter) => parameter['x-exclude-from-bindings'] === true;
+function getHeadersForMethod(op: HttpOperation, swagger: Swagger): Header[] {
+    const headers: Header[] = [];
+    const produces = op.produces || swagger.produces;
 
-// Ignore headers which are injected by proxies & app servers
-// eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
-const isProxyHeader = (parameter: Parameter) => parameter['x-exclude-from-bindings'] === true;
-
-const isNotParameterToBeIgnored = (parameter: Parameter) => !isExcludeFromBindingHeader(parameter) && !isProxyHeader(parameter);
-
-// TODO: Remove any
-const getParams = (globalParams: ReadonlyArray<any>, params: any = []): TypeSpecParameter[] => params.concat(globalParams)
-        .filter(isNotParameterToBeIgnored);
-
-function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swagger) {
-    // const latestMethodVersion: LatestMethodVersion = {}; /* Maps method name => max version */
-
-    forEach(swagger.paths, function(api, path){
-        const globalParams = getGlobalParams(api);
-
-        forEach(api, function (op, httpVerb){
-            if(!isAuthorizedMethod(httpVerb)) {
-                return;
-            }
-
-            // Ignore deprecated endpoints
-            if (op.deprecated) {
-                return;
-            }
-
-            const secureTypes = [];
-            if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
-                const mergedSecurity = merge([], swagger.security, op.security).map((security) => {
-                    return Object.keys(security);
-                });
-                if(swagger.securityDefinitions) {
-                    for(const sk in swagger.securityDefinitions) {
-                        if (mergedSecurity.join(',').indexOf(sk) !== -1){
-                            secureTypes.push(swagger.securityDefinitions[sk].type);
-                        }
-                    }
-                }
-            }
-
-
-            const method: Method = makeMethod(path, opts, swagger, httpVerb, op, secureTypes);
-
-            // latestMethodVersion[method.methodName] = Math.max(latestMethodVersion[method.methodName] || 0, getIntVersion(path));
-
-            // TODO: It seems the if statements below are pretty weird... 
-            // This runs in a for loop which is run for every "method"
-            // in every "api" but we modify the parameter passed in to the
-            // function, therefore changing the global state by setting it to
-            // the last api + method combination?
-            // No test covers this scenario at the moment.
-            if(method.isSecure && method.isSecureToken) {
-                data.isSecureToken = method.isSecureToken;
-            }
-
-            if(method.isSecure && method.isSecureApiKey) {
-                data.isSecureApiKey = method.isSecureApiKey;
-            }
-
-            if(method.isSecure && method.isSecureBasic) {
-                data.isSecureBasic = method.isSecureBasic;
-            }
-
-            const produces = op.produces || swagger.produces;
-            if(produces) {
-                method.headers.push({
-                  name: 'Accept',
-                  value: `'${produces.join(', ')}'`,
-                });
-            }
-
-            const consumes = op.consumes || swagger.consumes;
-            if(consumes) {
-                const preferredContentType = consumes[0] || '';
-                method.headers.push({name: 'Content-Type', value: `'${preferredContentType}'`});
-            }
-
-            const params = getParams(globalParams, op.parameters);
-
-            forEach(params, (parameter: Parameter) => {
-                let typeSpecParameter = makeTypeSpecTypeParameter(parameter, swagger);
-
-                if(parameter.enum && parameter.enum.length === 1) {
-                    typeSpecParameter.isSingleton = true;
-                    typeSpecParameter.singleton = parameter.enum[0];
-                }
-
-                method.parameters.push(typeSpecParameter);
-            });
-
-            data.methods.push(method);
+    if(produces) {
+        headers.push({
+            name: 'Accept',
+            value: `'${produces.join(', ')}'`,
         });
-    });
+    }
+
+    const consumes = op.consumes || swagger.consumes;
+    if(consumes) {
+        const preferredContentType = consumes[0] || '';
+        headers.push({name: 'Content-Type', value: `'${preferredContentType}'`});
+    }
+
+    return headers;
 }

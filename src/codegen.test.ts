@@ -7,34 +7,34 @@ describe("CodeGen", () => {
     swagger: "2.0"
   } as Swagger;
 
-  describe('getTypescriptCode', () => {
-    it('throws when the swagger version is not 2.0', () => {
-        swagger = {
-          ...swagger,
-          swagger: '3.0'
-        };
+  describe("getTypescriptCode", () => {
+    it("throws when the swagger version is not 2.0", () => {
+      swagger = {
+        ...swagger,
+        swagger: "3.0"
+      };
 
-        expect(() =>
-            CodeGen.getTypescriptCode({ swagger })
-        ).toThrow('Only Swagger 2 specs are supported');
+      expect(() => CodeGen.getTypescriptCode({ swagger })).toThrow(
+        "Only Swagger 2 specs are supported"
+      );
     });
   });
 
   describe("getCustomCode", () => {
-    it('throws when the swagger version is not 2.0', () => {
-        const customTemplates = {
-            class: "class <className> {<classContent>}",
-            method: "function <methodName>() {<methodContent}}"
-          };
+    it("throws when the swagger version is not 2.0", () => {
+      const customTemplates = {
+        class: "class <className> {<classContent>}",
+        method: "function <methodName>() {<methodContent}}"
+      };
 
-        swagger = {
-          ...swagger,
-          swagger: '3.0'
-        };
+      swagger = {
+        ...swagger,
+        swagger: "3.0"
+      };
 
-        expect(() =>
-            CodeGen.getCustomCode({ swagger, template: customTemplates })
-        ).toThrow('Only Swagger 2 specs are supported');
+      expect(() =>
+        CodeGen.getCustomCode({ swagger, template: customTemplates })
+      ).toThrow("Only Swagger 2 specs are supported");
     });
 
     it("throws when the template option is not provided", () => {

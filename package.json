@@ -10,7 +10,8 @@
     "build": "tsc --project tsconfig.json",
     "build:watch": "npm run build -- --watch",
     "test:watch": "jest --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prettier": "prettier --write \"src/**/*.ts\""
   },
   "bin": {
     "swagger2ts": "bin/swagger2ts.js"
@@ -52,12 +53,23 @@
     "grunt-contrib-jshint": "^2.0.0",
     "grunt-jsonlint": "^1.0.4",
     "grunt-vows": "^0.4.1",
+    "husky": "^1.3.1",
     "jest": "^23.6.0",
+    "lint-staged": "^8.1.0",
     "matchdep": "^2.0.0",
+    "prettier": "1.15.3",
     "request": "^2.88.0",
     "superagent": "^4.0.0",
     "tmp": "0.0.33",
     "typescript": "^3.2.2",
     "vows": "^0.8.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,md},": ["prettier --write", "git add"]
   }
 }

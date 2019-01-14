@@ -9,26 +9,26 @@ import { values, groupBy, sortBy, isUndefined, filter, map } from "lodash/fp";
 import { compose } from "lodash/fp";
 
 export interface Method {
-    methodName: string;
-    intVersion: number;
-    isLatestVersion: boolean;
-    isSecure: boolean;
-    isSecureToken: boolean;
-    isSecureApiKey: boolean;
-    isSecureBasic: boolean;
-    path: string;
-    pathFormatString: string;
-    className: string;
-    version: string;
-    method: string;
-    isGET: boolean;
-    isPOST: boolean;
-    summary: string;
-    externalDocs: string;
-    parameters: TypeSpecParameter[];
-    headers: Header[];
-    successfulResponseType: string;
-    successfulResponseTypeIsRef: boolean;
+    readonly methodName: string;
+    readonly intVersion: number;
+    readonly isLatestVersion: boolean;
+    readonly isSecure: boolean;
+    readonly isSecureToken: boolean;
+    readonly isSecureApiKey: boolean;
+    readonly isSecureBasic: boolean;
+    readonly path: string;
+    readonly pathFormatString: string;
+    readonly className: string;
+    readonly version: string;
+    readonly method: string;
+    readonly isGET: boolean;
+    readonly isPOST: boolean;
+    readonly summary: string;
+    readonly externalDocs: string;
+    readonly parameters: TypeSpecParameter[];
+    readonly headers: Header[];
+    readonly successfulResponseType: string;
+    readonly successfulResponseTypeIsRef: boolean;
 }
 
 export function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVerb: string, op: HttpOperation, secureTypes: string[], globalParams: ReadonlyArray<Parameter>): Method {

@@ -409,14 +409,17 @@ describe("convertType", () => {
         });
 
         it('handles allOf properties of $ref properties', () => {
-            swagger.definitions = {
-                person: makeSwaggerType({
-                    type: 'object',
-                    properties: {
-                        age: makeSwaggerType({ type: 'number' })
-                    }
-                })
-            };
+            swagger = {
+                ...swagger,
+                definitions: {
+                    person: makeSwaggerType({
+                        type: 'object',
+                        properties: {
+                            age: makeSwaggerType({ type: 'number' })
+                        }
+                    })
+                },
+            }
 
             swaggerType = makeSwaggerType({
                 type: 'object',
@@ -448,14 +451,17 @@ describe("convertType", () => {
         });
 
         it('does not handle allOf properties of $ref properties that do not have a definition', () => {
-            swagger.definitions = {
-                person: makeSwaggerType({
-                    type: 'object',
-                    properties: {
-                        age: makeSwaggerType({ type: 'number' })
-                    }
-                })
-            };
+            swagger = {
+                ...swagger,
+                definitions: {
+                    person: makeSwaggerType({
+                        type: 'object',
+                        properties: {
+                            age: makeSwaggerType({ type: 'number' })
+                        }
+                    })
+                }
+            }
 
             swaggerType = makeSwaggerType({
                 type: 'object',

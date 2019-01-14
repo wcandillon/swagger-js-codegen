@@ -3,13 +3,16 @@ import { Swagger } from "./swagger/Swagger";
 import { Templates } from "./transform/transformToCodeWithMustache";
 
 describe("CodeGen", () => {
-  const swagger = {
+  let swagger = {
     swagger: "2.0"
   } as Swagger;
 
   describe('getTypescriptCode', () => {
     it('throws when the swagger version is not 2.0', () => {
-        swagger.swagger = '3.0';
+        swagger = {
+          ...swagger,
+          swagger: '3.0'
+        };
 
         expect(() =>
             CodeGen.getTypescriptCode({ swagger })
@@ -24,7 +27,10 @@ describe("CodeGen", () => {
             method: "function <methodName>() {<methodContent}}"
           };
 
-        swagger.swagger = '3.0';
+        swagger = {
+          ...swagger,
+          swagger: '3.0'
+        };
 
         expect(() =>
             CodeGen.getCustomCode({ swagger, template: customTemplates })

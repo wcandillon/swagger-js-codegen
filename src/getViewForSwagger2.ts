@@ -42,10 +42,9 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
 
     data.methods = makeMethodsFromPaths(data, opts, swagger);
 
-    getLatestVersionOfMethods(data.methods)
-        .forEach((method: Method) => {
-            method.isLatestVersion = true;
-        });
+    const latestVersions = getLatestVersionOfMethods(data.methods);
+
+    data.methods = data.methods.map(setIsLatestVersion(latestVersions));
 
     data.definitions = makeDefinitionsFromSwaggerDefinitions(swagger.definitions, swagger);
 
@@ -53,6 +52,13 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
         ...data,
     };
 };
+
+function setIsLatestVersion(latestVersions: Method[]): (method: Method) => Method {
+    return (method) => latestVersions.indexOf(method) > -1 ? {
+        ...method,
+        isLatestVersion: true,
+    } : method;
+}
 
 
 const makeMethodsFromPaths = (data: ViewData, opts: CodeGenOptions, swagger: Swagger): Method[] => 

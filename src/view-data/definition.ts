@@ -4,9 +4,9 @@ import { TypeSpec } from "../typespec";
 import { convertType } from "../typescript";
 
 export interface Definition {
-    name: string; 
-    description: string | undefined;
-    tsType: TypeSpec;
+    readonly name: string; 
+    readonly description: string | undefined;
+    readonly tsType: TypeSpec;
 }
 
 export function makeDefinitionsFromSwaggerDefinitions(swaggerDefinitions: { [index: string]: SwaggerType }, swagger: Swagger): Definition[] {

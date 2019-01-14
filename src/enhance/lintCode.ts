@@ -3,14 +3,14 @@ import { GenerationTargetType } from '../getViewForSwagger2';
 const lint: any = require('jshint').JSHINT;
 
 export interface LintOptions {
-    esnext: boolean;
-    lint: boolean;
+    readonly esnext: boolean;
+    readonly lint: boolean;
 }
 
 export interface LintError {
-    reason: string;
-    evidence: string;
-    code: string;
+    readonly reason: string;
+    readonly evidence: string;
+    readonly code: string;
 }
 
 export function lintCode(opts: LintOptions, type: GenerationTargetType, source: string): void {

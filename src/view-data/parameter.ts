@@ -8,13 +8,13 @@ import { TypeSpec } from '../typespec';
 import { Swagger, Parameter } from '../swagger/Swagger';
 
 export interface TypeSpecParameter extends Parameter {
-    isBodyParameter: boolean;
-    isPathParameter: boolean;
-    isQueryParameter: boolean;
-    isHeaderParameter: boolean;
-    isFormParameter: boolean;
-    tsType: TypeSpec | undefined; // TODO: This can not be undefined?
-    cardinality: '' | '?';
+    readonly isBodyParameter: boolean;
+    readonly isPathParameter: boolean;
+    readonly isQueryParameter: boolean;
+    readonly isHeaderParameter: boolean;
+    readonly isFormParameter: boolean;
+    readonly tsType: TypeSpec | undefined; // TODO: This can not be undefined?
+    readonly cardinality: '' | '?';
 }
 
 
@@ -27,8 +27,7 @@ const isProxyHeader = (parameter: Parameter) => parameter['x-exclude-from-bindin
 
 const isNotParameterToBeIgnored = (parameter: Parameter) => !isExcludeFromBindingHeader(parameter) && !isProxyHeader(parameter);
 
-// TODO: Remove any
-export const getParametersForMethod = (globalParams: ReadonlyArray<any>, params: any = [], swagger: Swagger): TypeSpecParameter[] => params.concat(globalParams)
+export const getParametersForMethod = (globalParams: ReadonlyArray<Parameter>, params: ReadonlyArray<Parameter> = [], swagger: Swagger): TypeSpecParameter[] => params.concat(globalParams)
         .filter(isNotParameterToBeIgnored)
         .map((parameter: Parameter) => makeTypeSpecParameter(parameter, swagger));
 
@@ -82,7 +81,7 @@ function makeTypeSpecParameter(parameter: Parameter, swagger: Swagger): TypeSpec
 function neverGuard(_v: never): void {}
 
 interface BodyParameter extends TypeSpecParameter {
-    isBodyParameter: true;
+    readonly isBodyParameter: true;
 }
 
 function makeBodyParameter(parameter: Parameter, swagger: Swagger): BodyParameter {
@@ -93,7 +92,7 @@ function makeBodyParameter(parameter: Parameter, swagger: Swagger): BodyParamete
 }
 
 interface PathParameter extends TypeSpecParameter {
-    isPathParameter: true;
+    readonly isPathParameter: true;
 }
 
 function makePathParameter(parameter: Parameter, swagger: Swagger): PathParameter {
@@ -104,9 +103,9 @@ function makePathParameter(parameter: Parameter, swagger: Swagger): PathParamete
 }
 
 interface QueryParameter extends TypeSpecParameter {
-    isQueryParameter: true;
-    isPatternType: boolean;
-    pattern: string | undefined;
+    readonly isQueryParameter: true;
+    readonly isPatternType: boolean;
+    readonly pattern: string | undefined;
 }
 
 function makeQueryParameter(parameter: Parameter, swagger: Swagger): QueryParameter {
@@ -119,7 +118,7 @@ function makeQueryParameter(parameter: Parameter, swagger: Swagger): QueryParame
 }
 
 interface HeaderParameter extends TypeSpecParameter {
-    isHeaderParameter: true;
+    readonly isHeaderParameter: true;
 }
 
 function makeHeaderParameter(parameter: Parameter, swagger: Swagger): HeaderParameter {
@@ -130,7 +129,7 @@ function makeHeaderParameter(parameter: Parameter, swagger: Swagger): HeaderPara
 }
 
 interface FormParameter extends TypeSpecParameter {
-    isFormParameter: true;
+    readonly isFormParameter: true;
 }
 
 function makeFormParameter(parameter: Parameter, swagger: Swagger): FormParameter {

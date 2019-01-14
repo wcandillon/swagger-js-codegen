@@ -10,7 +10,7 @@ export interface SwaggerType {
     readonly title?: string;
     readonly $ref?: string;
     readonly properties: {
-        [index: string]: SwaggerType;
+        readonly [index: string]: SwaggerType;
     };
 }
 
@@ -51,17 +51,16 @@ export interface SwaggerEnum extends SwaggerType {
 
 export interface Parameter extends SwaggerType {
     readonly name: string;
-    // TODO: Make readonly when we have our own type
     readonly camelCaseName: string;
     readonly 'x-exclude-from-bindings'?: boolean;
     readonly 'x-proxy-header'?: string;
     readonly 'x-name-pattern'?: string;
     readonly $ref: string;
     readonly enum: ReadonlyArray<any>;
-    isSingleton: boolean;
-    singleton: any;
+    readonly isSingleton: boolean;
+    readonly singleton: any; // TODO: Remove this any.
     readonly in: 'body' | 'query' | 'header' | 'formData' | 'path';
-    required: boolean;
+    readonly required: boolean;
 }
 
 export interface Scheme {}
@@ -70,22 +69,22 @@ export interface Security {}
 
 export interface SecurityDefinition {
     // TODO: I don't know what this should be
-    type: any;
+    readonly type: any;
 }
 
 export interface HttpOperation {
-    deprecated: boolean;
-    security: boolean;
-    responses: {
-        200: SwaggerType;
+    readonly deprecated: boolean;
+    readonly security: boolean;
+    readonly responses: {
+        readonly 200: SwaggerType;
     },
-    operationId: string;
-    description: string;
-    summary: string;
-    externalDocs: string;
-    produces: ReadonlyArray<string>;
-    consumes:  ReadonlyArray<string>;
-    parameters: ReadonlyArray<Parameter>;
+    readonly operationId: string;
+    readonly description: string;
+    readonly summary: string;
+    readonly externalDocs: string;
+    readonly produces: ReadonlyArray<string>;
+    readonly consumes:  ReadonlyArray<string>;
+    readonly parameters: ReadonlyArray<Parameter>;
 }
 
 export type HttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch';
@@ -94,35 +93,35 @@ export const schemaAllowedHttpMethods: HttpMethod[] = ['get', 'put', 'post', 'de
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#pathItemObject
 export type PathItemObject = {
-    [op in HttpMethod]?: HttpOperation;
+    readonly [op in HttpMethod]?: HttpOperation;
 } & {
-    parameters?: ReadonlyArray<Parameter>
+    readonly parameters?: ReadonlyArray<Parameter>
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#paths-object
 export type PathsObject = {
-    [index: string]: PathItemObject
+    readonly [index: string]: PathItemObject
 }
 
 export interface Swagger {
-    swagger: string;
-    security: ReadonlyArray<Security>
-    securityDefinitions: { [index: string]: SecurityDefinition } | undefined;
-    schemes: ReadonlyArray<Scheme>;
-    host: string;
-    basePath: string;
-    info: {
-        description: string;
+    readonly swagger: string;
+    readonly security: ReadonlyArray<Security>
+    readonly securityDefinitions: { [index: string]: SecurityDefinition } | undefined;
+    readonly schemes: ReadonlyArray<Scheme>;
+    readonly host: string;
+    readonly basePath: string;
+    readonly info: {
+        readonly description: string;
     },
-    paths: PathsObject;
-    definitions: {
-        [index: string]: SwaggerType;
+    readonly paths: PathsObject;
+    readonly definitions: {
+        readonly [index: string]: SwaggerType;
     },
-    parameters: {
-        [index: string]: Parameter;
+    readonly parameters: {
+        readonly [index: string]: Parameter;
     };
-    produces: ReadonlyArray<string>;
-    consumes:  ReadonlyArray<string>;
+    readonly produces: ReadonlyArray<string>;
+    readonly consumes:  ReadonlyArray<string>;
 }
 
 export type PathsObjectEntries = [string, PathItemObject];

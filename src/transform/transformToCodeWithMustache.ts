@@ -10,7 +10,7 @@ export const DEFAULT_TEMPLATE_PATH = join(__dirname, '..', '..', 'templates');
 export type Templates = Record<keyof TemplateLocations, string>;
 
 type Renderer = {
-    render: (template: string, view: any, partials?: any, tags?: string[]) => string;
+    readonly render: (template: string, view: any, partials?: any, tags?: string[]) => string;
     escape?: (value: string) => string;
 }
 

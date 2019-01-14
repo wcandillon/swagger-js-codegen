@@ -1,52 +1,11 @@
-// TODO: This file needs some love <3
-import {
-    transform,
-    camelCase,
-    merge,
-    map,
-    entries,
-    first,
-    identity
-} from 'lodash';
-import * as fp from 'lodash/fp';
-import { convertType } from './typescript';
+import { merge } from 'lodash';
 import { CodeGenOptions } from './options/options';
-import { TypeSpec } from './typespec';
-import { SwaggerType, Swagger, HttpOperation, Parameter } from './swagger/Swagger';
-import { TypeSpecParameter, getParametersForMethod } from './view-data/Parameter';
+import { Swagger } from './swagger/Swagger';
+import { makeMethod, Method, getLatestVersionOfMethods } from './view-data/method';
+import { Definition, makeDefinitionsFromSwaggerDefinitions } from './view-data/definition';
+import { getHttpMethodTuplesFromSwaggerPathsObject, isAuthorizedAndNotDeprecated } from './view-data/operation';
 
 export type GenerationTargetType = 'typescript' | 'custom';
-
-interface Header {}
-
-interface Method {
-    methodName: string;
-    intVersion: number;
-    isLatestVersion: boolean;
-    isSecure: boolean;
-    isSecureToken: boolean;
-    isSecureApiKey: boolean;
-    isSecureBasic: boolean;
-    path: string;
-    pathFormatString: string;
-    className: string;
-    version: string;
-    method: string;
-    isGET: boolean;
-    isPOST: boolean;
-    summary: string;
-    externalDocs: string;
-    parameters: TypeSpecParameter[];
-    headers: Header[];
-    successfulResponseType: string;
-    successfulResponseTypeIsRef: boolean;
-}
-
-interface Definition {
-    name: string; 
-    description: string | undefined;
-    tsType: TypeSpec
-}
 
 export interface ViewData {
     isES6: boolean;
@@ -62,59 +21,6 @@ export interface ViewData {
     methods: Method[];
     definitions: Definition[];
 }
-
-// interface LatestMethodVersion {
-//     [index: string]: number;
-// }
-
-const defaultSuccessfulResponseType = 'void';
-
-const charactersToBeReplacedWithUnderscore = /\.|\-|\{|\}/g;
-
-function normalizeName(id: string): string {
-    return id.replace(charactersToBeReplacedWithUnderscore, '_');
-};
-
-function getPathToMethodName(__: CodeGenOptions, m: string, path: string): string {
-    if(path === '/' || path === '') {
-        return m;
-    }
-
-    // clean url path for requests ending with '/'
-    const cleanPath = path.replace(/\/$/, '');
-
-    let segments = cleanPath.split('/').slice(1);
-    segments = transform(segments, (result, segment) => {
-        if (segment[0] === '{' && segment[segment.length - 1] === '}') {
-            segment = `by${segment[1].toUpperCase()}${segment.substring(2, segment.length - 1)}`;
-        }
-        result.push(segment);
-    });
-
-    const result = camelCase(segments.join('-'));
-    return `${m.toLowerCase()}${result[0].toUpperCase()}${result.substring(1)}`;
-};
-
-const versionRegEx = /\/api\/(v\d+)\//;
-
-const getVersion = (path: string): string => {
-    const version = versionRegEx.exec(path);
-    // TODO: This only supports versions until v9, v10 will return 1?
-    return (version && version[1]) || 'v0';
-};
-
-const groupMethodsByMethodName = (methods: Method[]): Method[][] => fp.values(fp.groupBy('methodName', methods));
-const sortByVersion = (methods: Method[]): Method[] => fp.sortBy('intVersion', methods);
-const pickLast = (methods: Method[]): Method | undefined => methods[methods.length - 1];
-const isNotUndefined = (method: Method | undefined): method is Method => !fp.isUndefined(method);
-
-const getValuesFromList = fp.filter(isNotUndefined);
-
-const getLatestVersionOfMethod = fp.map(fp.compose(pickLast, sortByVersion));
-const getLatestVersionOfMethods = fp.compose(
-    fp.compose(getValuesFromList, getLatestVersionOfMethod),
-    groupMethodsByMethodName,
-);
 
 export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
     const swagger = opts.swagger;
@@ -148,51 +54,16 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData{
     };
 };
 
-function makeDefinitionsFromSwaggerDefinitions(swaggerDefinitions: { [index: string]: SwaggerType }, swagger: Swagger): Definition[] {
-    return map(entries(swaggerDefinitions), ([name, swaggerDefinition]) => ({
-        name,
-        description: swaggerDefinition.description,
-        tsType: convertType(swaggerDefinition, swagger)
-    })); 
-}
 
-const isParameters = (value: [string, HttpOperation | ReadonlyArray<ReadonlyArray<Parameter>>]): value is [string, ReadonlyArray<ReadonlyArray<Parameter>>] => value[0].toLowerCase() === 'parameters';
-
-const getGlobalParams = <T extends Parameter>(api: { [index: string]: HttpOperation | ReadonlyArray<ReadonlyArray<T>>}): ReadonlyArray<T> => fp.compose(
-    fp.compose(fp.filter<T>(identity), fp.map(([_, value]) => first(value))),
-    fp.filter(isParameters),
-    fp.entries
-)(api);
-
-const authorizedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'];
-const isAuthorizedMethod = (method: string) => authorizedMethods.indexOf(method.toUpperCase()) > -1 
-
-function getIntVersion(path: string): number {
-    return parseInt(getVersion(path).substr(1));
-}
-
-// TODO: Do some typescript magic with values from authorizedMethods
-type EndpointDescriptor = [string, HttpEndpointDescriptor];
-type HttpEndpointDescriptor = { [index: string]: HttpOperation};
-type HttpOperationEntryWithGlobalParamsAndPath = [string, string, HttpOperation, ReadonlyArray<Parameter>];
-
-const addPathAndGlobalParams = ([path, api]: EndpointDescriptor): HttpOperationEntryWithGlobalParamsAndPath[] => fp.entries(api).map(([httpVerb, httpOperationDescription]): HttpOperationEntryWithGlobalParamsAndPath => [path, httpVerb, httpOperationDescription, getGlobalParams(api)])
-const addGlobalParamsToEntries = (endpointDescriptor: EndpointDescriptor) => addPathAndGlobalParams(endpointDescriptor);
-
-// TODO: Remind me to clean this method :P
-const makeMethodsFromPaths = (data: ViewData, opts: CodeGenOptions, swagger: Swagger): Method[] => fp.flatten(
-    fp.flatten(fp.entries(swagger.paths).map(addGlobalParamsToEntries))
-        .filter(([_path, httpVerb]) => isAuthorizedMethod(httpVerb))
-        // Ignore deprecated endpoints
-        .filter(([_path, _httpVerb, op]) => !op.deprecated)
+const makeMethodsFromPaths = (data: ViewData, opts: CodeGenOptions, swagger: Swagger): Method[] => 
+    getHttpMethodTuplesFromSwaggerPathsObject(swagger.paths)
+        .filter(isAuthorizedAndNotDeprecated)
         .map(([path, httpVerb, op, globalParams]) => {
         // TODO: Start of untested security stuff that needs fixing
         const secureTypes = [];
 
         if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
-            const mergedSecurity = merge([], swagger.security, op.security).map((security) => {
-                return Object.keys(security);
-            });
+            const mergedSecurity = merge([], swagger.security, op.security).map((security) => Object.keys(security));
             if(swagger.securityDefinitions) {
                 for(const sk in swagger.securityDefinitions) {
                     if (mergedSecurity.join(',').indexOf(sk) !== -1){
@@ -225,63 +96,4 @@ const makeMethodsFromPaths = (data: ViewData, opts: CodeGenOptions, swagger: Swa
         // End of weird statements
 
         return method;
-    }));
-
-function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVerb: string, op: HttpOperation, secureTypes: string[], globalParams: ReadonlyArray<Parameter>): Method {
-    let successfulResponseTypeIsRef = false;
-    let successfulResponseType;
-    try {
-        const convertedType = convertType(op.responses['200'], swagger);
-
-        if(convertedType.target){
-            successfulResponseTypeIsRef = true;
-        }
-
-        successfulResponseType = convertedType.target || convertedType.tsType || defaultSuccessfulResponseType;
-    } catch (error) {
-        successfulResponseType = defaultSuccessfulResponseType;
-    }
-
-    return {
-        path: path,
-        pathFormatString: path.replace(/{/g, '${parameters.'),
-        className: opts.className,
-        methodName:  op.operationId ? normalizeName(op.operationId) : getPathToMethodName(opts, httpVerb, path),
-        version: getVersion(path),
-        intVersion: getIntVersion(path),
-        method: httpVerb.toUpperCase(),
-        isGET: httpVerb.toUpperCase() === 'GET',
-        isPOST: httpVerb.toUpperCase() === 'POST',
-        summary: op.description || op.summary,
-        externalDocs: op.externalDocs,
-        isSecure: swagger.security !== undefined || op.security !== undefined,
-        isSecureToken: secureTypes.indexOf('oauth2') !== -1,
-        isSecureApiKey: secureTypes.indexOf('apiKey') !== -1,
-        isSecureBasic: secureTypes.indexOf('basic') !== -1,
-        parameters: getParametersForMethod(globalParams, op.parameters, swagger),
-        headers: getHeadersForMethod(op, swagger),
-        successfulResponseType,
-        successfulResponseTypeIsRef,
-        isLatestVersion: false,
-    };
-}
-
-function getHeadersForMethod(op: HttpOperation, swagger: Swagger): Header[] {
-    const headers: Header[] = [];
-    const produces = op.produces || swagger.produces;
-
-    if(produces) {
-        headers.push({
-            name: 'Accept',
-            value: `'${produces.join(', ')}'`,
-        });
-    }
-
-    const consumes = op.consumes || swagger.consumes;
-    if(consumes) {
-        const preferredContentType = consumes[0] || '';
-        headers.push({name: 'Content-Type', value: `'${preferredContentType}'`});
-    }
-
-    return headers;
-}
+    });

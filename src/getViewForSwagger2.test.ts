@@ -43,7 +43,7 @@ describe('getViewForSwagger2', () => {
             swagger: {
                 ...swagger,
                 paths: {
-                    user: {}
+                    '/user': {}
                 }
             },
         });

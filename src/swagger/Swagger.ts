@@ -88,6 +88,22 @@ export interface HttpOperation {
     parameters: ReadonlyArray<Parameter>;
 }
 
+export type HttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch';
+
+export const schemaAllowedHttpMethods: HttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
+
+// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#pathItemObject
+export type PathItemObject = {
+    [op in HttpMethod]?: HttpOperation;
+} & {
+    parameters?: ReadonlyArray<Parameter>
+}
+
+// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#paths-object
+export type PathsObject = {
+    [index: string]: PathItemObject
+}
+
 export interface Swagger {
     swagger: string;
     security: ReadonlyArray<Security>
@@ -98,13 +114,7 @@ export interface Swagger {
     info: {
         description: string;
     },
-    paths: {
-        // Api Path
-        [index: string]: {
-            // Api Method for Path e.g. GET / POST /DELETE
-            [index: string]: HttpOperation
-        }
-    };
+    paths: PathsObject;
     definitions: {
         [index: string]: SwaggerType;
     },
@@ -114,3 +124,7 @@ export interface Swagger {
     produces: ReadonlyArray<string>;
     consumes:  ReadonlyArray<string>;
 }
+
+export type PathsObjectEntries = [string, PathItemObject];
+
+export type PathAndMethodTupleWithPathParams = [string, HttpMethod, HttpOperation, ReadonlyArray<Parameter>];

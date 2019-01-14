@@ -5,7 +5,7 @@
   "description": "A Swagger Codegenerator tailored for typescript.",
   "scripts": {
     "pretest": "npm run build",
-    "test": "grunt && jest --watch",
+    "test": "grunt && jest",
     "clean": "rm -rf tmp-*",
     "build": "tsc --project tsconfig.json",
     "build:watch": "npm run build -- --watch",
@@ -70,6 +70,9 @@
     }
   },
   "lint-staged": {
-    "*.{ts,md},": ["prettier --write", "git add"]
+    "*.{ts,md},": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

@@ -49,7 +49,7 @@ export function makeMethod(
   ] = getSuccessfulResponseType(op, swagger);
 
   return {
-    path: path,
+    path,
     pathFormatString: path.replace(/{/g, "${parameters."),
     className: opts.className,
     methodName,

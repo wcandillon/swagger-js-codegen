@@ -1,4 +1,3 @@
-// TODO: This file needs some love <3
 import { camelCase, isString } from "lodash/fp";
 import { convertType } from "../typescript";
 import { TypeSpec } from "../typespec";
@@ -10,7 +9,7 @@ export interface TypeSpecParameter extends Parameter {
   readonly isQueryParameter: boolean;
   readonly isHeaderParameter: boolean;
   readonly isFormParameter: boolean;
-  readonly tsType: TypeSpec | undefined; // TODO: This can not be undefined?
+  readonly tsType: TypeSpec;
   readonly cardinality: "" | "?";
 }
 

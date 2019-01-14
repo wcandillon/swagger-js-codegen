@@ -1,7 +1,6 @@
 // TODO: This file needs some love <3
 import {
     transform,
-    forEach,
     camelCase,
     merge,
     map,
@@ -172,67 +171,61 @@ function getIntVersion(path: string): number {
     return parseInt(getVersion(path).substr(1));
 }
 
-function makeMethodsFromPaths(data: ViewData, opts: CodeGenOptions, swagger: Swagger) {
-    let methods: Method[] = [];
+// TODO: Do some typescript magic with values from authorizedMethods
+type EndpointDescriptor = [string, HttpEndpointDescriptor];
+type HttpEndpointDescriptor = { [index: string]: HttpOperation};
+type HttpOperationEntryWithGlobalParamsAndPath = [string, string, HttpOperation, ReadonlyArray<Parameter>];
 
-    // TODO: Remind me to fix this :P
-    // const desc = fp.flatten(
-    //     fp.entries(swagger.paths)
-    //         .map(([path, api]) => fp.entries(api)
-    //             .map(([httpVerb, httpOperationDescription]) => [path, httpVerb, httpOperationDescription])
-    //         )
-    //     );
+const addPathAndGlobalParams = ([path, api]: EndpointDescriptor): HttpOperationEntryWithGlobalParamsAndPath[] => fp.entries(api).map(([httpVerb, httpOperationDescription]): HttpOperationEntryWithGlobalParamsAndPath => [path, httpVerb, httpOperationDescription, getGlobalParams(api)])
+const addGlobalParamsToEntries = (endpointDescriptor: EndpointDescriptor) => addPathAndGlobalParams(endpointDescriptor);
 
-    forEach(swagger.paths, function(api, path){
-        const globalParams = getGlobalParams(api);
+// TODO: Remind me to clean this method :P
+const makeMethodsFromPaths = (data: ViewData, opts: CodeGenOptions, swagger: Swagger): Method[] => fp.flatten(
+    fp.flatten(fp.entries(swagger.paths).map(addGlobalParamsToEntries))
+        .filter(([_path, httpVerb]) => isAuthorizedMethod(httpVerb))
+        // Ignore deprecated endpoints
+        .filter(([_path, _httpVerb, op]) => !op.deprecated)
+        .map(([path, httpVerb, op, globalParams]) => {
+        // TODO: Start of untested security stuff that needs fixing
+        const secureTypes = [];
 
-        methods = fp.concat(methods, fp.entries(api)
-            .filter(([httpVerb]) => isAuthorizedMethod(httpVerb))
-            // Ignore deprecated endpoints
-            .filter(([_httpVerb, op]) => !op.deprecated)
-            .map(([httpVerb, op]) => {
-            const secureTypes = [];
-            if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
-                const mergedSecurity = merge([], swagger.security, op.security).map((security) => {
-                    return Object.keys(security);
-                });
-                if(swagger.securityDefinitions) {
-                    for(const sk in swagger.securityDefinitions) {
-                        if (mergedSecurity.join(',').indexOf(sk) !== -1){
-                            secureTypes.push(swagger.securityDefinitions[sk].type);
-                        }
+        if(swagger.securityDefinitions !== undefined || op.security !== undefined) {
+            const mergedSecurity = merge([], swagger.security, op.security).map((security) => {
+                return Object.keys(security);
+            });
+            if(swagger.securityDefinitions) {
+                for(const sk in swagger.securityDefinitions) {
+                    if (mergedSecurity.join(',').indexOf(sk) !== -1){
+                        secureTypes.push(swagger.securityDefinitions[sk].type);
                     }
                 }
             }
+        }
+        // End of untested 
 
+        const method: Method = makeMethod(path, opts, swagger, httpVerb, op, secureTypes, globalParams);
 
-            const method: Method = makeMethod(path, opts, swagger, httpVerb, op, secureTypes, globalParams);
+        // TODO: It seems the if statements below are pretty weird... 
+        // This runs in a for loop which is run for every "method"
+        // in every "api" but we modify the parameter passed in to the
+        // function, therefore changing the global state by setting it to
+        // the last api + method combination?
+        // No test covers this scenario at the moment.
+        if(method.isSecure && method.isSecureToken) {
+            data.isSecureToken = method.isSecureToken;
+        }
 
-            // TODO: It seems the if statements below are pretty weird... 
-            // This runs in a for loop which is run for every "method"
-            // in every "api" but we modify the parameter passed in to the
-            // function, therefore changing the global state by setting it to
-            // the last api + method combination?
-            // No test covers this scenario at the moment.
-            if(method.isSecure && method.isSecureToken) {
-                data.isSecureToken = method.isSecureToken;
-            }
+        if(method.isSecure && method.isSecureApiKey) {
+            data.isSecureApiKey = method.isSecureApiKey;
+        }
 
-            if(method.isSecure && method.isSecureApiKey) {
-                data.isSecureApiKey = method.isSecureApiKey;
-            }
+        if(method.isSecure && method.isSecureBasic) {
+            data.isSecureBasic = method.isSecureBasic;
+        }
+        // End of weird statements
 
-            if(method.isSecure && method.isSecureBasic) {
-                data.isSecureBasic = method.isSecureBasic;
-            }
-            // End of weird statements
-
-            return method;
-        }));
-    });
-
-    return methods;
-}
+        return method;
+    }));
 
 function makeMethod(path: string, opts: CodeGenOptions, swagger: Swagger, httpVerb: string, op: HttpOperation, secureTypes: string[], globalParams: ReadonlyArray<Parameter>): Method {
     let successfulResponseTypeIsRef = false;

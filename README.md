@@ -1,6 +1,6 @@
 # Swagger to Typescript Codegen
 
-[![Build Status](https://travis-ci.com/Markionium/swagger-typescript-codegen.svg?branch=master)](https://travis-ci.com/Markionium/swagger-typescript-codegen)
+[![Build Status](https://travis-ci.com/mtennoe/swagger-typescript-codegen.svg?branch=master)](https://travis-ci.com/mtennoe/swagger-typescript-codegen)
 
 This package generates a TypeScript class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/mtennoe/swagger-js-codegen/tree/master/lib/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 

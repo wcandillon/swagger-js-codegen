@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '10'
+  - "10"
 deploy:
   provider: npm
   email: mariust@outlook.com
@@ -9,3 +9,4 @@ deploy:
   on:
     tags: true
     repo: mtennoe/swagger-typescript-codegen
+    branch: master

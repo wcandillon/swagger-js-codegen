@@ -10,3 +10,4 @@ deploy:
     tags: true
     repo: mtennoe/swagger-typescript-codegen
     branch: master
+    skip_cleanup: true

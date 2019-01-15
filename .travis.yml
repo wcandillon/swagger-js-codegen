@@ -1,3 +1,11 @@
 language: node_js
 node_js:
-  - "10"
+- '10'
+deploy:
+  provider: npm
+  email: mariust@outlook.com
+  api_key:
+    secure: lreacC7XuNx3oR4buSB/ToxWx23Wg/6UvNUId9sVh2CoY74GreJVzxGJAb1Rjngoa+w6vL/e67QDD0+PXN+9APuDMLBPX/8ohGeQtzeNpSGfv4/7h45tmzwAVvWKW29EDdvR3RZ1PXkD8nTtZmzVX6yRHrm9UhvyotnX7lpAww4YTFX7+CEHcQkFluBrJHzPrEQKC8iYDgCdqwLH0ZBS5N2i41wxj63v6f47QLGCcJFjFiblROcEJENZf2Z1rE5vQ4rle4GLQeh13RKj+jC4I9QwfXs8LC3oNnWL3iA69+/H5vr4kZt/mHGrFGRuwyhOhNIpS3DcsOSWL788Ru7TLZ23TgQ18vQ6T3lyPXzsa+NFW6zlPx1XB5RNbvWU4lDvsIjcZoYUff3Y1CV6JR3XM4VNcOkQ42BKFkGYrwecszTY0WTLkeeHqnqig/lG5bHg256ytIjPC+IVMei76OWeMlw0wgd/cpimPCQpR40zM8SLl16DwMF5A1owIQMWaH97IM7ydX1VIcHWCDSZ1W8+vVeihj1LgJvs3zEHUyA4iu/96UhCAp6AniPKe5SXkF9FzJH0PJ1X5VLpGERZDwC9yBXqiTIueUxFvd3hAxB6fOcQ72uKLZBCxgIyysxQX6l7FyIZ/0cuE758aIzhhIjJh8fHrjBKNDyqygeSlfBQ244=
+  on:
+    tags: true
+    repo: mtennoe/swagger-typescript-codegen

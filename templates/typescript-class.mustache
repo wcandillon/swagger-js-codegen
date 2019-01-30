@@ -80,14 +80,22 @@ class {{&className}} {
     }
     {{/isSecure}}
 
-    private async request(method: string, url: string, body: any, headers: any, queryParameters: QueryParameters) {
+    private async request(method: string, url: string, body: any, headers: Headers = new Headers(), queryParameters: QueryParameters = {}) {
         const queryParams = queryParameters && Object.keys(queryParameters).length ? this.serializeQueryParams(queryParameters) : null ;
         const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-        if (body && !Object.keys(body).length) {
-            body = undefined;
-        } else {
+        if(headers.get('Content-Type') === 'multipart/form-data') {
+            const form = new FormData();
+            for (let k in body) {
+                body.append(k, body[k]);
+            }
+            body = form;
+        } else if(headers.get('Content-Type') === 'application/json' && body && Object.keys(body).length > 0) {
             body = JSON.stringify(body);
+        }
+
+        if(headers.get('Content-Type') === 'multipart/form-data') {
+            headers.delete('Content-Type');
         }
 
         const response = await fetch(urlWithParams, { method, headers, body });

@@ -58,14 +58,9 @@
     {{/isBodyParameter}}
 
     {{#isFormParameter}}
-      {{#isSingleton}}
-        form['{{&name}}'] = '{{&singleton}}';
-      {{/isSingleton}}
-      {{^isSingleton}}
         if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
             form['{{&name}}'] = parameters['{{&camelCaseName}}'];
         }
-      {{/isSingleton}}
     {{/isFormParameter}}
 
     {{#required}}

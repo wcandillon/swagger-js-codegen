@@ -20,13 +20,18 @@
         {{/parameters}}
     } {{&defaultParam}},
     {{#hasBody}}
-    body: 
+    {{#isFormMethod}}form{{/isFormMethod}}{{^isFormMethod}}body{{/isFormMethod}}: 
         {{#parameters}}
             {{#isBodyParameter}}
                 {{^isSingleton}}
                     {{> type}},
                 {{/isSingleton}}
             {{/isBodyParameter}}
+            {{#isFormParameter}}
+                {{^isSingleton}}
+                    {{> type}},
+                {{/isSingleton}}
+            {{/isFormParameter}}
         {{/parameters}}
     {{/hasBody}}
 ): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}{{^successResponses}}void{{/successResponses}}>
@@ -97,7 +102,7 @@
     return this.request(
         '{{method}}',
         `${this.baseUrl}${path}`,
-        {{#hasBody}}body{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
+        {{#hasBody}}{{#isFormMethod}}form{{/isFormMethod}}{{^isFormMethod}}body{{/isFormMethod}}{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
         headers,
         queryParameters
     );

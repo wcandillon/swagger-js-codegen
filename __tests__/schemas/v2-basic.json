@@ -133,6 +133,7 @@
         "operationId": "simpleGetOperation"
       },
       "post": {
+        "operationId": "simplePostOperation",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "security": [
@@ -236,8 +237,7 @@
               "type": "object"
             }
           }
-        },
-        "operationId": "simplePostOperation"
+        }
       },
       "x-exegesis-controller": "controllers/ctrl"
     },

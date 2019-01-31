@@ -92,6 +92,8 @@ class {{&className}} {
             body = form;
         } else if(headers.get('Content-Type') === 'application/json' && body && Object.keys(body).length > 0) {
             body = JSON.stringify(body);
+        } else {
+            body = undefined;
         }
 
         if(headers.get('Content-Type') === 'multipart/form-data') {

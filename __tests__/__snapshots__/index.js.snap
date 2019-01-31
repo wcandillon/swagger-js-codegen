@@ -857,6 +857,8 @@ class Api {
       Object.keys(body).length > 0
     ) {
       body = JSON.stringify(body);
+    } else {
+      body = undefined;
     }
 
     if (headers.get('Content-Type') === 'multipart/form-data') {
@@ -895,7 +897,7 @@ class Api {
 
       ttl?: number;
 
-      date?: Date;
+      date?: string;
     }>;
   }> {
     let path =
@@ -963,7 +965,7 @@ class Api {
     body: {
       ttl?: number;
 
-      date?: Date;
+      date?: string;
     },
   ): Promise<{
     _id?: string;
@@ -1177,6 +1179,8 @@ class Api {
       Object.keys(body).length > 0
     ) {
       body = JSON.stringify(body);
+    } else {
+      body = undefined;
     }
 
     if (headers.get('Content-Type') === 'multipart/form-data') {
@@ -1212,7 +1216,7 @@ class Api {
     items?: Array<{
       _id?: string;
 
-      date?: Date;
+      date?: string;
 
       name?: string;
 
@@ -1293,7 +1297,7 @@ class Api {
     pathParameter3: string,
     parameters: {},
     body: {
-      date?: Date;
+      date?: string;
 
       ttl?: number;
 

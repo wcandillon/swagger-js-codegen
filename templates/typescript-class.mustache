@@ -87,7 +87,7 @@ class {{&className}} {
         if(headers.get('Content-Type') === 'multipart/form-data') {
             const form = new FormData();
             for (let k in body) {
-                body.append(k, body[k]);
+                form.append(k, body[k]);
             }
             body = form;
         } else if(headers.get('Content-Type') === 'application/json' && body && Object.keys(body).length > 0) {

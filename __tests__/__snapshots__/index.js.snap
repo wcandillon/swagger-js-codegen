@@ -314,6 +314,39 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
+   * @param {} parameters. -
+   */
+  simpleUploadOperation(parameters = {}) {
+    let path = '/upload';
+    let body = {};
+    let queryParameters = {};
+    let headers = new Headers();
+    let form = {};
+
+    headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+
+    if (typeof parameters[''] !== 'undefined') {
+      form[''] = parameters[''];
+    }
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
    */
   endpointWithoutOkResponse(parameters = {}) {
     let path = '/endpoint-without-ok-response';
@@ -803,8 +836,8 @@ class Api {
     method: string,
     url: string,
     body: any,
-    headers: any,
-    queryParameters: QueryParameters,
+    headers: Headers = new Headers(),
+    queryParameters: QueryParameters = {},
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -812,10 +845,22 @@ class Api {
         : null;
     const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-    if (body && !Object.keys(body).length) {
-      body = undefined;
-    } else {
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      const form = new FormData();
+      for (let k in body) {
+        body.append(k, body[k]);
+      }
+      body = form;
+    } else if (
+      headers.get('Content-Type') === 'application/json' &&
+      body &&
+      Object.keys(body).length > 0
+    ) {
       body = JSON.stringify(body);
+    }
+
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      headers.delete('Content-Type');
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });
@@ -850,7 +895,7 @@ class Api {
 
       ttl?: number;
 
-      date?: string;
+      date?: Date;
     }>;
   }> {
     let path =
@@ -918,7 +963,7 @@ class Api {
     body: {
       ttl?: number;
 
-      date?: string;
+      date?: Date;
     },
   ): Promise<{
     _id?: string;
@@ -942,6 +987,36 @@ class Api {
       'POST',
       \`\${this.baseUrl}\${path}\`,
       body,
+      headers,
+      queryParameters,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#simpleUploadOperation
+   */
+  simpleUploadOperation(
+    parameters: {} = {},
+    form: {
+      upload: File;
+    },
+  ): Promise<{
+    _id?: string;
+  }> {
+    let path = '/upload';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+    headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      form,
       headers,
       queryParameters,
     );
@@ -1081,8 +1156,8 @@ class Api {
     method: string,
     url: string,
     body: any,
-    headers: any,
-    queryParameters: QueryParameters,
+    headers: Headers = new Headers(),
+    queryParameters: QueryParameters = {},
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -1090,10 +1165,22 @@ class Api {
         : null;
     const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-    if (body && !Object.keys(body).length) {
-      body = undefined;
-    } else {
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      const form = new FormData();
+      for (let k in body) {
+        body.append(k, body[k]);
+      }
+      body = form;
+    } else if (
+      headers.get('Content-Type') === 'application/json' &&
+      body &&
+      Object.keys(body).length > 0
+    ) {
       body = JSON.stringify(body);
+    }
+
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      headers.delete('Content-Type');
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });
@@ -1125,7 +1212,7 @@ class Api {
     items?: Array<{
       _id?: string;
 
-      date?: string;
+      date?: Date;
 
       name?: string;
 
@@ -1206,7 +1293,7 @@ class Api {
     pathParameter3: string,
     parameters: {},
     body: {
-      date?: string;
+      date?: Date;
 
       ttl?: number;
 

@@ -11,8 +11,7 @@ cli
     const result = CodeGen.getTypescriptCode({
       moduleName: "Test",
       className: "Test",
-      swagger: JSON.parse(fs.readFileSync(file, "utf-8")),
-      lint: false
+      swagger: JSON.parse(fs.readFileSync(file, "utf-8"))
     });
     console.log(result);
   });

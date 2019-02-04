@@ -14,8 +14,6 @@ interface Options {
   readonly className: string;
   readonly template: Partial<TemplateLocations>;
   readonly mustache: typeof Mustache;
-  readonly esnext: boolean;
-  readonly lint: boolean;
   readonly beautify: ((source: string) => string) | boolean;
   readonly beautifyOptions: JsBeautifyOptions;
 }
@@ -31,9 +29,6 @@ const DEFAULT_OPTIONS: Options = {
   className: "",
   template: {},
   mustache: Mustache,
-  // TODO: This esnext option is actually a lint option. We should probably add lintOptions like we have beautifyOptions
-  esnext: false,
-  lint: true,
   beautify: true,
   beautifyOptions: {}
 };

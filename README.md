@@ -9,73 +9,76 @@ The typescript generator is based on [superagent](https://github.com/visionmedia
 This fork was made to simplify some parts, add some more features, and tailor it more to specific use cases.
 
 ## Installation
+
 ```bash
 npm install swagger-typescript-codegen
 ```
 
 ## Example
-```javascript
-var fs = require('fs');
-var CodeGen = require('swagger-typescript-codegen').CodeGen;
 
-var file = 'swagger/spec.json';
-var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-var tsSourceCode = CodeGen.getTypescriptCode({ className: 'Test', swagger: swagger, imports: ['../../typings/tsd.d.ts'] });
+```javascript
+var fs = require("fs");
+var CodeGen = require("swagger-typescript-codegen").CodeGen;
+
+var file = "swagger/spec.json";
+var swagger = JSON.parse(fs.readFileSync(file, "UTF-8"));
+var tsSourceCode = CodeGen.getTypescriptCode({
+  className: "Test",
+  swagger: swagger,
+  imports: ["../../typings/tsd.d.ts"]
+});
 console.log(tsSourceCode);
 ```
 
 ## Custom template
+
 ```javascript
 var source = CodeGen.getCustomCode({
-    moduleName: 'Test',
-    className: 'Test',
-    swagger: swaggerSpec,
-    template: {
-        class: fs.readFileSync('my-class.mustache', 'utf-8'),
-        method: fs.readFileSync('my-method.mustache', 'utf-8'),
-        type: fs.readFileSync('my-type.mustache', 'utf-8')
-    }
+  moduleName: "Test",
+  className: "Test",
+  swagger: swaggerSpec,
+  template: {
+    class: fs.readFileSync("my-class.mustache", "utf-8"),
+    method: fs.readFileSync("my-method.mustache", "utf-8"),
+    type: fs.readFileSync("my-type.mustache", "utf-8")
+  }
 });
 ```
 
 ## Options
-In addition to the common options listed below, `getCustomCode()` *requires* a `template` field:
+
+In addition to the common options listed below, `getCustomCode()` _requires_ a `template` field:
 
     template: { class: "...", method: "..." }
 
 `getTypescriptCode()`, `getCustomCode()` each support the following options:
 
 ```yaml
-  moduleName:
-    type: string
-    description: Your module name
-  className:
-    type: string
-  lint:
-    type: boolean
-    description: whether or not to run jslint on the generated code
-  esnext:
-    type: boolean
-    description: passed through to jslint
-  beautify:
-    type: boolean
-    description: whether or not to beautify the generated code
-  beautifyOptions:
-    type: object
-    description: Options to be passed to the beautify command. See js-beautify for all available options.
-  mustache:
-    type: object
-    description: See the 'Custom Mustache Variables' section below
-  imports:
-    type: array
-    description: Typescript definition files to be imported.
-  swagger:
-    type: object
-    required: true
-    description: swagger object
+moduleName:
+  type: string
+  description: Your module name
+className:
+  type: string
+beautify:
+  type: boolean
+  description: whether or not to beautify the generated code
+beautifyOptions:
+  type: object
+  description: Options to be passed to the beautify command. See js-beautify for all available options.
+mustache:
+  type: object
+  description: See the 'Custom Mustache Variables' section below
+imports:
+  type: array
+  description: Typescript definition files to be imported.
+swagger:
+  type: object
+  required: true
+  description: swagger object
 ```
 
 ### Template Variables
+
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
 
 ```yaml
@@ -191,6 +194,7 @@ methods:
 ```
 
 #### Custom Mustache Variables
+
 You can also pass in your own variables for the mustache templates by adding a `mustache` object:
 
 ```javascript
@@ -207,7 +211,8 @@ var source = CodeGen.getCustomCode({
 ## Swagger Extensions
 
 ### x-proxy-header
-Some proxies and application servers inject HTTP headers into the requests.  Server-side code
+
+Some proxies and application servers inject HTTP headers into the requests. Server-side code
 may use these fields, but they are not required in the client API.
 
 eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers

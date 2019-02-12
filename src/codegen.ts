@@ -21,14 +21,14 @@ export const CodeGen = {
   getTypescriptCode: function(opts: ProvidedCodeGenOptions) {
     const options = makeOptions(opts);
 
-    return enhanceCode(getCode(options), options, "typescript");
+    return enhanceCode(getCode(options), options);
   },
   getCustomCode: function(opts: ProvidedCodeGenOptions) {
     verifyThatWeHaveRequiredTemplatesForCustomGenerationTarget(opts);
 
     const options = makeOptions(opts);
 
-    return enhanceCode(getCode(options), options, "custom");
+    return enhanceCode(getCode(options), options);
   }
 };
 

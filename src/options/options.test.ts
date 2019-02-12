@@ -9,8 +9,6 @@ const defaultOptions = {
   className: "",
   template: {},
   mustache: Mustache,
-  esnext: false,
-  lint: true,
   beautify: true,
   beautifyOptions: {}
 };
@@ -30,13 +28,11 @@ describe("makeOptions", () => {
   it("merges in the options that are passed with higher priority", () => {
     const partialOptions = {
       swagger: {} as Swagger,
-      lint: false,
       className: "GeneratedDataLayer"
     };
 
     const options = makeOptions(partialOptions);
 
-    expect(options.lint).toBe(false);
     expect(options.className).toBe("GeneratedDataLayer");
   });
 });

@@ -94,7 +94,7 @@
             headers.append('{{&name}}', '{{&singleton}}');
         {{/isSingleton}}
         {{^isSingleton}}
-            if(textraHeaders && typeof extraHeaders['{{&camelCaseName}}'] !== 'undefined') {
+            if(extraHeaders && typeof extraHeaders['{{&camelCaseName}}'] !== 'undefined') {
                 headers.append('{{&name}}', extraHeaders['{{&camelCaseName}}']!);
             }
         {{/isSingleton}}

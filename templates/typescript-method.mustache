@@ -34,6 +34,17 @@
             {{/isFormParameter}}
         {{/parameters}}
     {{/hasBody}}
+    {{#hasExtraHeader}}
+        extraHeaders: {
+        {{#parameters}}
+            {{#isHeaderParameter}}
+                {{^isSingleton}}
+                    '{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+                {{/isSingleton}}
+            {{/isHeaderParameter}}
+        {{/parameters}}
+        }
+    {{/hasExtraHeader}}
 ): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}{{^successResponses}}void{{/successResponses}}>
 {
     let path = '{{&path}}';
@@ -84,7 +95,7 @@
         {{/isSingleton}}
         {{^isSingleton}}
             if(typeof parameters['{{&camelCaseName}}'] !== 'undefined') {
-                headers.append('{{&name}}', queryParameters['{{&camelCaseName}}']!);
+                headers.append('{{&name}}', extraHeaders['{{&camelCaseName}}']!);
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}

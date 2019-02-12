@@ -761,6 +761,10 @@ exports[`Generates TYPESCRIPT class from Open Api 3.0 spec 1`] = `
 "/* tslint:disable */
 import 'isomorphic-fetch';
 
+export type ThenArg<T> = T extends Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+
 type QueryParameters = {
   [key: string]:
     | string
@@ -848,7 +852,7 @@ class Api {
     if (headers.get('Content-Type') === 'multipart/form-data') {
       const form = new FormData();
       for (let k in body) {
-        body.append(k, body[k]);
+        form.append(k, body[k]);
       }
       body = form;
     } else if (
@@ -1083,6 +1087,10 @@ exports[`Generates TYPESCRIPT class from Swagger 2 spec 1`] = `
 "/* tslint:disable */
 import 'isomorphic-fetch';
 
+export type ThenArg<T> = T extends Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+
 type QueryParameters = {
   [key: string]:
     | string
@@ -1170,7 +1178,7 @@ class Api {
     if (headers.get('Content-Type') === 'multipart/form-data') {
       const form = new FormData();
       for (let k in body) {
-        body.append(k, body[k]);
+        form.append(k, body[k]);
       }
       body = form;
     } else if (

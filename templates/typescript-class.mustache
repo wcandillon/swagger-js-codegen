@@ -1,6 +1,12 @@
 /* tslint:disable */
 import 'isomorphic-fetch';
 
+export type ThenArg<T> = T extends Promise<infer U>
+    ? U
+    : T extends (...args: any[]) => Promise<infer U>
+    ? U
+    : T;
+
 {{#imports}}
 /// <reference path="{{&.}}" />
 {{/imports}}

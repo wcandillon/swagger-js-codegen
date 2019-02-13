@@ -38,6 +38,9 @@ class {{&className}} {
         {{#isSecureToken}}
     protected token: string;
         {{/isSecureToken}}
+        {{#isSecureApiKey}}
+            protected apiKey: string;
+        {{/isSecureApiKey}}
     {{/isSecure}}
 
     serializeQueryParams(parameters: QueryParameters) {
@@ -72,8 +75,13 @@ class {{&className}} {
     public setToken(token: string) {
         this.token = token;
     }
-
         {{/isSecureToken}}
+
+        {{#isSecureApiKey}}
+            public setApiKey(apiKey: string) {
+            this.apiKey = apiKey;
+            }
+        {{/isSecureApiKey}}
 
     protected appendAuthHeaders(headerParams: Headers) {
       const headers = new Headers(headerParams);
@@ -82,6 +90,11 @@ class {{&className}} {
         headers.append('Authorization', `Bearer ${this.token}`);
       }
     {{/isSecureToken}}
+    {{#isSecureApiKey}}
+        if (this.apiKey) {
+        headers.append('{{apiKeyHeaderName}}', this.apiKey);
+        }
+    {{/isSecureApiKey}}
       return headers;
     }
     {{/isSecure}}

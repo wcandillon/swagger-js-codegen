@@ -38,6 +38,7 @@
     "update-notifier": "^2.1.0"
   },
   "devDependencies": {
+    "file-type": "^10.7.1",
     "final-fs": "^1.6.0",
     "grunt": "^1.0.3",
     "grunt-contrib-jshint": "^1.1.0",

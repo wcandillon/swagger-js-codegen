@@ -29,6 +29,12 @@ export const CodeGen = {
     const options = makeOptions(opts);
 
     return enhanceCode(getCode(options), options);
+  },
+  getDataAndOptionsForGeneration: function(opts: ProvidedCodeGenOptions) {
+    const options = makeOptions(opts);
+    verifyThatWeAreGeneratingForSwagger2(options);
+    const data = getViewForSwagger2(options);
+    return { data, options };
   }
 };
 

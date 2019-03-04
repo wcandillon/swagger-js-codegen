@@ -1,7 +1,7 @@
 {
   "name": "swagger-js-codegen-formdata",
   "main": "./lib/codegen.js",
-  "version": "0.15.4",
+  "version": "0.15.5",
   "description": "A Swagger codegen for JavaScript with support for multipart/form-data uploads",
   "scripts": {
     "test": "grunt",

@@ -72,7 +72,7 @@
                     [keyName]: {
                         value: form[keyName],
                         options: {
-                            filename: `file.${ fileType(form[keyName]).ext }`
+                            filename: (fileType(form[keyName]) != null ? `file.${ fileType(form[keyName]).ext }` : `file` )
                         }
                     }
                 };

@@ -37,6 +37,7 @@ export function isDictionary(
 ): swaggerType is SwaggerDictionary {
   return (
     swaggerType.type === "object" &&
-    swaggerType.hasOwnProperty("additionalProperties")
+    swaggerType.hasOwnProperty("additionalProperties") &&
+    (swaggerType as any).additionalProperties !== false
   );
 }

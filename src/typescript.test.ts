@@ -351,6 +351,23 @@ describe("convertType", () => {
       });
     });
 
+    it("correctly converts an object type with additionalProperties: false", () => {
+      swaggerType = makeSwaggerType({
+        type: "object",
+        additionalProperties: false
+      });
+
+      expect(convertType(swaggerType, swagger)).toEqual({
+        ...emptyTypeSpecWithDefaults,
+        tsType: "object",
+        isAtomic: false,
+        isObject: true,
+        isDictionary: false,
+        properties: [],
+        requiredPropertyNames: []
+      });
+    });
+
     it("handles required properties", () => {
       swaggerType = makeSwaggerType({
         type: "object",

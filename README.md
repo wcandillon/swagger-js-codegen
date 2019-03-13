@@ -80,6 +80,34 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     description: swagger object
 ```
 
+If it is required to generate multiple files for Node (i. e. multiple methods based on the initial JSON) provide the following option:
+
+    multiple: true
+
+When this option is provided, the module will return an array of objects, that have the following structure:
+
+    { content: <STRING>,
+      file: <STRING>,
+      functions: <ARRAY>,
+      directory: <STRING>,
+      isWrapper: <BOOLEAN> }
+
+This structure describes a file, that contains generated REST APIs 
+
+`content` - file contents, single string
+
+`file` - file name
+
+`functions` - array of function names
+
+`directory` - name of the directory, that should be created for this file
+
+`isWrapper` - will be **true** for wrapper file
+
+Resulting array should always contain a single wrapper file
+
+**Please notice**: when using this option, the module returns a **promise**
+
 ### Template Variables
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
 

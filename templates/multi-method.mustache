@@ -1,0 +1,59 @@
+/**
+ * {{&summary}}
+ * @method {{&methodName}}
+ * @name {{&className}}#{{&methodName}}
+ * @param {object} req - request object
+ * @param {object} res - response object
+ */
+{{&className}}.prototype.{{&destination}}_{{&methodName}} = function(req, res) {
+  {{#parameters}}
+    {{#isQueryParameter}}
+      // check if query parameter is passed
+      if (!req.query['{{=<% %>=}}<%&name%><%={{ }}=%>']) {
+        return res.code(400).send({ status: 400, info: 'MISSING_QUERY_PARAMETER', value: '{{=<% %>=}}<%&name%><%={{ }}=%>', });
+      }
+    {{/isQueryParameter}}
+
+    {{#isPathParameter}}
+      // check if path parameter is passed
+      if (!req.params['{{=<% %>=}}<%&name%><%={{ }}=%>']) {
+        return res.code(400).send({ status: 400, info: 'MISSING_PATH_PARAMETER', value: '{{=<% %>=}}<%&name%><%={{ }}=%>', });
+      }
+    {{/isPathParameter}}
+
+    {{#isBodyParameter}}
+      // check if body parameter is passed
+      if (!req.body['{{=<% %>=}}<%&name%><%={{ }}=%>']) {
+        return res.code(400).send({ status: 400, info: 'MISSING_BODY_PARAMETER', value: '{{=<% %>=}}<%&name%><%={{ }}=%>', });
+      }
+    {{/isBodyParameter}}
+
+    {{#isHeaderParameter}}
+      {{#isSingleton}}
+        headers['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        if(parameters['{{&camelCaseName}}'] !== undefined){
+          headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+      {{/isSingleton}}
+    {{/isHeaderParameter}}
+
+    {{#isFormParameter}}
+      {{#isSingleton}}
+        form['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        if(parameters['{{&camelCaseName}}'] !== undefined){
+          form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+      {{/isSingleton}}
+    {{/isFormParameter}}
+  {{/parameters}}
+
+  /*
+    Method logic
+  */
+
+  return res.code(200).send({ info: 'OK' });
+};

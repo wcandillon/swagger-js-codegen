@@ -30,9 +30,10 @@
   "homepage": "https://github.com/wcandillon/swagger-js-codegen",
   "dependencies": {
     "commander": "^2.9.0",
-    "js-beautify": "^1.5.1",
+    "js-beautify": "^1.9.0",
     "js-yaml": "^3.10.0",
-    "jshint": "^2.5.1",
+    "jshint": "^2.10.1",
+    "lebab": "^3.0.4",
     "lodash": "^4.17.10",
     "mustache": "2.2.1",
     "update-notifier": "^2.1.0"

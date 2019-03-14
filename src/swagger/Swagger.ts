@@ -85,7 +85,7 @@ export interface HttpOperation {
   readonly deprecated: boolean;
   readonly security: boolean;
   readonly responses: {
-    readonly 200: SwaggerType;
+    readonly [index: string]: SwaggerType;
   };
   readonly operationId: string;
   readonly description: string;

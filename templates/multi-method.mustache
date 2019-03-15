@@ -55,5 +55,7 @@
     Method logic
   */
 
-  return res.code(200).send({ info: 'OK' });
+  {{#responses}}
+    {{#200}}{{{code}}}{{/200}}
+  {{/responses}}
 };

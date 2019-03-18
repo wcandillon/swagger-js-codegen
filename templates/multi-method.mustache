@@ -7,48 +7,25 @@
  */
 {{&className}}.prototype.{{&destination}}_{{&methodName}} = function(req, res) {
   {{#parameters}}
-    {{#isQueryParameter}}
-      // check if query parameter is passed
-      if (!req.query['{{=<% %>=}}<%&name%><%={{ }}=%>']) {
-        return res.code(400).send({ status: 400, info: 'MISSING_QUERY_PARAMETER', value: '{{=<% %>=}}<%&name%><%={{ }}=%>', });
-      }
-    {{/isQueryParameter}}
-
-    {{#isPathParameter}}
-      // check if path parameter is passed
-      if (!req.params['{{=<% %>=}}<%&name%><%={{ }}=%>']) {
-        return res.code(400).send({ status: 400, info: 'MISSING_PATH_PARAMETER', value: '{{=<% %>=}}<%&name%><%={{ }}=%>', });
-      }
-    {{/isPathParameter}}
-
-    {{#isBodyParameter}}
-      // check if body parameter is passed
-      if (!req.body['{{=<% %>=}}<%&name%><%={{ }}=%>']) {
-        return res.code(400).send({ status: 400, info: 'MISSING_BODY_PARAMETER', value: '{{=<% %>=}}<%&name%><%={{ }}=%>', });
-      }
-    {{/isBodyParameter}}
-
-    {{#isHeaderParameter}}
-      {{#isSingleton}}
-        headers['{{&name}}'] = '{{&singleton}}';
-      {{/isSingleton}}
-      {{^isSingleton}}
-        if(parameters['{{&camelCaseName}}'] !== undefined){
-          headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
-        }
-      {{/isSingleton}}
-    {{/isHeaderParameter}}
-
-    {{#isFormParameter}}
-      {{#isSingleton}}
-        form['{{&name}}'] = '{{&singleton}}';
-      {{/isSingleton}}
-      {{^isSingleton}}
-        if(parameters['{{&camelCaseName}}'] !== undefined){
-          form['{{&name}}'] = parameters['{{&camelCaseName}}'];
-        }
-      {{/isSingleton}}
-    {{/isFormParameter}}
+    {{#x-AuthFieldType}}
+      {{#isQueryParameter}}
+        await_FieldValidator.validate('{{&x-AuthFieldType}}', req.query['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
+      {{/isQueryParameter}}
+      {{#isPathParameter}}
+        await_FieldValidator.validate('{{&x-AuthFieldType}}', req.params['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
+      {{/isPathParameter}}
+      {{#isBodyParameter}}
+        await_FieldValidator.validate('{{&x-AuthFieldType}}', req.body['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
+      {{/isBodyParameter}}
+      {{#isHeaderParameter}}
+        {{#isSingleton}}{{/isSingleton}}
+        {{^isSingleton}}{{/isSingleton}}
+      {{/isHeaderParameter}}
+      {{#isFormParameter}}
+        {{#isSingleton}}{{/isSingleton}}
+        {{^isSingleton}}{{/isSingleton}}
+      {{/isFormParameter}}
+    {{/x-AuthFieldType}}
   {{/parameters}}
 
   /*

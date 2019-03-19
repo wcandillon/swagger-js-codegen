@@ -1,3 +1,4 @@
-lib/splitter.js
+lib/expose.js
 lib/formatter.js
+lib/splitter.js
 zz/

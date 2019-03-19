@@ -7,25 +7,29 @@
  */
 {{&className}}.prototype.{{&destination}}_{{&methodName}} = function(req, res) {
   {{#parameters}}
-    {{#x-AuthFieldType}}
-      {{#isQueryParameter}}
-        await_FieldValidator.validate('{{&x-AuthFieldType}}', req.query['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
-      {{/isQueryParameter}}
-      {{#isPathParameter}}
-        await_FieldValidator.validate('{{&x-AuthFieldType}}', req.params['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
-      {{/isPathParameter}}
-      {{#isBodyParameter}}
-        await_FieldValidator.validate('{{&x-AuthFieldType}}', req.body['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
-      {{/isBodyParameter}}
-      {{#isHeaderParameter}}
-        {{#isSingleton}}{{/isSingleton}}
-        {{^isSingleton}}{{/isSingleton}}
-      {{/isHeaderParameter}}
-      {{#isFormParameter}}
-        {{#isSingleton}}{{/isSingleton}}
-        {{^isSingleton}}{{/isSingleton}}
-      {{/isFormParameter}}
-    {{/x-AuthFieldType}}
+    {{#isQueryParameter}}
+      {{#x-AuthFieldType}}
+        await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
+      {{/x-AuthFieldType}}
+    {{/isQueryParameter}}
+    {{#isPathParameter}}
+      {{#x-AuthFieldType}}
+        await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
+      {{/x-AuthFieldType}}
+    {{/isPathParameter}}
+    {{#isBodyParameter}}
+      {{#x-AuthFieldType}}
+        await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{=<% %>=}}<%&name%><%={{ }}=%>'], req, res);
+      {{/x-AuthFieldType}}
+    {{/isBodyParameter}}
+    {{#isHeaderParameter}}
+      {{#isSingleton}}{{/isSingleton}}
+      {{^isSingleton}}{{/isSingleton}}
+    {{/isHeaderParameter}}
+    {{#isFormParameter}}
+      {{#isSingleton}}{{/isSingleton}}
+      {{^isSingleton}}{{/isSingleton}}
+    {{/isFormParameter}}
   {{/parameters}}
 
   /*

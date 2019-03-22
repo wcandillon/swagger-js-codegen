@@ -9,17 +9,26 @@
   {{#parameters}}
     {{#isQueryParameter}}
       {{#x-AuthFieldType}}
-        await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{&x-AuthFieldType.parameterName}}']['{{&x-AuthFieldType.propertyName}}'], req, res);
+        var auth = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{&x-AuthFieldType.parameterName}}']['{{&x-AuthFieldType.propertyName}}'], req, res);
+        if (!auth) {
+          return;
+        }
       {{/x-AuthFieldType}}
     {{/isQueryParameter}}
     {{#isPathParameter}}
       {{#x-AuthFieldType}}
-        await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{&x-AuthFieldType.parameterName}}']['{{&x-AuthFieldType.propertyName}}'], req, res);
+        var auth = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{&x-AuthFieldType.parameterName}}']['{{&x-AuthFieldType.propertyName}}'], req, res);
+        if (!auth) {
+          return;
+        }
       {{/x-AuthFieldType}}
     {{/isPathParameter}}
     {{#isBodyParameter}}
       {{#x-AuthFieldType}}
-        await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{&x-AuthFieldType.parameterName}}']['{{&x-AuthFieldType.propertyName}}'], req, res);
+        var auth = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{&x-AuthFieldType.parameterName}}']['{{&x-AuthFieldType.propertyName}}'], req, res);
+        if (!auth) {
+          return;
+        }
       {{/x-AuthFieldType}}
     {{/isBodyParameter}}
     {{#isHeaderParameter}}

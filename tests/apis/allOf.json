@@ -1,0 +1,36 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API"
+  },
+  "paths": {},
+  "definitions": {
+    "Foo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "number"
+        }
+      }
+    },
+    "Bar": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Foo"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rank": {
+              "type": "number"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

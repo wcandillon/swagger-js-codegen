@@ -1,5 +1,13 @@
 import { makeTypeSpecFromSwaggerType, TypeSpec } from "../typespec";
-import { map, filter, flatten, includes, concat, isArray } from "lodash";
+import {
+  map,
+  filter,
+  flatten,
+  includes,
+  concat,
+  isArray,
+  uniqBy
+} from "lodash";
 import { SwaggerType } from "../swagger/Swagger";
 import { Swagger } from "../swagger/Swagger";
 import { convertType } from "../typescript";
@@ -21,9 +29,12 @@ export function makeObjectTypeSpec(
     swaggerType.type === "object" && isArray(swaggerType.required)
       ? swaggerType.required
       : [];
-  const properties = concat(
-    getAllOfProperties(swaggerType, swagger),
-    getObjectProperties(swaggerType, swagger, requiredPropertyNames)
+  const properties = uniqBy(
+    concat(
+      getAllOfProperties(swaggerType, swagger),
+      getObjectProperties(swaggerType, swagger, requiredPropertyNames)
+    ),
+    "name"
   );
 
   return {

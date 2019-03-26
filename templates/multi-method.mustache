@@ -32,7 +32,7 @@
           return;
         }
       {{/x-AuthFieldType}}
-      var {{name}} = global.classes['{{tsType.target}}'](req, res, req.body);
+      var {{name}} = new global.classes['{{tsType.target}}'](req, res, req.body);
     {{/isBodyParameter}}
     {{#isHeaderParameter}}
       {{#isSingleton}}{{/isSingleton}}

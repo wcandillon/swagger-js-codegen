@@ -1,0 +1,54 @@
+/**
+ * {{&summary}}
+ * @method {{&methodName}}
+ * @name {{&className}}#{{&methodName}}
+ * @param {object} req - request object
+ * @param {object} res - response object
+ */
+{{&className}}.prototype.{{&destination}}_{{&methodName}} = function(req, res) {
+  {{#parameters}}
+    {{#isQueryParameter}}
+      {{#x-AuthFieldType}}
+        var auth = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{&x-AuthFieldType.propertyName}}'], req, res);
+        if (!auth) {
+          return;
+        }
+      {{/x-AuthFieldType}}
+      var {{name}} = req.query['{{name}}'];
+    {{/isQueryParameter}}
+    {{#isPathParameter}}
+      {{#x-AuthFieldType}}
+        var auth = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{&x-AuthFieldType.propertyName}}'], req, res);
+        if (!auth) {
+          return;
+        }
+      {{/x-AuthFieldType}}
+      var {{name}} = req.params['{{name}}'];
+    {{/isPathParameter}}
+    {{#isBodyParameter}}
+      {{#x-AuthFieldType}}
+        var auth = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{&x-AuthFieldType.propertyName}}'], req, res);
+        if (!auth) {
+          return;
+        }
+      {{/x-AuthFieldType}}
+      var {{name}} = new global.classes['{{tsType.target}}'](req, res, req.body);
+    {{/isBodyParameter}}
+    {{#isHeaderParameter}}
+      {{#isSingleton}}{{/isSingleton}}
+      {{^isSingleton}}{{/isSingleton}}
+    {{/isHeaderParameter}}
+    {{#isFormParameter}}
+      {{#isSingleton}}{{/isSingleton}}
+      {{^isSingleton}}{{/isSingleton}}
+    {{/isFormParameter}}
+  {{/parameters}}
+
+  /*
+    Method logic
+  */
+
+  {{#responses}}
+    {{#200}}{{{code}}}{{/200}}
+  {{/responses}}
+};

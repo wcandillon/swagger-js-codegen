@@ -80,6 +80,24 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     description: swagger object
 ```
 
+If it is required to generate multiple files for Node (i. e. multiple methods based on the initial JSON) provide the following options:
+
+    multiple:
+        type: boolean
+        description: this option enables file splitting
+    path:
+        type: string
+        description: this option should contain the path to the project directory (__dirname)
+        example: '/Users/name/Projects/someProject/'
+    dir:
+        type: string
+        description: this option should contain the name of the directory with APIs
+        example: 'newAPIs'
+    
+If `multiple` option is provided, `path` and `dir` options **are required**
+
+The `dir` folder will be created and generated files will be placed inside of it
+
 ### Template Variables
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
 

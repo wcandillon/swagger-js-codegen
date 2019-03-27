@@ -1,5 +1,14 @@
 import { makeTypeSpecFromSwaggerType, TypeSpec } from "../typespec";
-import { map, filter, flatten, includes, concat, isArray } from "lodash";
+import {
+  map,
+  filter,
+  flatten,
+  includes,
+  concat,
+  isArray,
+  uniqBy,
+  reverse
+} from "lodash";
 import { SwaggerType } from "../swagger/Swagger";
 import { Swagger } from "../swagger/Swagger";
 import { convertType } from "../typescript";
@@ -21,10 +30,16 @@ export function makeObjectTypeSpec(
     swaggerType.type === "object" && isArray(swaggerType.required)
       ? swaggerType.required
       : [];
-  const properties = concat(
+
+  // Some special handling is needed to support overlapping properties. The list of properties must be reversed to get the
+  // overriding properties first. Only then can we filter out any duplicates. To get the original order back, the array
+  // is reversed once more
+  const allProperties = concat(
     getAllOfProperties(swaggerType, swagger),
     getObjectProperties(swaggerType, swagger, requiredPropertyNames)
   );
+  const uniqueProperties = uniqBy(reverse(allProperties), "name");
+  const properties = reverse(uniqueProperties);
 
   return {
     ...makeTypeSpecFromSwaggerType(swaggerType),

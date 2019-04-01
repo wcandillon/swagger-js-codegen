@@ -1,20 +1,55 @@
 # Swagger to JS & Typescript Codegen
-[![Circle CI](https://circleci.com/gh/wcandillon/swagger-js-codegen.svg?style=svg)](https://circleci.com/gh/wcandillon/swagger-js-codegen) [![NPM version](http://img.shields.io/npm/v/swagger-js-codegen.svg?style=flat)](http://badge.fury.io/js/swagger-js-codegen)
-
-## We are looking for a new maintainer
-
-This project is no longer actively maintained by its creator. Please let us know if you would like to become a maintainer.
-At the time we wrote this package, the swagger didn't have generators for JavaScript nor TypeScript. Now there are [great alternatives of this package available](https://github.com/swagger-api/swagger-codegen). 
-
-This package generates a nodejs, reactjs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
-
-The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
 
 ## Installation
 ```bash
 npm install swagger-js-codegen
 ```
 
+___
+
+## Multi-class generation (Node)
+
+It is possible now to generate multiple controllers for Node.
+
+Each controller will have a class that has several methods inside of it.
+
+Each method represents an API, and has a default response built in.
+
+Also, generates the `definitions` classes.
+
+**Options:**
+
+`className` **[REQUIRED]**: name of the single generated class. You can put any name.
+
+`swagger` **[REQUIRED]**: loaded Swagger JSON file.
+
+`multiple` **[REQUIRED]**: this option should be provided and should be set to `true` if you need a multi-class output.
+
+`path` **[REQUIRED]**: location of the destination directories. `__dirname` is the best option, but you can provide your own destination path.
+
+`dir` **[OPTIONAL]**: this is the name of the destination directory for **controllers**. I recommend to use `routes` (used as default if this option was not provided). 
+
+Directory with definitions will be **always** named `definitions`.
+
+**Multi-class generation example:**
+
+```
+const { CodeGen } = require('swagger-js-codegen');
+const fs = require('fs');
+
+const file = 'swagger/swagger.json';
+const spec = JSON.parse(fs.readFileSync(file, 'UTF-8'));
+
+await CodeGen.getNodeCode({
+  className: 'Service',
+  swagger: spec,
+  multiple: true,
+  path: __dirname,
+  dir: 'routes',
+});
+```
+
+____
 ## Example
 ```javascript
 var fs = require('fs');
@@ -79,24 +114,6 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     required: true
     description: swagger object
 ```
-
-If it is required to generate multiple files for Node (i. e. multiple methods based on the initial JSON) provide the following options:
-
-    multiple:
-        type: boolean
-        description: this option enables file splitting
-    path:
-        type: string
-        description: this option should contain the path to the project directory (__dirname)
-        example: '/Users/name/Projects/someProject/'
-    dir:
-        type: string
-        description: this option should contain the name of the directory with APIs
-        example: 'newAPIs'
-    
-If `multiple` option is provided, `path` and `dir` options **are required**
-
-The `dir` folder will be created and generated files will be placed inside of it
 
 ### Template Variables
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):

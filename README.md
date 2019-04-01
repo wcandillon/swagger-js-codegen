@@ -13,9 +13,21 @@ It is possible now to generate multiple controllers for Node.
 
 Each controller will have a class that has several methods inside of it.
 
-Each method represents an API, and has a default response built in.
+Each method represents an API, and has a default built-in response.
 
-Also, generates the `definitions` classes.
+Definitions are generated as well.
+
+**How it works:**
+
+Definitions are generated before the APIs. File `expose.js` generates all of the necessary definitions and places them in the destination directory.
+
+APIs are generated after that, based on the Mustache templates.
+
+Module utilizes the custom Mustache templates (`multi-class` and `multi-method`).
+
+Mustache generates a single file with a single ES5 class, that contains all of the methods.
+
+File `splitter.js` splits the single file into several files with classes (based on tags in the original JSON). After the split is completed and methods are combined, they are saved as a controller file in the destination directory.
 
 **Options:**
 
@@ -27,9 +39,9 @@ Also, generates the `definitions` classes.
 
 `path` **[REQUIRED]**: location of the destination directories. `__dirname` is the best option, but you can provide your own destination path.
 
-`dir` **[OPTIONAL]**: this is the name of the destination directory for **controllers**. I recommend to use `routes` (used as default if this option was not provided). 
+`controllersDirName` **[OPTIONAL]**: this is the name of the destination directory for **controllers**. `routes_generated` is the recommended name (it is used as default if this option was not provided). 
 
-Directory with definitions will be **always** named `definitions`.
+`definitionsDirName` **[OPTIONAL]**: this is the name of the destination directory for **definitions**. `definitions_generated` is the recommended name (it is used as default if this option was not provided). 
 
 **Multi-class generation example:**
 
@@ -45,7 +57,8 @@ await CodeGen.getNodeCode({
   swagger: spec,
   multiple: true,
   path: __dirname,
-  dir: 'routes',
+  controllersDirName: 'routes_generated',
+  definitionsDirName: 'definitions_generated',
 });
 ```
 

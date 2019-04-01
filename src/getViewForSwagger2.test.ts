@@ -1,5 +1,5 @@
 import { makeOptions } from "./options/options";
-import { Swagger } from "./swagger/Swagger";
+import { Swagger, HttpOperation } from "./swagger/Swagger";
 import { getViewForSwagger2, ViewData } from "./getViewForSwagger2";
 
 describe("getViewForSwagger2", () => {
@@ -53,7 +53,78 @@ describe("getViewForSwagger2", () => {
 
     expect(getViewForSwagger2(options)).toEqual(makeViewData({}));
   });
+
+  describe("should honor includeDeprecated option", () => {
+    let deprecatedSwagger: Swagger;
+
+    beforeEach(() => {
+      deprecatedSwagger = {
+        ...swagger,
+        paths: {
+          "/deprecated": {
+            get: {
+              ...makeOperation(),
+              deprecated: true
+            }
+          },
+          "/nonDeprecated": {
+            get: {
+              ...makeOperation(),
+              deprecated: false
+            }
+          }
+        }
+      };
+    });
+
+    it("does not include deprecated methods by default", () => {
+      const options = makeOptions({
+        swagger: deprecatedSwagger
+      });
+      const view = getViewForSwagger2(options);
+      expect(view.methods).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: "/nonDeprecated",
+            isDeprecated: false
+          })
+        ])
+      );
+    });
+    it("includes deprecated methods if includeDeprecated is true", () => {
+      const options = makeOptions({
+        includeDeprecated: true,
+        swagger: deprecatedSwagger
+      });
+
+      const view = getViewForSwagger2(options);
+      expect(view.methods).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ path: "/deprecated", isDeprecated: true }),
+          expect.objectContaining({
+            path: "/nonDeprecated",
+            isDeprecated: false
+          })
+        ])
+      );
+    });
+  });
 });
+
+function makeOperation(): HttpOperation {
+  return {
+    security: false,
+    responses: {},
+    operationId: "operationId",
+    description: "description",
+    summary: "summary",
+    externalDocs: "",
+    produces: [""],
+    consumes: [""],
+    parameters: [],
+    deprecated: false
+  };
+}
 
 function makeViewData(partial: Partial<ViewData> = {}): ViewData {
   return {

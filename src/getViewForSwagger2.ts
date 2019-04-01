@@ -12,7 +12,8 @@ import {
 } from "./view-data/definition";
 import {
   getHttpMethodTuplesFromSwaggerPathsObject,
-  isAuthorizedAndNotDeprecated
+  isAuthorizedAndNotDeprecated,
+  isAuthorizedMethod
 } from "./view-data/operation";
 
 export type GenerationTargetType = "typescript" | "custom";
@@ -93,7 +94,11 @@ const makeMethodsFromPaths = (
   swagger: Swagger
 ): Method[] =>
   getHttpMethodTuplesFromSwaggerPathsObject(swagger.paths)
-    .filter(isAuthorizedAndNotDeprecated)
+    .filter(
+      method =>
+        (opts.includeDeprecated && isAuthorizedMethod(method)) ||
+        isAuthorizedAndNotDeprecated(method)
+    )
     .map(([path, httpVerb, op, globalParams]) => {
       // TODO: Start of untested security stuff that needs fixing
       const secureTypes = [];

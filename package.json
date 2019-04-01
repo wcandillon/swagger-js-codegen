@@ -1,7 +1,7 @@
 {
   "name": "swagger-js-codegen",
   "main": "./lib/codegen.js",
-  "version": "1.12.0",
+  "version": "2.0.0",
   "description": "A Swagger codegen for JavaScript",
   "scripts": {
     "test": "grunt",
@@ -13,9 +13,12 @@
   "bugs": {
     "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
   },
+  "engines" : {
+    "node" : "^11.13.0"
+  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/wcandillon/swagger-js-codegen.git"
+    "url": "git://github.com/voicenter/swagger-js-codegen"
   },
   "keywords": [
     "swagger",

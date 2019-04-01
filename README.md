@@ -1,20 +1,68 @@
 # Swagger to JS & Typescript Codegen
-[![Circle CI](https://circleci.com/gh/wcandillon/swagger-js-codegen.svg?style=svg)](https://circleci.com/gh/wcandillon/swagger-js-codegen) [![NPM version](http://img.shields.io/npm/v/swagger-js-codegen.svg?style=flat)](http://badge.fury.io/js/swagger-js-codegen)
-
-## We are looking for a new maintainer
-
-This project is no longer actively maintained by its creator. Please let us know if you would like to become a maintainer.
-At the time we wrote this package, the swagger didn't have generators for JavaScript nor TypeScript. Now there are [great alternatives of this package available](https://github.com/swagger-api/swagger-codegen). 
-
-This package generates a nodejs, reactjs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
-
-The typescript generator is based on [superagent](https://github.com/visionmedia/superagent) and can be used for both nodejs and the browser via browserify/webpack.
 
 ## Installation
 ```bash
 npm install swagger-js-codegen
 ```
 
+___
+
+## Multi-class generation (Node)
+
+It is possible now to generate multiple controllers for Node.
+
+Each controller will have a class that has several methods inside of it.
+
+Each method represents an API, and has a default built-in response.
+
+Definitions are generated as well.
+
+**How it works:**
+
+Definitions are generated before the APIs. File `expose.js` generates all of the necessary definitions and places them in the destination directory.
+
+APIs are generated after that, based on the Mustache templates.
+
+Module utilizes the custom Mustache templates (`multi-class` and `multi-method`).
+
+Mustache generates a single file with a single ES5 class, that contains all of the methods.
+
+File `splitter.js` splits the single file into several files with classes (based on tags in the original JSON). After the split is completed and methods are combined, they are saved as a controller file in the destination directory.
+
+**Options:**
+
+`className` **[REQUIRED]**: name of the single generated class. You can put any name.
+
+`swagger` **[REQUIRED]**: loaded Swagger JSON file.
+
+`multiple` **[REQUIRED]**: this option should be provided and should be set to `true` if you need a multi-class output.
+
+`path` **[REQUIRED]**: location of the destination directories. `__dirname` is the best option, but you can provide your own destination path.
+
+`controllersDirName` **[OPTIONAL]**: this is the name of the destination directory for **controllers**. `routes_generated` is the recommended name (it is used as default if this option was not provided). 
+
+`definitionsDirName` **[OPTIONAL]**: this is the name of the destination directory for **definitions**. `definitions_generated` is the recommended name (it is used as default if this option was not provided). 
+
+**Multi-class generation example:**
+
+```
+const { CodeGen } = require('swagger-js-codegen');
+const fs = require('fs');
+
+const file = 'swagger/swagger.json';
+const spec = JSON.parse(fs.readFileSync(file, 'UTF-8'));
+
+await CodeGen.getNodeCode({
+  className: 'Service',
+  swagger: spec,
+  multiple: true,
+  path: __dirname,
+  controllersDirName: 'routes_generated',
+  definitionsDirName: 'definitions_generated',
+});
+```
+
+____
 ## Example
 ```javascript
 var fs = require('fs');
@@ -79,24 +127,6 @@ In addition to the common options listed below, `getCustomCode()` *requires* a `
     required: true
     description: swagger object
 ```
-
-If it is required to generate multiple files for Node (i. e. multiple methods based on the initial JSON) provide the following options:
-
-    multiple:
-        type: boolean
-        description: this option enables file splitting
-    path:
-        type: string
-        description: this option should contain the path to the project directory (__dirname)
-        example: '/Users/name/Projects/someProject/'
-    dir:
-        type: string
-        description: this option should contain the name of the directory with APIs
-        example: 'newAPIs'
-    
-If `multiple` option is provided, `path` and `dir` options **are required**
-
-The `dir` folder will be created and generated files will be placed inside of it
 
 ### Template Variables
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):

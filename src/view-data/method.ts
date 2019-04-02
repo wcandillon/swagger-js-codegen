@@ -23,6 +23,7 @@ export interface Method {
   readonly method: string;
   readonly isGET: boolean;
   readonly isPOST: boolean;
+  readonly isDeprecated: boolean;
   readonly summary: string;
   readonly externalDocs: string;
   readonly parameters: TypeSpecParameter[];
@@ -58,6 +59,7 @@ export function makeMethod(
     method: httpVerb.toUpperCase(),
     isGET: httpVerb.toUpperCase() === "GET",
     isPOST: httpVerb.toUpperCase() === "POST",
+    isDeprecated: op.deprecated,
     summary: op.description || op.summary,
     externalDocs: op.externalDocs,
     isSecure: swagger.security !== undefined || op.security !== undefined,

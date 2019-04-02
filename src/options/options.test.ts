@@ -5,6 +5,7 @@ import { Swagger } from "../swagger/Swagger";
 const defaultOptions = {
   isES6: false,
   moduleName: "",
+  includeDeprecated: false,
   imports: [],
   className: "",
   template: {},

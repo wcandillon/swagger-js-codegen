@@ -67,7 +67,7 @@ const authorizedMethods = [
   "UNLOCK",
   "PROPFIND"
 ];
-const isAuthorizedMethod = ([
+export const isAuthorizedMethod = ([
   _path,
   httpVerb
 ]: PathAndMethodTupleWithPathParams): boolean =>

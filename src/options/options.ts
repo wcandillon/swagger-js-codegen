@@ -10,6 +10,7 @@ export interface TemplateLocations {
 interface Options {
   readonly isES6: boolean;
   readonly moduleName: string;
+  readonly includeDeprecated: boolean;
   readonly imports: ReadonlyArray<string>;
   readonly className: string;
   readonly template: Partial<TemplateLocations>;
@@ -25,6 +26,7 @@ interface SwaggerOption {
 const DEFAULT_OPTIONS: Options = {
   isES6: false,
   moduleName: "",
+  includeDeprecated: false,
   imports: [],
   className: "",
   template: {},

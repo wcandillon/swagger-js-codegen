@@ -10,27 +10,21 @@
     {{#isQueryParameter}}
       {{#x-AuthFieldType}}
         var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{&x-AuthFieldType.propertyName}}'], req, res);
-        if (!auth{{&x-AuthFieldType.propertyName}}) {
-          return;
-        }
+        if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
       {{/x-AuthFieldType}}
       var {{name}} = req.query['{{name}}'];
     {{/isQueryParameter}}
     {{#isPathParameter}}
       {{#x-AuthFieldType}}
         var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{&x-AuthFieldType.propertyName}}'], req, res);
-        if (!auth{{&x-AuthFieldType.propertyName}}) {
-          return;
-        }
+        if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
       {{/x-AuthFieldType}}
       var {{name}} = req.params['{{name}}'];
     {{/isPathParameter}}
     {{#isBodyParameter}}
       {{#x-AuthFieldType}}
         var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{&x-AuthFieldType.propertyName}}'], req, res);
-        if (!auth{{&x-AuthFieldType.propertyName}}) {
-          return;
-        }
+        if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
       {{/x-AuthFieldType}}
       var {{name}} = new global.classes['{{tsType.target}}'](req, res, req.body);
     {{/isBodyParameter}}

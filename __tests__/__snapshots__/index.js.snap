@@ -314,6 +314,39 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
+   * @param {} parameters. -
+   */
+  simpleUploadOperation(parameters = {}) {
+    let path = '/upload';
+    let body = {};
+    let queryParameters = {};
+    let headers = new Headers();
+    let form = {};
+
+    headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+
+    if (typeof parameters[''] !== 'undefined') {
+      form[''] = parameters[''];
+    }
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
    * @param {} parameters.seasonIds -
    */
   adminGetSuitableAgeCategories(parameters = {}) {
@@ -764,6 +797,10 @@ exports[`Generates TYPESCRIPT class from Open Api 3.0 spec 1`] = `
 "/* tslint:disable */
 import 'isomorphic-fetch';
 
+export type ThenArg<T> = T extends Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+
 type QueryParameters = {
   [key: string]:
     | string
@@ -839,8 +876,8 @@ class Api {
     method: string,
     url: string,
     body: any,
-    headers: any,
-    queryParameters: QueryParameters,
+    headers: Headers = new Headers(),
+    queryParameters: QueryParameters = {},
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -848,10 +885,24 @@ class Api {
         : null;
     const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-    if (body && !Object.keys(body).length) {
-      body = undefined;
-    } else {
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      const form = new FormData();
+      for (let k in body) {
+        form.append(k, body[k]);
+      }
+      body = form;
+    } else if (
+      headers.get('Content-Type') === 'application/json' &&
+      body &&
+      Object.keys(body).length > 0
+    ) {
       body = JSON.stringify(body);
+    } else {
+      body = undefined;
+    }
+
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      headers.delete('Content-Type');
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });
@@ -986,6 +1037,36 @@ class Api {
   /**
    *
    * @method
+   * @name Api#simpleUploadOperation
+   */
+  simpleUploadOperation(
+    parameters: {} = {},
+    form: {
+      upload: File;
+    },
+  ): Promise<{
+    _id?: string;
+  }> {
+    let path = '/upload';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+    headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      form,
+      headers,
+      queryParameters,
+    );
+  }
+
+  /**
+   *
+   * @method
    * @name Api#adminGetSuitableAgeCategories
    */
   adminGetSuitableAgeCategories(
@@ -1080,6 +1161,10 @@ exports[`Generates TYPESCRIPT class from Swagger 2 spec 1`] = `
 "/* tslint:disable */
 import 'isomorphic-fetch';
 
+export type ThenArg<T> = T extends Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+
 type QueryParameters = {
   [key: string]:
     | string
@@ -1155,8 +1240,8 @@ class Api {
     method: string,
     url: string,
     body: any,
-    headers: any,
-    queryParameters: QueryParameters,
+    headers: Headers = new Headers(),
+    queryParameters: QueryParameters = {},
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -1164,10 +1249,24 @@ class Api {
         : null;
     const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
-    if (body && !Object.keys(body).length) {
-      body = undefined;
-    } else {
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      const form = new FormData();
+      for (let k in body) {
+        form.append(k, body[k]);
+      }
+      body = form;
+    } else if (
+      headers.get('Content-Type') === 'application/json' &&
+      body &&
+      Object.keys(body).length > 0
+    ) {
       body = JSON.stringify(body);
+    } else {
+      body = undefined;
+    }
+
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      headers.delete('Content-Type');
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });

@@ -20,15 +20,31 @@
         {{/parameters}}
     } {{&defaultParam}},
     {{#hasBody}}
-    body: 
+    {{#isFormMethod}}form{{/isFormMethod}}{{^isFormMethod}}body{{/isFormMethod}}: 
         {{#parameters}}
             {{#isBodyParameter}}
                 {{^isSingleton}}
                     {{> type}},
                 {{/isSingleton}}
             {{/isBodyParameter}}
+            {{#isFormParameter}}
+                {{^isSingleton}}
+                    {{> type}},
+                {{/isSingleton}}
+            {{/isFormParameter}}
         {{/parameters}}
     {{/hasBody}}
+    {{#hasExtraHeader}}
+        extraHeaders?: {
+        {{#parameters}}
+            {{#isHeaderParameter}}
+                {{^isSingleton}}
+                    '{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+                {{/isSingleton}}
+            {{/isHeaderParameter}}
+        {{/parameters}}
+        }
+    {{/hasExtraHeader}}
 ): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}{{^successResponses}}void{{/successResponses}}>
 {
     let path = '{{&path}}';
@@ -78,8 +94,8 @@
             headers.append('{{&name}}', '{{&singleton}}');
         {{/isSingleton}}
         {{^isSingleton}}
-            if(typeof parameters['{{&camelCaseName}}'] !== 'undefined') {
-                headers.append('{{&name}}', queryParameters['{{&camelCaseName}}']!);
+            if(extraHeaders && typeof extraHeaders['{{&camelCaseName}}'] !== 'undefined') {
+                headers.append('{{&name}}', extraHeaders['{{&camelCaseName}}']!);
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
@@ -97,7 +113,7 @@
     return this.request(
         '{{method}}',
         `${this.baseUrl}${path}`,
-        {{#hasBody}}body{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
+        {{#hasBody}}{{#isFormMethod}}form{{/isFormMethod}}{{^isFormMethod}}body{{/isFormMethod}}{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
         headers,
         queryParameters
     );

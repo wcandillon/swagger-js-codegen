@@ -186,6 +186,40 @@
         }
       }
     },
+    "/upload": {
+      "post": {
+        "operationId": "simpleUploadOperation",
+        "security": [{ "securityUser": [] }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["upload"],
+                "properties": {
+                  "upload": { "type": "string", "format": "base64" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Something uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "_id": { "type": "string", "readOnly": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/endpoint-with-query-parameter-delimited-by-pipe": {
       "x-exegesis-controller": "controllers/ctrl2",
       "get": {

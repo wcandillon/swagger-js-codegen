@@ -186,6 +186,65 @@
         }
       }
     },
+    "/endpoint-with-query-parameter-delimited-by-pipe": {
+      "x-exegesis-controller": "controllers/ctrl2",
+      "get": {
+        "operationId": "adminGetSuitableAgeCategories",
+        "parameters": [
+          {
+            "name": "seasonIds",
+            "in": "query",
+            "explode": false,
+            "style": "pipeDelimited",
+            "required": false,
+            "schema": { "type": "array", "items": { "type": "string" } }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get age categories by seasonId and appSpace sport",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["items"],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "_id": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "default": {
+              "description": "Generic error response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "required": ["status", "name"],
+                    "properties": {
+                      "status": { "type": "integer" },
+                      "name": { "type": "string" },
+                      "description": { "type": "string" },
+                      "payload": { "type": "object" },
+                      "userinfo": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/endpoint-without-ok-response": {
       "x-exegesis-controller": "controllers/ctrl2",
       "get": {

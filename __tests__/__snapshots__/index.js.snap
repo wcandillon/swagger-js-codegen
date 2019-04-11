@@ -314,6 +314,42 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
+   * @param {} parameters.seasonIds -
+   */
+  adminGetSuitableAgeCategories(parameters = {}) {
+    let path = '/endpoint-with-query-parameter-delimited-by-pipe';
+    let body = {};
+    let queryParameters = {};
+    let headers = new Headers();
+    let form = {};
+
+    headers.append('Accept', 'application/json');
+
+    if (typeof parameters['seasonIds'] !== 'undefined') {
+      queryParameters['seasonIds'] = parameters['seasonIds'];
+    }
+
+    queryParameters['seasonIds'] = this.transformParameter(
+      queryParameters['seasonIds'],
+      'joinUsingPipes',
+    );
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @param {object} parameters - method options and parameters
    */
   endpointWithoutOkResponse(parameters = {}) {
     let path = '/endpoint-without-ok-response';
@@ -942,6 +978,44 @@ class Api {
       'POST',
       \`\${this.baseUrl}\${path}\`,
       body,
+      headers,
+      queryParameters,
+    );
+  }
+
+  /**
+   *
+   * @method
+   * @name Api#adminGetSuitableAgeCategories
+   */
+  adminGetSuitableAgeCategories(
+    parameters: {
+      seasonIds?: Array<string>;
+    } = {},
+  ): Promise<{
+    items: Array<{
+      _id?: string;
+    }>;
+  }> {
+    let path = '/endpoint-with-query-parameter-delimited-by-pipe';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+    headers.append('Accept', 'application/json');
+
+    if (typeof parameters['seasonIds'] !== 'undefined') {
+      queryParameters['seasonIds'] = parameters['seasonIds'];
+    }
+
+    queryParameters['seasonIds'] = this.transformParameter(
+      queryParameters['seasonIds'],
+      'joinUsingPipes',
+    );
+
+    return this.request(
+      'GET',
+      \`\${this.baseUrl}\${path}\`,
+      {},
       headers,
       queryParameters,
     );

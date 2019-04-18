@@ -54,8 +54,8 @@
       {{#200}}{{{code}}}{{/200}}
     {{/responses}}
   } catch (err) {
-    /*
-      handle errors
-    */
+    {{#responses}}
+      {{#400}}{{{code}}}{{/400}}
+    {{/responses}}
   }
 };

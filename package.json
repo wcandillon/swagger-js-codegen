@@ -14,7 +14,7 @@
     "url": "https://github.com/wcandillon/swagger-js-codegen/issues"
   },
   "engines" : {
-    "node" : "^11.13.0"
+    "node" : "^11.14.0"
   },
   "repository": {
     "type": "git",

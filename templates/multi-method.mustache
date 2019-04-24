@@ -42,6 +42,7 @@
     {{#query}}
     /*
       {{&query}}
+      return res.code(results.Status).send(results);
     */
     {{/query}}
     {{^query}}

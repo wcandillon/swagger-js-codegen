@@ -1,7 +1,17 @@
 import { convertType } from "../typescript";
 import { HttpOperation, Swagger, SwaggerType } from "../swagger/Swagger";
+import { values, uniq } from "lodash/fp";
 
 const defaultResponseType = "void";
+
+export const getResponseTypes = (op: HttpOperation, swagger: Swagger): string =>
+  uniq(
+    values(op.responses)
+      .map(swaggerType => convertType(swaggerType, swagger))
+      .map(
+        typeSpec => typeSpec.target || typeSpec.tsType || defaultResponseType
+      )
+  ).join(" | ");
 
 // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
 /** @deprecated use getResponseTypes instead, this function will be removed in a future version. */
@@ -58,10 +68,3 @@ export function getSuccessfulResponseType(
 
   return [successfulResponseType, successfulResponseTypeIsRef];
 }
-
-export const getResponseTypes = (op: HttpOperation, swagger: Swagger): string =>
-  Object.keys(op.responses)
-    .map(key => op.responses[key])
-    .map(swaggerType => convertType(swaggerType, swagger))
-    .map(typeSpec => typeSpec.target || typeSpec.tsType || defaultResponseType)
-    .join(" | ");

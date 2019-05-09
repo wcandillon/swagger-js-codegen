@@ -6,3 +6,4 @@ wks.*
 *.swp
 
 tmp-*
+.history

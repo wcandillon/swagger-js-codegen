@@ -45,7 +45,7 @@ class {{&className}} {
 
     serializeQueryParams(parameters: QueryParameters) {
         return Object.keys(parameters)
-            .reduce((acc, p) => {
+            .reduce((acc: string[], p) => {
                 const param = parameters[p];
                 if(typeof param === 'undefined' || param === '') {
                     return acc;

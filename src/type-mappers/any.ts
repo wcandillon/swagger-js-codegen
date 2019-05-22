@@ -6,6 +6,11 @@ export interface AnyTypeSpec extends TypeSpec {
   readonly isAtomic: true;
 }
 
+export const isAnyTypeSpec = (swaggerType: SwaggerType): boolean =>
+  swaggerType.minItems >= 0 &&
+  swaggerType.hasOwnProperty("title") &&
+  !swaggerType.$ref;
+
 export function makeAnyTypeSpec(swaggerType: SwaggerType): AnyTypeSpec {
   return {
     ...makeTypeSpecFromSwaggerType(swaggerType),

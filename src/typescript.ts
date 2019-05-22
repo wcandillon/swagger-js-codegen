@@ -12,7 +12,7 @@ import {
   makeDictionaryTypeSpec,
   isDictionary
 } from "./type-mappers/dictionary";
-import { makeAnyTypeSpec } from "./type-mappers/any";
+import { makeAnyTypeSpec, isAnyTypeSpec } from "./type-mappers/any";
 import { isSchema } from "./type-mappers/schema";
 
 /**
@@ -46,11 +46,7 @@ export function convertType(
   } else if (isDictionary(swaggerType)) {
     // case where a it's a Dictionary<string, someType>
     return makeDictionaryTypeSpec(swaggerType, swagger);
-  } else if (
-    swaggerType.minItems >= 0 &&
-    swaggerType.hasOwnProperty("title") &&
-    !swaggerType.$ref
-  ) {
+  } else if (isAnyTypeSpec(swaggerType)) {
     return makeAnyTypeSpec(swaggerType);
   }
 

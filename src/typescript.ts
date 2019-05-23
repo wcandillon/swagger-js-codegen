@@ -14,6 +14,7 @@ import {
 } from "./type-mappers/dictionary";
 import { makeAnyTypeSpec, isAnyTypeSpec } from "./type-mappers/any";
 import { isSchema } from "./type-mappers/schema";
+import { makeVoidTypeSpec, isVoidType } from "./type-mappers/void";
 
 /**
  * Recursively converts a swagger type description into a typescript type, i.e., a model for our mustache
@@ -48,6 +49,8 @@ export function convertType(
     return makeDictionaryTypeSpec(swaggerType, swagger);
   } else if (isAnyTypeSpec(swaggerType)) {
     return makeAnyTypeSpec(swaggerType);
+  } else if (isVoidType(swaggerType)) {
+    return makeVoidTypeSpec(swaggerType);
   }
 
   // Remaining types are created as objects

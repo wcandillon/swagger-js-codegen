@@ -1,24 +1,8 @@
 import { makeTypeSpecFromSwaggerType, TypeSpec } from "../typespec";
-// import {
-//   map,
-//   filter,
-//   flatten,
-//   includes,
-//   concat,
-//   isArray,
-//   uniqBy,
-//   reverse
-// } from "lodash";
 import { SwaggerType } from "../swagger/Swagger";
-//import { Swagger } from "../swagger/Swagger";
-//import { convertType } from "../typescript";
 
 export interface VoidTypeSpec extends TypeSpec {
   readonly tsType: "void";
-  //readonly isAtomic: false;
-  //readonly isObject: true;
-  //readonly requiredPropertyNames: ReadonlyArray<string>;
-  //readonly properties: ReadonlyArray<TypeSpec>;
 }
 
 /**

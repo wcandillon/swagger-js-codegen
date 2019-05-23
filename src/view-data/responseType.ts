@@ -1,17 +1,51 @@
-import { convertType } from "../typescript";
+import { convertType, convertTypes } from "../typescript";
 import { HttpOperation, Swagger, SwaggerType } from "../swagger/Swagger";
 import { values, uniq } from "lodash/fp";
+import { TypeSpec } from "../typespec";
 
 const defaultResponseType = "void";
 
-export const getResponseTypes = (op: HttpOperation, swagger: Swagger): string =>
+/**
+ * Converts a swagger schema HttpOperation's response types to a pipe delimitered union type string.
+ *
+ * @param {HttpOperation} op - A Swagger HttpOperation
+ * @param {Swagger} swagger - A Swagger schema
+ * @returns {string} A string containing a pipe delimitered union type string.
+ */
+export const getResponseTypes = (
+  httpOperation: HttpOperation,
+  swagger: Swagger
+): string =>
   uniq(
-    values(op.responses)
-      .map(swaggerType => convertType(swaggerType, swagger))
-      .map(
-        typeSpec => typeSpec.target || typeSpec.tsType || defaultResponseType
-      )
+    typeSpecsToStrings(convertTypes(responseTypes(httpOperation), swagger))
   ).join(" | ");
+
+/**
+ * Extracts the response body types from a HttpOperation.
+ *
+ * @param {HttpOperation} httpOperation - The HttpOperation.
+ * @returns {SwaggerType[]} The response body types.
+ */
+const responseTypes = (httpOperation: HttpOperation): SwaggerType[] =>
+  values(httpOperation.responses);
+
+/**
+ * Converts a TypeSpec to string representation.
+ *
+ * @param {TypeSpec} typeSpec - A TypeSpec
+ * @returns {string} A string
+ */
+const typeSpecToString = (typeSpec: TypeSpec): string =>
+  typeSpec.target || typeSpec.tsType || defaultResponseType;
+
+/**
+ * Converts an array of TypeSpec to an array of string representations.
+ *
+ * @param {TypeSpec[]} typeSpecs - A TypeSpec array
+ * @returns {string[]} A string array
+ */
+const typeSpecsToStrings = (typeSpecs: TypeSpec[]): string[] =>
+  typeSpecs.map(typeSpecToString);
 
 // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
 /** @deprecated use getResponseTypes instead, this function will be removed in a future version. */

@@ -18,7 +18,7 @@ import { makeVoidTypeSpec, isVoidType } from "./type-mappers/void";
 
 /**
  * Recursively converts a swagger type description into a typescript type, i.e., a model for our mustache
- * template.
+ * template. By adding typescript type information.
  *
  * Not all type are currently supported, but they should be straightforward to add.
  *
@@ -56,3 +56,17 @@ export function convertType(
   // Remaining types are created as objects
   return makeObjectTypeSpec(swaggerType, swagger);
 }
+
+/**
+ * Recursively converts an Array of swagger type description into a typescript type,
+ * i.e., a model for our mustache template. By adding typescript type information.
+ *
+ * @param {SwaggerType[]} swaggerTypes - An array of SwaggerTypes.
+ * @param {Swagger} swagger - A Swagger schema.
+ * @returns {TypeSpec[]} An array of TypeSpecs.
+ */
+export const convertTypes = (
+  swaggerTypes: SwaggerType[],
+  swagger: Swagger
+): TypeSpec[] =>
+  swaggerTypes.map(swaggerType => convertType(swaggerType, swagger));

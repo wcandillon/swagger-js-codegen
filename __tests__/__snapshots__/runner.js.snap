@@ -1306,7 +1306,7 @@ export class PetshopApi {
     uploadFileURL(parameters: {
         'petId': number,
         'additionalMetadata' ? : string,
-        'file' ? : void,
+        'file' ? : {},
     } & CommonRequestOptions): string {
         let queryParameters: any = {};
         const domain = parameters.$domain ? parameters.$domain : this.domain;
@@ -1341,7 +1341,7 @@ export class PetshopApi {
     uploadFile(parameters: {
         'petId': number,
         'additionalMetadata' ? : string,
-        'file' ? : void,
+        'file' ? : {},
         $queryParameters ? : any,
         $domain ? : string,
         $path ? : string | ((path: string) => string)
@@ -2482,10 +2482,10 @@ export type CallbackHandler = (err: any, res ? : request.Response) => void;
 
 export type Authentication = {
     'token_type' ? : \\"bearer\\";
-    'expiration_date' ? : void;
+    'expiration_date' ? : {};
     'access_token' ? : string;
     'refresh_token' ? : string;
-    'project_tokens' ? : void;
+    'project_tokens' ? : {};
 };
 
 export type Error = {

@@ -8,7 +8,7 @@ const defaultResponseType = "void";
 /**
  * Converts a swagger schema HttpOperation's response types to a pipe delimitered union type string.
  *
- * @param {HttpOperation} op - A Swagger HttpOperation
+ * @param {HttpOperation} httpOperation - A Swagger HttpOperation
  * @param {Swagger} swagger - A Swagger schema
  * @returns {string} A string containing a pipe delimitered union type string.
  */

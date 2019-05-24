@@ -1,6 +1,6 @@
-import { convertType, convertTypes } from "../typescript";
+import { convertType } from "../typescript";
 import { HttpOperation, Swagger, SwaggerType } from "../swagger/Swagger";
-import { values, uniq, entries } from "lodash/fp";
+import { uniq, entries } from "lodash/fp";
 import { TypeSpec } from "../typespec";
 
 const defaultResponseType = "void";
@@ -93,45 +93,6 @@ const responseTypeToString = (
  */
 const typeSpecToString = (typeSpec: TypeSpec): string =>
   typeSpec.target || typeSpec.tsType || defaultResponseType;
-
-/**
- * Converts a swagger schema HttpOperation's response types to a pipe delimitered union type string.
- *
- * @deprecated use renderResponseTypes instead.
- *
- * @param {HttpOperation} httpOperation - A Swagger HttpOperation
- * @param {Swagger} swagger - A Swagger schema
- * @returns {string} A string containing a pipe delimitered union type string.
- */
-export const getResponseTypes = (
-  httpOperation: HttpOperation,
-  swagger: Swagger
-): string =>
-  uniq(
-    typeSpecsToStrings(convertTypes(responseTypes1(httpOperation), swagger))
-  ).join(" | ");
-
-/**
- * Extracts the response body types from a HttpOperation.
- *
- * @deprecated use responseTypes instead.
- *
- * @param {HttpOperation} httpOperation - The HttpOperation.
- * @returns {SwaggerType[]} The response body types.
- */
-const responseTypes1 = (httpOperation: HttpOperation): SwaggerType[] =>
-  values(httpOperation.responses);
-
-/**
- * Converts an array of TypeSpec to an array of string representations.
- *
- * @deprecated use responseTypesToStrings instead.
- *
- * @param {TypeSpec[]} typeSpecs - A TypeSpec array
- * @returns {string[]} A string array
- */
-const typeSpecsToStrings = (typeSpecs: TypeSpec[]): string[] =>
-  typeSpecs.map(typeSpecToString);
 
 // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
 /** @deprecated use getResponseTypes instead, this function will be removed in a future version. */

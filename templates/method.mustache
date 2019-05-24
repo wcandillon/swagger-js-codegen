@@ -73,7 +73,7 @@
     $queryParameters?: any,
     $domain?: string,
     $path?: string | ((path: string) => string)
-}): Promise<{{&responseTypes2}}> {
+}): Promise<{{&responseTypes}}> {
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';
     if (parameters.$path) {

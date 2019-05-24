@@ -4,6 +4,7 @@ import { uniq, entries } from "lodash/fp";
 import { TypeSpec } from "../typespec";
 
 const defaultResponseType = "void";
+const defaultHttpStatusType = "number";
 
 export const defaultResponseTypeName = "ResponseWithBody";
 
@@ -18,7 +19,7 @@ interface ResponseType<T> {
  * @param {string} responseTypeName - The desired response type name. ie "ResponseWithBody"
  * @param {HttpOperation} httpOperation - A Swagger HttpOperation
  * @param {Swagger} swagger - A Swagger schema
- * @returns {string} A string containing a pipe delimitered union type string. "ResponseWithBody<200, ThingBody> | ResponseWithBody<400, ErrorBody>"
+ * @returns {string} A string containing a pipe delimitered union type string. "ResponseWithBody<200, ThingBody> | ResponseWithBody<number, ErrorBody>"
  */
 export const renderResponseTypes = (
   responseTypeName: string,
@@ -47,21 +48,53 @@ const responseTypes = (
   }));
 
 /**
+ * Converts an array of swagger schema response types to a typescript response types array.
  *
- * @param {ResponseType<SwaggerType>[]} swaggerTypes
- * @param {Swagger} swagger
- * @returns {ResponseType<TypeSpec>[]}
+ * @param {ResponseType<SwaggerType>[]} swaggerTypes - The swagger response types to convert.
+ * @param {Swagger} swagger - The swagger schema.
+ * @returns {ResponseType<TypeSpec>[]} The converted typescript response types.
  */
 const convertResponseTypes = (
   swaggerTypes: ResponseType<SwaggerType>[],
   swagger: Swagger
 ): ResponseType<TypeSpec>[] =>
-  swaggerTypes.map(swaggerType => ({
-    statusType: swaggerType.statusType,
-    bodyType: convertType(swaggerType.bodyType, swagger)
-  }));
+  swaggerTypes.map(swaggerType => convertResponseType(swaggerType, swagger));
 
 /**
+ * Converts a swagger schema response type to a typescript response type.
+ *
+ * @param {ResponseType<SwaggerType>} swaggerType - The swagger response type to convert.
+ * @param {Swagger} swagger - The swagger schema.
+ * @returns {ResponseType<TypeSpec>} The converted typescript response type.
+ */
+const convertResponseType = (
+  swaggerType: ResponseType<SwaggerType>,
+  swagger: Swagger
+): ResponseType<TypeSpec> => ({
+  statusType: convertStatusType(swaggerType.statusType),
+  bodyType: convertType(swaggerType.bodyType, swagger)
+});
+
+/**
+ * Converts a http status code swagger schema type, to a typescript type string.
+ *
+ * @param {string} str - The string to convert.
+ * @returns {string} A string value representing the typescript type.
+ */
+const convertStatusType = (str: string): string =>
+  isHttpStatusCode(str) ? str : defaultHttpStatusType;
+
+/**
+ * Checks string is a number between 100 and 599.
+ *
+ * @param {string} str - The string to check.
+ * @returns {boolean} A boolean indicating that the string is a http status code.
+ */
+const isHttpStatusCode = (str: string): boolean =>
+  str.match(/^[1-5]\d{2}$/) !== null;
+
+/**
+ * Converts an array of typescript response types to an array of strings.
  *
  * @param {string} responseTypeName
  * @param {ResponseType<TypeSpec>[]} typeSpecs
@@ -72,6 +105,7 @@ const responseTypesToStrings = (
 ): string[] => typeSpecs.map(ts => responseTypeToString(responseTypeName, ts));
 
 /**
+ * Converts a typescript response type to string.
  *
  * @param {string} responseTypeName
  * @param {ResponseType<TypeSpec>} typeSpec

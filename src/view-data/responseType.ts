@@ -1,33 +1,89 @@
 import { convertType, convertTypes } from "../typescript";
 import { HttpOperation, Swagger, SwaggerType } from "../swagger/Swagger";
-import { values, uniq } from "lodash/fp";
+import { values, uniq, entries } from "lodash/fp";
 import { TypeSpec } from "../typespec";
 
 const defaultResponseType = "void";
 
+export const defaultResponseTypeName = "ResponseWithBody";
+
+interface ResponseType<T> {
+  statusType: string;
+  bodyType: T;
+}
+
 /**
- * Converts a swagger schema HttpOperation's response types to a pipe delimitered union type string.
+ * Renders a swagger schema HttpOperation's response types to a pipe delimitered union type string.
  *
+ * @param {string} responseTypeName - The desired response type name. ie "ResponseWithBody"
  * @param {HttpOperation} httpOperation - A Swagger HttpOperation
  * @param {Swagger} swagger - A Swagger schema
- * @returns {string} A string containing a pipe delimitered union type string.
+ * @returns {string} A string containing a pipe delimitered union type string. "ResponseWithBody<200, ThingBody> | ResponseWithBody<400, ErrorBody>"
  */
-export const getResponseTypes = (
+export const renderResponseTypes = (
+  responseTypeName: string,
   httpOperation: HttpOperation,
   swagger: Swagger
 ): string =>
   uniq(
-    typeSpecsToStrings(convertTypes(responseTypes(httpOperation), swagger))
+    responseTypesToStrings(
+      responseTypeName,
+      convertResponseTypes(responseTypes(httpOperation), swagger)
+    )
   ).join(" | ");
 
 /**
- * Extracts the response body types from a HttpOperation.
+ * Extracts the response types from a HttpOperation.
  *
  * @param {HttpOperation} httpOperation - The HttpOperation.
- * @returns {SwaggerType[]} The response body types.
+ * @returns {ResponseType<SwaggerType>[]} The response types.
  */
-const responseTypes = (httpOperation: HttpOperation): SwaggerType[] =>
-  values(httpOperation.responses);
+const responseTypes = (
+  httpOperation: HttpOperation
+): ResponseType<SwaggerType>[] =>
+  entries(httpOperation.responses).map(kvp => ({
+    statusType: kvp[0],
+    bodyType: kvp[1]
+  }));
+
+/**
+ *
+ * @param {ResponseType<SwaggerType>[]} swaggerTypes
+ * @param {Swagger} swagger
+ * @returns {ResponseType<TypeSpec>[]}
+ */
+const convertResponseTypes = (
+  swaggerTypes: ResponseType<SwaggerType>[],
+  swagger: Swagger
+): ResponseType<TypeSpec>[] =>
+  swaggerTypes.map(swaggerType => ({
+    statusType: swaggerType.statusType,
+    bodyType: convertType(swaggerType.bodyType, swagger)
+  }));
+
+/**
+ *
+ * @param {string} responseTypeName
+ * @param {ResponseType<TypeSpec>[]} typeSpecs
+ */
+const responseTypesToStrings = (
+  responseTypeName: string,
+  typeSpecs: ResponseType<TypeSpec>[]
+): string[] => typeSpecs.map(ts => responseTypeToString(responseTypeName, ts));
+
+/**
+ *
+ * @param {string} responseTypeName
+ * @param {ResponseType<TypeSpec>} typeSpec
+ * @returns {string}
+ */
+const responseTypeToString = (
+  responseTypeName: string,
+  typeSpec: ResponseType<TypeSpec>
+): string =>
+  `${responseTypeName}<${typeSpec.statusType}, ${typeSpecToString(
+    typeSpec.bodyType
+  )}>`;
 
 /**
  * Converts a TypeSpec to string representation.
@@ -39,7 +95,37 @@ const typeSpecToString = (typeSpec: TypeSpec): string =>
   typeSpec.target || typeSpec.tsType || defaultResponseType;
 
 /**
+ * Converts a swagger schema HttpOperation's response types to a pipe delimitered union type string.
+ *
+ * @deprecated use renderResponseTypes instead.
+ *
+ * @param {HttpOperation} httpOperation - A Swagger HttpOperation
+ * @param {Swagger} swagger - A Swagger schema
+ * @returns {string} A string containing a pipe delimitered union type string.
+ */
+export const getResponseTypes = (
+  httpOperation: HttpOperation,
+  swagger: Swagger
+): string =>
+  uniq(
+    typeSpecsToStrings(convertTypes(responseTypes1(httpOperation), swagger))
+  ).join(" | ");
+
+/**
+ * Extracts the response body types from a HttpOperation.
+ *
+ * @deprecated use responseTypes instead.
+ *
+ * @param {HttpOperation} httpOperation - The HttpOperation.
+ * @returns {SwaggerType[]} The response body types.
+ */
+const responseTypes1 = (httpOperation: HttpOperation): SwaggerType[] =>
+  values(httpOperation.responses);
+
+/**
  * Converts an array of TypeSpec to an array of string representations.
+ *
+ * @deprecated use responseTypesToStrings instead.
  *
  * @param {TypeSpec[]} typeSpecs - A TypeSpec array
  * @returns {string[]} A string array

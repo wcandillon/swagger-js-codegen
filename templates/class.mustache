@@ -23,7 +23,8 @@ export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 
 export type Logger = { log: (line: string) => any };
 
-export interface ResponseWithBody<T> extends Response {
+export interface ResponseWithBody<S, T> extends Response {
+    status: S;
     body: T;
 }
 

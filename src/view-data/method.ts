@@ -38,7 +38,6 @@ export interface Method {
   readonly successfulResponseType: string;
   /** @deprecated use responseTypes instead, this field will be removed in a future version. */
   readonly successfulResponseTypeIsRef: boolean;
-  /** @deprecated use responseTypes2 instead */
 }
 
 export function makeMethod(

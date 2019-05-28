@@ -183,7 +183,7 @@ describe("convertType", () => {
         description: "The description of a array property",
         required: false,
         type: "array",
-        items: []
+        items: makeSwaggerType({ type: "object", required: false })
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({

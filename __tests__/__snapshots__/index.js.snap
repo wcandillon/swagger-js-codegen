@@ -82,10 +82,8 @@ class Api {
 
     // ugly hack, we need to delete Content-Type header with multipart/form-data
     // that way, browser will calculate form specific headers on it's own
-    // contentTypeHeader[0] because nearly every header's value is set using array
-    const contentTypeHeader = headers['Content-Type'];
-    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-      delete headers['Content-Type'];
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      headers.delete('Content-Type');
     }
 
     if (body && !Object.keys(body).length) {
@@ -518,10 +516,8 @@ class Api {
 
     // ugly hack, we need to delete Content-Type header with multipart/form-data
     // that way, browser will calculate form specific headers on it's own
-    // contentTypeHeader[0] because nearly every header's value is set using array
-    const contentTypeHeader = headers['Content-Type'];
-    if (contentTypeHeader && contentTypeHeader[0] === 'multipart/form-data') {
-      delete headers['Content-Type'];
+    if (headers.get('Content-Type') === 'multipart/form-data') {
+      headers.delete('Content-Type');
     }
 
     if (body && !Object.keys(body).length) {
@@ -832,7 +828,7 @@ class Api {
 
   serializeQueryParams(parameters: QueryParameters) {
     return Object.keys(parameters)
-      .reduce((acc, p) => {
+      .reduce((acc: string[], p) => {
         const param = parameters[p];
         if (typeof param === 'undefined' || param === '') {
           return acc;
@@ -1196,7 +1192,7 @@ class Api {
 
   serializeQueryParams(parameters: QueryParameters) {
     return Object.keys(parameters)
-      .reduce((acc, p) => {
+      .reduce((acc: string[], p) => {
         const param = parameters[p];
         if (typeof param === 'undefined' || param === '') {
           return acc;

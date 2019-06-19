@@ -79,8 +79,8 @@ export class {{&className}} {
         }
 
         const agent = this.configureAgentHandler
-            ? this.configureAgentHandler(request)
-            : request;
+            ? this.configureAgentHandler(request.default)
+            : request.default;
 
         let req = agent(method, url);
         if (this.configureRequestHandler) {

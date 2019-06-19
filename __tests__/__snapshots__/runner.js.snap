@@ -124,8 +124,8 @@ export class UberApi {
         }
 
         const agent = this.configureAgentHandler ?
-            this.configureAgentHandler(request) :
-            request;
+            this.configureAgentHandler(request.default) :
+            request.default;
 
         let req = agent(method, url);
         if (this.configureRequestHandler) {
@@ -832,8 +832,8 @@ export class PetshopApi {
         }
 
         const agent = this.configureAgentHandler ?
-            this.configureAgentHandler(request) :
-            request;
+            this.configureAgentHandler(request.default) :
+            request.default;
 
         let req = agent(method, url);
         if (this.configureRequestHandler) {
@@ -2288,8 +2288,8 @@ export class UsersApi {
         }
 
         const agent = this.configureAgentHandler ?
-            this.configureAgentHandler(request) :
-            request;
+            this.configureAgentHandler(request.default) :
+            request.default;
 
         let req = agent(method, url);
         if (this.configureRequestHandler) {
@@ -2562,8 +2562,8 @@ export class ProtectedApi {
         }
 
         const agent = this.configureAgentHandler ?
-            this.configureAgentHandler(request) :
-            request;
+            this.configureAgentHandler(request.default) :
+            request.default;
 
         let req = agent(method, url);
         if (this.configureRequestHandler) {
@@ -2860,8 +2860,8 @@ export class RefApi {
         }
 
         const agent = this.configureAgentHandler ?
-            this.configureAgentHandler(request) :
-            request;
+            this.configureAgentHandler(request.default) :
+            request.default;
 
         let req = agent(method, url);
         if (this.configureRequestHandler) {

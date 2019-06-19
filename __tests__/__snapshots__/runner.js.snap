@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Real world: Uber 1`] = `
-"import * as request from \\"superagent\\";
+"// tslint:disable
+
+import * as request from \\"superagent\\";
 import {
     SuperAgentStatic,
     SuperAgentRequest,
@@ -705,7 +707,9 @@ export default UberApi;"
 `;
 
 exports[`Real world: petshop 1`] = `
-"import * as request from \\"superagent\\";
+"// tslint:disable
+
+import * as request from \\"superagent\\";
 import {
     SuperAgentStatic,
     SuperAgentRequest,
@@ -2208,7 +2212,9 @@ export default PetshopApi;"
 `;
 
 exports[`Real world: users 1`] = `
-"import * as request from \\"superagent\\";
+"// tslint:disable
+
+import * as request from \\"superagent\\";
 import {
     SuperAgentStatic,
     SuperAgentRequest,
@@ -2465,7 +2471,9 @@ export default UsersApi;"
 `;
 
 exports[`Should resolve protected api 1`] = `
-"import * as request from \\"superagent\\";
+"// tslint:disable
+
+import * as request from \\"superagent\\";
 import {
     SuperAgentStatic,
     SuperAgentRequest,
@@ -2780,7 +2788,9 @@ export default ProtectedApi;"
 `;
 
 exports[`Should resolve references 1`] = `
-"import * as request from \\"superagent\\";
+"// tslint:disable
+
+import * as request from \\"superagent\\";
 import {
     SuperAgentStatic,
     SuperAgentRequest,

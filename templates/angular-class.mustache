@@ -76,9 +76,21 @@ angular.module('{{&moduleName}}', [])
                 headers: headers
             };
             if(Object.keys(form).length > 0) {
-                options.data = form;
-                options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                options.transformRequest = {{&className}}.transformRequest;
+                if (undefined === options.headers['Content-Type']) {
+                    options.data = form;
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    options.transformRequest = {{&className}}.transformRequest;
+                } else if ((Array.isArray(options.headers['Content-Type']) && options.headers['Content-Type'].indexOf('multipart/form-data') > -1)
+                    || 'string' === (typeof options.headers['Content-Type']) && 'multipart/form-data' === options.headers['Content-Type']) {
+                    var formData = new FormData();
+                    for (var key in form) {
+                        formData.append(key, form[key]);
+                    }
+
+                    options.data = formData;
+                    options.headers['Content-Type'] = undefined;
+                    options.transformRequest = angular.identity;
+                }
             }
             $http(options)
             .then(function(data, status, headers, config){

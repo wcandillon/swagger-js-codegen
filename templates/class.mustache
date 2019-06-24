@@ -30,10 +30,15 @@ export interface ResponseWithBody<S extends number, T> extends Response {
     body: T;
 }
 
+export type QueryParameters = { [param: string]: any };
+
 export interface CommonRequestOptions {
-  $queryParameters?: {[param: string]: any};
+  $queryParameters?: QueryParameters;
   $domain?: string;
   $path?: string | ((path: string) => string);
+  $retries?: number; // number of retries; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#retrying-requests
+  $timeout?: number; // request timeout in milliseconds; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#timeouts
+  $deadline?: number; // request deadline in milliseconds; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#timeouts
 }
 
 /**
@@ -75,7 +80,7 @@ export class {{&className}} {
         this.configureRequestHandler = handler;
     }
 
-    private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: any, form: any, reject: CallbackHandler, resolve: CallbackHandler) {
+    private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: QueryParameters, form: any, reject: CallbackHandler, resolve: CallbackHandler, opts: CommonRequestOptions) {
         if(this.logger) {
           this.logger.log(`Call ${method} ${url}`);
         }
@@ -108,12 +113,21 @@ export class {{&className}} {
             headers = this.requestHeadersHandler({...headers});
         }
 
-        Object.keys(headers).forEach(key => {
-            req.set(key, headers[key]);
-        });
+        req.set(headers);
+
+        if (opts.$retries && opts.$retries > 0) {
+            req.retry(opts.$retries);
+        }
+
+        if (opts.$timeout && opts.$timeout > 0 || opts.$deadline && opts.$deadline > 0) {
+            req.timeout({ deadline: opts.$deadline, response: opts.$timeout });
+        }
 
         req.end((error, response) => {
-            if(error || !response.ok) {
+            // an error will also be emitted for a 4xx and 5xx status code
+            // the error object will then have error.status and error.response fields
+            // see superagent error handling: https://github.com/visionmedia/superagent/blob/master/docs/index.md#error-handling
+            if(error) {
                 reject(error);
                 this.errorHandlers.forEach(handler => handler(error));
             } else {

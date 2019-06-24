@@ -2,7 +2,7 @@
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
 } & CommonRequestOptions): string {
-    let queryParameters: any = {};
+    let queryParameters: QueryParameters = {};
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';
     if (parameters.$path) {
@@ -35,11 +35,8 @@
         {{/isPathParameter}}
     {{/parameters}}
     
-    if (parameters.$queryParameters !== undefined && parameters.$queryParameters !== null) {
-        queryParameters = {
-            ...queryParameters,
-            ...parameters.$queryParameters
-        }
+    if (parameters.$queryParameters) {
+        queryParameters = { ...queryParameters, ...parameters.$queryParameters };
     }
 
     {{^isBodyParameter}}
@@ -70,10 +67,7 @@
 {{&methodName}}(parameters: {
 {{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
 {{/isSingleton}}{{/parameters}}
-    $queryParameters?: any,
-    $domain?: string,
-    $path?: string | ((path: string) => string)
-}): Promise<{{&responseTypes}}> {
+} & CommonRequestOptions): Promise<{{&responseTypes}}> {
     const domain = parameters.$domain ? parameters.$domain : this.domain;
     let path = '{{&path}}';
     if (parameters.$path) {
@@ -81,8 +75,8 @@
     } 
 
     let body: any;
-    let queryParameters: any = {};
-    let headers: any = {};
+    let queryParameters: QueryParameters = {};
+    let headers: RequestHeaders = {};
     let form: any = {};
     return new Promise((resolve, reject) => {
 {{#headers}}
@@ -153,9 +147,7 @@
 {{/parameters}}
 
 if(parameters.$queryParameters) {
-    Object.keys(parameters.$queryParameters).forEach(function(parameterName){
-        queryParameters[parameterName] = parameters.$queryParameters[parameterName];
-    });
+    queryParameters = { ...queryParameters, ...parameters.$queryParameters };
 }
 
     {{^isBodyParameter}}
@@ -165,6 +157,6 @@ if(parameters.$queryParameters) {
         {{/isPOST}}
     {{/isBodyParameter}}
 
-    this.request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve);
+    this.request('{{method}}', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
     });
 }

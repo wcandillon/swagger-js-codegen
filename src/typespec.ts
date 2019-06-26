@@ -10,12 +10,13 @@ export interface TypeSpec {
   readonly isObject: boolean;
   readonly isRef: boolean;
   readonly isAtomic: boolean;
-  readonly isDictionary: boolean;
   readonly isNullable: boolean;
   readonly isRequired: boolean;
   readonly tsType: TsType | string | undefined;
   readonly target: string | undefined;
   readonly properties: ReadonlyArray<TypeSpec> | undefined;
+  readonly hasAdditionalProperties: boolean;
+  readonly additionalPropertiesType: TypeSpec | undefined;
 }
 
 export function makeTypeSpecFromSwaggerType(
@@ -26,7 +27,6 @@ export function makeTypeSpecFromSwaggerType(
     description: swaggerType.description,
     isEnum: false,
     isArray: false,
-    isDictionary: false,
     isObject: false,
     isRef: false,
     isNullable: !swaggerType.required,
@@ -34,6 +34,8 @@ export function makeTypeSpecFromSwaggerType(
     tsType: undefined,
     isAtomic: false,
     target: undefined,
-    properties: undefined
+    properties: undefined,
+    hasAdditionalProperties: false,
+    additionalPropertiesType: undefined
   };
 }

@@ -1,0 +1,29 @@
+{
+    "swagger": "2.0",
+    "info": { "version": "0.0.1", "title": "your title" },
+    "paths": {
+        "/persons": {
+            "get": {
+                "operationId": "get_person",
+                "description": "Gets `Person` object.",
+                "responses": { "200": { "description": "empty schema" } }
+            }
+        }
+    },
+    "definitions": {
+        "some_def": { "type": "object", "properties": { "some_def": { "type": "string" } }, "additionalProperties": false },
+        
+        "test_add_props_01": { "type": "object", "properties": { "some_prop": { "type": "string" } } },
+        "test_add_props_02": { "type": "object", "properties": { "some_prop": { "type": "string" } }, "additionalProperties": false },
+        "test_add_props_03": { "type": "object", "properties": { "some_prop": { "type": "string" } }, "additionalProperties": true },
+        "test_add_props_04": { "type": "object", "properties": { "some_prop": { "type": "string" } }, "additionalProperties": { "type": "string" } },
+        "test_add_props_05": { "type": "object", "properties": { "some_prop": { "type": "string" } }, "additionalProperties": { "type": "object", "properties": { "nested_prop": { "type": "string" } } } },
+        "test_add_props_06": { "type": "object", "properties": { "some_prop": { "type": "string" } }, "additionalProperties": { "$ref": "#/definitions/some_def" } },
+        "test_add_props_07": { "type": "object" },
+        "test_add_props_08": { "type": "object", "additionalProperties": false },
+        "test_add_props_09": { "type": "object", "additionalProperties": true },
+        "test_add_props_10": { "type": "object", "additionalProperties": { "type": "string" } },
+        "test_add_props_11": { "type": "object", "additionalProperties": { "type": "object", "properties": { "nested_prop": { "type": "string" } } } },
+        "test_add_props_12": { "type": "object", "additionalProperties": { "$ref": "#/definitions/some_def" } }
+    }
+}

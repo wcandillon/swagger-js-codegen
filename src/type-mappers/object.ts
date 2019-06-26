@@ -12,6 +12,7 @@ import {
 import { SwaggerType } from "../swagger/Swagger";
 import { Swagger } from "../swagger/Swagger";
 import { convertType } from "../typescript";
+import { makeAnyTypeSpec } from "./any";
 
 export interface ObjectTypeSpec extends TypeSpec {
   readonly tsType: "object";
@@ -19,6 +20,35 @@ export interface ObjectTypeSpec extends TypeSpec {
   readonly isObject: true;
   readonly requiredPropertyNames: ReadonlyArray<string>;
   readonly properties: ReadonlyArray<TypeSpec>;
+  readonly hasAdditionalProperties: boolean;
+  readonly additionalPropertiesType: TypeSpec | undefined;
+}
+
+// see: https://support.reprezen.com/support/solutions/articles/6000162892-support-for-additionalproperties-in-swagger-2-0-schemas
+export function extractAdditionalPropertiesType(
+  swaggerType: SwaggerType,
+  swagger: Swagger
+): TypeSpec | undefined {
+  if (swaggerType.type !== "object") {
+    return undefined;
+  }
+  if (swaggerType.additionalProperties === false) {
+    return undefined;
+  }
+  if (
+    swaggerType.additionalProperties === undefined ||
+    swaggerType.additionalProperties === true
+  ) {
+    // is there an easier way to make an "any" type?
+    return makeAnyTypeSpec({
+      type: "object",
+      required: [],
+      minItems: 0,
+      title: "any",
+      properties: {}
+    });
+  }
+  return convertType(swaggerType.additionalProperties, swagger);
 }
 
 export function makeObjectTypeSpec(
@@ -41,13 +71,17 @@ export function makeObjectTypeSpec(
   const uniqueProperties = uniqBy(reverse(allProperties), "name");
   const properties = reverse(uniqueProperties);
 
+  const addPropsType = extractAdditionalPropertiesType(swaggerType, swagger);
+
   return {
     ...makeTypeSpecFromSwaggerType(swaggerType),
     tsType: "object",
     isObject: true,
     isAtomic: false,
     properties,
-    requiredPropertyNames
+    requiredPropertyNames,
+    hasAdditionalProperties: addPropsType !== undefined,
+    additionalPropertiesType: addPropsType
   };
 }
 

@@ -37,7 +37,6 @@ export function makeEmptyTypeSpec(): TypeSpec {
     description: undefined,
     isEnum: false,
     isArray: false,
-    isDictionary: false,
     isObject: false,
     isRef: false,
     isNullable: false,
@@ -45,6 +44,8 @@ export function makeEmptyTypeSpec(): TypeSpec {
     tsType: undefined,
     isAtomic: false,
     target: undefined,
-    properties: undefined
+    properties: undefined,
+    hasAdditionalProperties: false,
+    additionalPropertiesType: undefined
   };
 }

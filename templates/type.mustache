@@ -7,11 +7,10 @@
 %><%#isAtomic%><%&tsType%><%/isAtomic%><%!
 
 %><%#isObject%>{
-<%#properties%>    '<%name%>'<%^isRequired%>?<%/isRequired%>: <%>type%>;<%/properties%>}<%/isObject%><%!
+<%#properties%>    '<%name%>'<%^isRequired%>?<%/isRequired%>: <%>type%>;<%/properties%> }<%#hasAdditionalProperties%> & {
+    [key: string]: <%#additionalPropertiesType%><%>type%><%/additionalPropertiesType%>; }<%/hasAdditionalProperties%><%/isObject%><%!
 
 %><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%><%!
-
-%><%#isDictionary%>{[key: string]: <%#elementType%><%>type%><%/elementType%>}<%/isDictionary%><%!
 
 %><%={{ }}=%>
 {{/tsType}}

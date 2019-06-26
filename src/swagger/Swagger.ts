@@ -21,6 +21,7 @@ export interface SwaggerType {
   readonly properties: {
     readonly [index: string]: SwaggerType;
   };
+  readonly additionalProperties?: boolean | SwaggerType;
 }
 
 export interface SwaggerArray extends SwaggerType {

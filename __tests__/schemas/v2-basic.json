@@ -255,6 +255,48 @@
         "operationId": "endpointWithoutOkResponse"
       },
       "x-exegesis-controller": "controllers/ctrl2"
+    },
+    "/upload": {
+      "post": {
+        "tags": ["Upload"],
+        "operationId": "simpleUpload",
+        "security": [
+          {
+            "anySportnetUser": ["profile"]
+          }
+        ],
+        "description": "Upload new document",
+        "parameters": [
+          {
+            "name": "upload",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "File to be uploaded"
+          }
+        ],
+        "consumes": ["multipart/form-data"],
+        "responses": {
+          "200": {
+            "description": "Detail",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "Conflict",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
     }
   }
 }

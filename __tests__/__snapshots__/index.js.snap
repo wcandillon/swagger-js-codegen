@@ -783,6 +783,42 @@ class Api {
       form,
     );
   }
+
+  /**
+   * Upload new document
+   * @method
+   * @param {object} parameters - method options and parameters
+   * @param {file} parameters.upload - File to be uploaded
+   */
+  simpleUpload(parameters = {}) {
+    let path = '/upload';
+    let body = {};
+    let queryParameters = {};
+    let headers = new Headers();
+    let form = {};
+
+    headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'multipart/form-data');
+
+    if (typeof parameters['upload'] !== 'undefined') {
+      form['upload'] = parameters['upload'];
+    }
+
+    if (typeof parameters['upload'] === 'undefined') {
+      throw Error('Missing required parameter: upload');
+    }
+
+    queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      body,
+      headers,
+      queryParameters,
+      form,
+    );
+  }
 }
 
 export default new Api();
@@ -1424,6 +1460,33 @@ class Api {
       'GET',
       \`\${this.baseUrl}\${path}\`,
       {},
+      headers,
+      queryParameters,
+    );
+  }
+
+  /**
+   * Upload new document
+   * @method
+   * @name Api#simpleUpload
+   */
+  simpleUpload(
+    parameters: {},
+    form: {
+      upload: File;
+    },
+  ): Promise<{}> {
+    let path = '/upload';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+    headers = this.appendAuthHeaders(headers);
+    headers.append('Content-Type', 'multipart/form-data');
+
+    return this.request(
+      'POST',
+      \`\${this.baseUrl}\${path}\`,
+      form,
       headers,
       queryParameters,
     );

@@ -810,7 +810,7 @@ type QueryParameters = {
 
 class ApiError {
   public message: string;
-  public details: Error;
+  public details: Error | null = null;
 
   constructor(message: string) {
     this.message = message;
@@ -824,7 +824,7 @@ class ApiError {
  */
 class Api {
   protected baseUrl: string = '';
-  protected token: string;
+  protected token: string = '';
 
   serializeQueryParams(parameters: QueryParameters) {
     return Object.keys(parameters)
@@ -1174,7 +1174,7 @@ type QueryParameters = {
 
 class ApiError {
   public message: string;
-  public details: Error;
+  public details: Error | null = null;
 
   constructor(message: string) {
     this.message = message;
@@ -1188,7 +1188,7 @@ class ApiError {
  */
 class Api {
   protected baseUrl: string = '';
-  protected token: string;
+  protected token: string = '';
 
   serializeQueryParams(parameters: QueryParameters) {
     return Object.keys(parameters)

@@ -19,7 +19,7 @@ export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
 
 class ApiError {
   public message: string;
-  public details: Error;
+  public details: Error | null = null;
 
   constructor(message: string) {
     this.message = message;
@@ -36,7 +36,7 @@ class {{&className}} {
     protected baseUrl: string = "{{&domain}}";
     {{#isSecure}}
         {{#isSecureToken}}
-    protected token: string;
+    protected token: string = '';
         {{/isSecureToken}}
         {{#isSecureApiKey}}
             protected apiKey: string;

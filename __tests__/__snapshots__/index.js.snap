@@ -325,10 +325,6 @@ class Api {
     headers.append('Content-Type', 'multipart/form-data');
     headers.append('Accept', 'application/json');
 
-    if (typeof parameters[''] !== 'undefined') {
-      form[''] = parameters[''];
-    }
-
     queryParameters = this.mergeQueryParams(parameters, queryParameters);
 
     return this.request(
@@ -788,7 +784,7 @@ class Api {
    * Upload new document
    * @method
    * @param {object} parameters - method options and parameters
-   * @param {file} parameters.upload - File to be uploaded
+   * @param {object} parameters. -
    */
   simpleUpload(parameters = {}) {
     let path = '/upload';
@@ -799,14 +795,6 @@ class Api {
 
     headers = this.appendAuthHeaders(headers);
     headers.append('Content-Type', 'multipart/form-data');
-
-    if (typeof parameters['upload'] !== 'undefined') {
-      form['upload'] = parameters['upload'];
-    }
-
-    if (typeof parameters['upload'] === 'undefined') {
-      throw Error('Missing required parameter: upload');
-    }
 
     queryParameters = this.mergeQueryParams(parameters, queryParameters);
 

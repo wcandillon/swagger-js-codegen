@@ -57,14 +57,18 @@
       }
     {{/isBodyParameter}}
 
+    {{#isFormParameter}}
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
+            form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+    {{/isFormParameter}}
+
     {{#required}}
-      {{^isFormParameter}}
       {{^isPathParameter}}
         if(typeof parameters['{{&camelCaseName}}'] === 'undefined') {
           throw Error('Missing required parameter: {{&camelCaseName}}');
         }
       {{/isPathParameter}}
-      {{/isFormParameter}}
     {{/required}}
  
   {{/parameters}}
@@ -72,4 +76,3 @@
 
   return this.request('{{method}}', `${this.baseUrl}${path}`, body, headers, queryParameters, form);
  }
-

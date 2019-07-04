@@ -1,0 +1,126 @@
+/**
+* {{&summary}}
+* @method
+{{#externalDocs}}
+* @see {@link {{&url}}|{{#description}}{{&description}}{{/description}}{{^description}}External docs{{/description}}}
+{{/externalDocs}}
+* @name {{&className}}#{{&methodName}}
+*/
+{{&methodName}}(
+    {{#parameters}}
+        {{#isPathParameter}}{{&camelCaseName}}{{&cardinality}}: {{> type}},{{/isPathParameter}}
+    {{/parameters}}
+    parameters: {
+        {{#parameters}}
+            {{#isQueryParameter}}
+                {{^isSingleton}}
+                    '{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+                {{/isSingleton}}
+            {{/isQueryParameter}}
+        {{/parameters}}
+    } {{&defaultParam}},
+    {{#hasBody}}
+        {{#isFormMethod}}form: {
+            {{#parameters}}
+                {{#isFormParameter}}
+                    {{^isSingleton}}
+                        '{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+                    {{/isSingleton}}
+                {{/isFormParameter}}
+            {{/parameters}}
+        }
+        {{/isFormMethod}}
+        {{^isFormMethod}}body:
+            {{#parameters}}
+                {{#isBodyParameter}}
+                    {{^isSingleton}}
+                        {{> type}},
+                    {{/isSingleton}}
+                {{/isBodyParameter}}
+            {{/parameters}}
+        {{/isFormMethod}}
+    {{/hasBody}}
+    {{#hasExtraHeader}}
+        extraHeaders?: {
+        {{#parameters}}
+            {{#isHeaderParameter}}
+                {{^isSingleton}}
+                    '{{&camelCaseName}}'{{&cardinality}}: {{> type}},
+                {{/isSingleton}}
+            {{/isHeaderParameter}}
+        {{/parameters}}
+        }
+    {{/hasExtraHeader}}
+): Promise<{{#successResponses}} {{> type}} {{^last}} | {{/last}} {{/successResponses}}{{^successResponses}}void{{/successResponses}}>
+{
+    let path = '{{&path}}';
+    let headers: Headers = new Headers();
+    let queryParameters: QueryParameters = {};
+
+{{#isSecure}}
+    headers = this.appendAuthHeaders(headers);
+{{/isSecure}}
+{{#headers}}
+    headers.append('{{&name}}', '{{&value}}');
+{{/headers}}
+
+{{#parameters}}
+    {{#isQueryParameter}}
+      {{#isSingleton}}
+        queryParameters['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        {{#isPatternType}}
+          Object.keys(parameters).forEach(function(parameterName) {
+            if(new RegExp('{{&pattern}}').test(parameterName)){
+              queryParameters[parameterName] = parameters[parameterName];
+            }
+          });
+        {{/isPatternType}}
+        {{#defaultSerialized}}
+          queryParameters['{{&name}}'] = {{&defaultSerialized}};
+        {{/defaultSerialized}}
+
+        {{^isPatternType}}
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
+            queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+
+        queryParameters['{{&name}}'] = this.transformParameter(queryParameters['{{&name}}']{{#transformOperation}}, '{{&transformOperation}}'{{/transformOperation}});
+        {{/isPatternType}}
+      {{/isSingleton}}
+    {{/isQueryParameter}}
+
+    {{#isPathParameter}}
+        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', {{&camelCaseName}}.toString());
+    {{/isPathParameter}}
+
+    {{#isHeaderParameter}}
+        {{#isSingleton}}
+            headers.append('{{&name}}', '{{&singleton}}');
+        {{/isSingleton}}
+        {{^isSingleton}}
+            if(extraHeaders && typeof extraHeaders['{{&camelCaseName}}'] !== 'undefined') {
+                headers.append('{{&name}}', extraHeaders['{{&camelCaseName}}']!);
+            }
+        {{/isSingleton}}
+    {{/isHeaderParameter}}
+
+    {{#required}}
+        {{#isQueryParameter}}
+            if(typeof parameters['{{&camelCaseName}}'] === 'undefined') {
+                throw new Error('Missing required parameter: {{&camelCaseName}}');
+            }
+        {{/isQueryParameter}}
+    {{/required}}
+
+{{/parameters}}
+
+    return this.request(
+        '{{method}}',
+        `${this.baseUrl}${path}`,
+        {{#hasBody}}{{#isFormMethod}}form{{/isFormMethod}}{{^isFormMethod}}body{{/isFormMethod}}{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
+        headers,
+        queryParameters
+    );
+}

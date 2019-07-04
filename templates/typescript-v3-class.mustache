@@ -1,0 +1,138 @@
+/* tslint:disable */
+import 'isomorphic-fetch';
+
+export type ThenArg<T> = T extends Promise<infer U>
+    ? U
+    : T extends (...args: any[]) => Promise<infer U>
+    ? U
+    : T;
+
+{{#imports}}
+/// <reference path="{{&.}}" />
+{{/imports}}
+
+type QueryParameters = { [key: string]: string | number | string[] | number[] | boolean | boolean[] | undefined };
+
+{{#definitions}}
+export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+{{/definitions}}
+
+class ApiError {
+  public message: string;
+  public details: Error | null = null;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+}
+
+/**
+ * {{&description}}
+ * @class {{&className}}
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+class {{&className}} {
+
+    protected baseUrl: string = "{{&domain}}";
+    {{#isSecure}}
+        {{#isSecureToken}}
+    protected token: string = '';
+        {{/isSecureToken}}
+        {{#isSecureApiKey}}
+            protected apiKey: string;
+        {{/isSecureApiKey}}
+    {{/isSecure}}
+
+    serializeQueryParams(parameters: QueryParameters) {
+        return Object.keys(parameters)
+            .reduce((acc: string[], p) => {
+                const param = parameters[p];
+                if(typeof param === 'undefined' || param === '') {
+                    return acc;
+                }
+                return [...acc, `${encodeURIComponent(p)}=${encodeURIComponent(
+                String(parameters[p]),
+                )}`];
+            }, [])
+            .join('&');
+    }
+
+    protected transformParameter(value: any, transformOperation?: string) {
+        switch(transformOperation) {
+            case 'joinUsingPipes':
+                return Array.isArray(value) ? value.join('|') : value;
+            default:
+                return value;
+        }
+    }
+
+    public setBaseUrl(baseUrl: string) {
+        this.baseUrl = baseUrl;
+    }
+
+    {{#isSecure}}
+        {{#isSecureToken}}
+    public setToken(token: string) {
+        this.token = token;
+    }
+        {{/isSecureToken}}
+
+        {{#isSecureApiKey}}
+            public setApiKey(apiKey: string) {
+            this.apiKey = apiKey;
+            }
+        {{/isSecureApiKey}}
+
+    protected appendAuthHeaders(headerParams: Headers) {
+      const headers = new Headers(headerParams);
+    {{#isSecureToken}}
+      if (this.token) {
+        headers.append('Authorization', `Bearer ${this.token}`);
+      }
+    {{/isSecureToken}}
+    {{#isSecureApiKey}}
+        if (this.apiKey) {
+        headers.append('{{apiKeyHeaderName}}', this.apiKey);
+        }
+    {{/isSecureApiKey}}
+      return headers;
+    }
+    {{/isSecure}}
+
+    private async request(method: string, url: string, body: any, headers: Headers = new Headers(), queryParameters: QueryParameters = {}) {
+        const queryParams = queryParameters && Object.keys(queryParameters).length ? this.serializeQueryParams(queryParameters) : null ;
+        const urlWithParams = url + (queryParams ? '?' + queryParams : '');
+
+        if(headers.get('Content-Type') === 'multipart/form-data') {
+            const form = new FormData();
+            for (let k in body) {
+                form.append(k, body[k]);
+            }
+            body = form;
+        } else if(headers.get('Content-Type') === 'application/json' && body && Object.keys(body).length > 0) {
+            body = JSON.stringify(body);
+        } else {
+            body = undefined;
+        }
+
+        if(headers.get('Content-Type') === 'multipart/form-data') {
+            headers.delete('Content-Type');
+        }
+
+        const response = await fetch(urlWithParams, { method, headers, body });
+        if(response.ok) {
+            return response.json();
+        } else {
+            const err = new ApiError(response.statusText);
+            err.details = await response.json();
+            throw err;
+        }
+    }
+
+{{#methods}}
+    {{> method}}
+
+{{/methods}}
+}
+
+export default new {{&className}}();

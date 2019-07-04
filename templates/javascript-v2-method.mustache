@@ -1,0 +1,84 @@
+/**
+ * {{&summary}}
+ * @method
+ * @param {object} parameters - method options and parameters
+{{#parameters}}
+  {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{^isPathParameter}}parameters.{{/isPathParameter}}{{&camelCaseName}} - {{&description}}{{/isSingleton}}
+{{/parameters}}
+ */
+ {{&methodName}}({{#parameters}}{{#isPathParameter}}{{&camelCaseName}},{{/isPathParameter}}{{/parameters}}parameters = {}) {
+  let path = '{{&path}}';
+  let body = {};
+  let queryParameters = {};
+  let headers = new Headers();
+  let form = {};
+
+  {{#isSecure}}
+    headers = this.appendAuthHeaders(headers);
+  {{/isSecure}}
+  {{#headers}}
+    headers.append('{{&name}}', '{{&value}}');
+  {{/headers}}
+
+  {{#parameters}}
+    {{#isQueryParameter}}
+      {{#isSingleton}}
+        queryParameters['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        {{#isPatternType}}
+          Object.keys(parameters).forEach(function(parameterName) {
+            if(new RegExp('{{&pattern}}').test(parameterName)){
+              queryParameters[parameterName] = parameters[parameterName];
+            }
+          });
+        {{/isPatternType}}
+        {{#defaultSerialized}}
+          queryParameters['{{&name}}'] = {{&defaultSerialized}};
+        {{/defaultSerialized}}
+
+        {{^isPatternType}}
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
+          queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+
+        queryParameters['{{&name}}'] = this.transformParameter(queryParameters['{{&name}}']{{#transformOperation}}, '{{&transformOperation}}'{{/transformOperation}});
+        {{/isPatternType}}
+      {{/isSingleton}}
+    {{/isQueryParameter}}
+    
+    {{#isPathParameter}}
+      path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', {{&camelCaseName}});
+    {{/isPathParameter}}
+    
+    {{#isBodyParameter}}
+      if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
+        body = parameters['{{&camelCaseName}}'];
+      }
+    {{/isBodyParameter}}
+
+    {{#isFormParameter}}
+      {{#isSingleton}}
+        form['{{&name}}'] = '{{&singleton}}';
+      {{/isSingleton}}
+      {{^isSingleton}}
+        if(typeof parameters['{{&camelCaseName}}'] !== 'undefined'){
+            form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+        }
+      {{/isSingleton}}
+    {{/isFormParameter}}
+
+    {{#required}}
+      {{^isPathParameter}}
+        if(typeof parameters['{{&camelCaseName}}'] === 'undefined') {
+          throw Error('Missing required parameter: {{&camelCaseName}}');
+        }
+      {{/isPathParameter}}
+    {{/required}}
+ 
+  {{/parameters}}
+  queryParameters = this.mergeQueryParams(parameters, queryParameters);
+
+  return this.request('{{method}}', `${this.baseUrl}${path}`, body, headers, queryParameters, form);
+ }
+

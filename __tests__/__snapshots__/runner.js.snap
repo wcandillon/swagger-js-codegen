@@ -64,6 +64,18 @@ export type Error = {
     'fields' ? : string;
 };
 
+export type Response_getProducts_200 = Array < Product >
+;
+
+export type Response_getProductsById_200 = Array < Product >
+;
+
+export type Response_getEstimatesPrice_200 = Array < PriceEstimate >
+;
+
+export type Response_getEstimatesTime_200 = Array < Product >
+;
+
 export type Logger = {
     log: (line: string) => any
 };
@@ -226,7 +238,7 @@ export class UberApi {
     getProducts(parameters: {
         'latitude': number,
         'longitude': number,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Array < Product >> | ResponseWithBody < number, Error >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getProducts_200 > | ResponseWithBody < number, Error >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/products';
         if (parameters.$path) {
@@ -313,7 +325,7 @@ export class UberApi {
         'id': number,
         'latitude': number,
         'longitude': number,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Array < Product >> | ResponseWithBody < number, Error >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getProductsById_200 > | ResponseWithBody < number, Error >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/products/{id}';
         if (parameters.$path) {
@@ -417,7 +429,7 @@ export class UberApi {
         'startLongitude': number,
         'endLatitude': number,
         'endLongitude': number,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Array < PriceEstimate >> | ResponseWithBody < number, Error >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getEstimatesPrice_200 > | ResponseWithBody < number, Error >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/estimates/price';
         if (parameters.$path) {
@@ -532,7 +544,7 @@ export class UberApi {
         'startLongitude': number,
         'customerUuid' ? : string,
         'productId' ? : string,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Array < Product >> | ResponseWithBody < number, Error >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getEstimatesTime_200 > | ResponseWithBody < number, Error >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/estimates/time';
         if (parameters.$path) {
@@ -789,6 +801,18 @@ export type ApiResponse = {
 } & {
     [key: string]: any;
 };
+
+export type Response_findPetsByStatus_200 = Array < Pet >
+;
+
+export type Response_findPetsByTags_200 = Array < Pet >
+;
+
+export type Response_getInventory_200 = {} & {
+    [key: string]: number;
+};
+
+export type Response_loginUser_200 = string;
 
 export type Logger = {
     log: (line: string) => any
@@ -1080,7 +1104,7 @@ export class PetshopApi {
     findPetsByStatus(parameters: {
         'status': Array < \\"available\\" | \\"pending\\" | \\"sold\\" >
             ,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Array < Pet >> | ResponseWithBody < 400, void >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_findPetsByStatus_200 > | ResponseWithBody < 400, void >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/pet/findByStatus';
         if (parameters.$path) {
@@ -1437,7 +1461,7 @@ export class PetshopApi {
      * @method
      * @name PetshopApi#getInventory
      */
-    getInventory(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, object >> {
+    getInventory(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getInventory_200 >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/store/inventory';
         if (parameters.$path) {
@@ -1904,7 +1928,7 @@ export class PetshopApi {
     loginUser(parameters: {
         'username': string,
         'password': string,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, string > | ResponseWithBody < 400, void >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_loginUser_200 > | ResponseWithBody < 400, void >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/user/login';
         if (parameters.$path) {
@@ -2223,6 +2247,12 @@ export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRe
 
 export type CallbackHandler = (err: any, res ? : request.Response) => void;
 
+export type Response_findById_200 = {
+    'name' ? : string;
+} & {
+    [key: string]: any;
+};
+
 export type Logger = {
     log: (line: string) => any
 };
@@ -2376,7 +2406,7 @@ export class UsersApi {
      */
     findById(parameters: {
         'userId': string,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, object > | ResponseWithBody < 404, void >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_findById_200 > | ResponseWithBody < 404, void >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/users/{userId}';
         if (parameters.$path) {
@@ -3089,6 +3119,12 @@ export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRe
 
 export type CallbackHandler = (err: any, res ? : request.Response) => void;
 
+export type Response_getPersons_200 = {
+    'name' ? : string;
+} & {
+    [key: string]: any;
+};
+
 export type Logger = {
     log: (line: string) => any
 };
@@ -3244,7 +3280,7 @@ export class RefApi {
      */
     getPersons(parameters: {
         'id': string,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, object >> {
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getPersons_200 >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/persons';
         if (parameters.$path) {
@@ -3280,4 +3316,242 @@ export class RefApi {
 }
 
 export default RefApi;"
+`;
+
+exports[`Should resolve response references 1`] = `
+"// tslint:disable
+
+import * as request from \\"superagent\\";
+import {
+    SuperAgentStatic,
+    SuperAgentRequest,
+    Response
+} from \\"superagent\\";
+
+export type RequestHeaders = {
+    [header: string]: string;
+}
+export type RequestHeadersHandler = (headers: RequestHeaders) => RequestHeaders;
+
+export type ConfigureAgentHandler = (agent: SuperAgentStatic) => SuperAgentStatic;
+
+export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRequest;
+
+export type CallbackHandler = (err: any, res ? : request.Response) => void;
+
+export type direct_schema_ref = {
+    'direct_schema_ref' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type some_def = {
+    'some_def' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type same_name = {
+    'same_name' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type same_name_clash = {
+    'same_name_clash_definition' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type regular_schema = {
+    'regular_schema' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type Response_same_name_clash = {
+    'same_name_clash_response' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type Response_get_person_201 = {
+    'inline_schema' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type Logger = {
+    log: (line: string) => any
+};
+
+export interface ResponseWithBody < S extends number, T > extends Response {
+    status: S;
+    body: T;
+}
+
+export type QueryParameters = {
+    [param: string]: any
+};
+
+export interface CommonRequestOptions {
+    $queryParameters ? : QueryParameters;
+    $domain ? : string;
+    $path ? : string | ((path: string) => string);
+    $retries ? : number; // number of retries; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#retrying-requests
+    $timeout ? : number; // request timeout in milliseconds; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#timeouts
+    $deadline ? : number; // request deadline in milliseconds; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#timeouts
+}
+
+/**
+ * 
+ * @class ResponsesApi
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+export class ResponsesApi {
+
+    private domain: string = \\"\\";
+    private errorHandlers: CallbackHandler[] = [];
+    private requestHeadersHandler ? : RequestHeadersHandler;
+    private configureAgentHandler ? : ConfigureAgentHandler;
+    private configureRequestHandler ? : ConfigureRequestHandler;
+
+    constructor(domain ? : string, private logger ? : Logger) {
+        if (domain) {
+            this.domain = domain;
+        }
+    }
+
+    getDomain() {
+        return this.domain;
+    }
+
+    addErrorHandler(handler: CallbackHandler) {
+        this.errorHandlers.push(handler);
+    }
+
+    setRequestHeadersHandler(handler: RequestHeadersHandler) {
+        this.requestHeadersHandler = handler;
+    }
+
+    setConfigureAgentHandler(handler: ConfigureAgentHandler) {
+        this.configureAgentHandler = handler;
+    }
+
+    setConfigureRequestHandler(handler: ConfigureRequestHandler) {
+        this.configureRequestHandler = handler;
+    }
+
+    private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: QueryParameters, form: any, reject: CallbackHandler, resolve: CallbackHandler, opts: CommonRequestOptions) {
+        if (this.logger) {
+            this.logger.log(\`Call \${method} \${url}\`);
+        }
+
+        const agent = this.configureAgentHandler ?
+            this.configureAgentHandler(request.default) :
+            request.default;
+
+        let req = agent(method, url);
+        if (this.configureRequestHandler) {
+            req = this.configureRequestHandler(req);
+        }
+
+        req = req.query(queryParameters);
+
+        if (body) {
+            req.send(body);
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                headers['Content-Type'] = 'application/json';
+            }
+        }
+
+        if (Object.keys(form).length > 0) {
+            req.type('form');
+            req.send(form);
+        }
+
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
+        if (opts.$retries && opts.$retries > 0) {
+            req.retry(opts.$retries);
+        }
+
+        if (opts.$timeout && opts.$timeout > 0 || opts.$deadline && opts.$deadline > 0) {
+            req.timeout({
+                deadline: opts.$deadline,
+                response: opts.$timeout
+            });
+        }
+
+        req.end((error, response) => {
+            // an error will also be emitted for a 4xx and 5xx status code
+            // the error object will then have error.status and error.response fields
+            // see superagent error handling: https://github.com/visionmedia/superagent/blob/master/docs/index.md#error-handling
+            if (error) {
+                reject(error);
+                this.errorHandlers.forEach(handler => handler(error));
+            } else {
+                resolve(response);
+            }
+        });
+    }
+
+    get_personURL(parameters: {} & CommonRequestOptions): string {
+        let queryParameters: QueryParameters = {};
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/persons';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        if (parameters.$queryParameters) {
+            queryParameters = {
+                ...queryParameters,
+                ...parameters.$queryParameters
+            };
+        }
+
+        let keys = Object.keys(queryParameters);
+        return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    }
+
+    /**
+     * Gets \`Person\` object.
+     * @method
+     * @name ResponsesApi#get_person
+     */
+    get_person(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, void > | ResponseWithBody < 201, Response_get_person_201 > | ResponseWithBody < 202, direct_schema_ref > | ResponseWithBody < 203, void > | ResponseWithBody < 204, regular_schema > | ResponseWithBody < 205, some_def > | ResponseWithBody < 206, same_name > | ResponseWithBody < 207, Response_same_name_clash >> {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/persons';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        let body: any;
+        let queryParameters: QueryParameters = {};
+        let headers: RequestHeaders = {};
+        let form: any = {};
+        return new Promise((resolve, reject) => {
+
+            if (parameters.$queryParameters) {
+                queryParameters = {
+                    ...queryParameters,
+                    ...parameters.$queryParameters
+                };
+            }
+
+            this.request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
+        });
+    }
+
+}
+
+export default ResponsesApi;"
 `;

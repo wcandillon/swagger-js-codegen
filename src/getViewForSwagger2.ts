@@ -1,8 +1,9 @@
-import { merge } from "lodash";
+import { merge, get } from "lodash";
 import { CodeGenOptions } from "./options/options";
 import { Swagger } from "./swagger/Swagger";
 import {
   makeMethod,
+  makeMethodName,
   Method,
   getLatestVersionOfMethods
 } from "./view-data/method";
@@ -34,7 +35,7 @@ export interface ViewData {
 }
 
 export function getViewForSwagger2(opts: CodeGenOptions): ViewData {
-  const swagger = opts.swagger;
+  const swagger = normalizeResponseDefinitions(opts.swagger);
 
   const data: ViewData = {
     isES6: opts.isES6,
@@ -74,6 +75,65 @@ export function getViewForSwagger2(opts: CodeGenOptions): ViewData {
   return {
     ...data
   };
+}
+
+function normalizeResponseDefinitions(swagger: any): any {
+  // ensure that the optional swagger.responses and swagger.definitions fields are present
+  swagger.responses = swagger.responses || {};
+  swagger.definitions = swagger.definitions || {};
+
+  // inject swagger.response defs into swagger.definitions
+  // prefixing them with "Response_" on name clashes with existing definitions
+  Object.entries<any>(swagger.responses).forEach(([name, def]) => {
+    if (!def.schema || def.schema.$ref) {
+      return;
+    }
+
+    const defName = (swagger.definitions[name] ? "Response_" : "") + name;
+    swagger.definitions[defName] = def.schema;
+    def.schema = { $ref: `#/definitions/${defName}` };
+  });
+
+  // inject inline response definitions into swagger.definitions
+  // the corresponding def name will be constructed like "Response_${opName}_${responseCode}"
+  // in order to avoid name clashes
+  getHttpMethodTuplesFromSwaggerPathsObject(swagger.paths).forEach(
+    ([path, httpVerb, op]) => {
+      const responses = op.responses;
+
+      Object.entries<any>(responses).forEach(([resCode, resDef]) => {
+        const schema = resDef.schema;
+        if (schema && !schema.$ref) {
+          const methodName = makeMethodName(path, httpVerb, op);
+          const defName = `Response_${methodName}_${resCode}`;
+          swagger.definitions[defName] = schema;
+          resDef.schema = { $ref: `#/definitions/${defName}` };
+        }
+      });
+    }
+  );
+
+  // remove one level of indirection (refs pointing to swagger.responses)
+  // from the endpoint.responses defs by redirecting them directly to the
+  // corresponding ref into swagger.definitions
+  getHttpMethodTuplesFromSwaggerPathsObject(swagger.paths).forEach(
+    ([_path, _httpVerb, op]) => {
+      const responses = op.responses;
+
+      Object.keys(responses).forEach(r => {
+        const ref = responses[r].$ref;
+        if (ref) {
+          const def = get(swagger, ref.substring(2).split("/")); // remove leading "#/"
+          (responses[r] as any) = def;
+        }
+      });
+    }
+  );
+
+  // swagger.responses is not used/required anymore
+  delete swagger.responses;
+
+  return swagger;
 }
 
 function setIsLatestVersion(

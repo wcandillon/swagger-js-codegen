@@ -1,0 +1,56 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.1",
+        "title": "your title"
+    },
+    "paths": {
+        "/persons": {
+            "get": {
+                "operationId": "get_person",
+                "description": "Gets `Person` object.",
+                "responses": {
+                    "200": { "description": "empty schema" },
+                    "201": {
+                        "description": "inline schema",
+                        "schema": { "type": "object", "properties": { "inline_schema": { "type": "string" } } }
+                    },
+                    "202": {
+                        "description": "inline schema ref",
+                        "schema": { "$ref": "#/definitions/direct_schema_ref" }
+                    },
+                    "203": { "$ref": "#/responses/empty_schema" },
+                    "204": { "$ref": "#/responses/regular_schema" },
+                    "205": { "$ref": "#/responses/indirect_schema" },
+                    "206": { "$ref": "#/responses/same_name" },
+                    "207": { "$ref": "#/responses/same_name_clash" }
+                }
+            }
+        }
+    },
+    "responses": {
+        "empty_schema": { "description": "empty schema" },
+        "regular_schema": {
+            "description": "regular schema",
+            "schema": { "type": "object", "properties": { "regular_schema": { "type": "string" } } }
+        },
+        "indirect_schema": {
+            "description": "indirect schema",
+            "schema": { "$ref": "#/definitions/some_def" }
+        },
+        "same_name": {
+            "description": "same name schema",
+            "schema": { "$ref": "#/definitions/same_name" }
+        },
+        "same_name_clash": {
+            "description": "same name clash schema",
+            "schema": { "type": "object", "properties": { "same_name_clash_response": { "type": "string" } } }
+        }
+    },
+    "definitions": {
+        "direct_schema_ref": { "type": "object", "properties": { "direct_schema_ref": { "type": "string" } } },
+        "some_def": { "type": "object", "properties": { "some_def": { "type": "string" } } },
+        "same_name": { "type": "object", "properties": { "same_name": { "type": "string" } } },
+        "same_name_clash": { "type": "object", "properties": { "same_name_clash_definition": { "type": "string" } } }
+    }
+}

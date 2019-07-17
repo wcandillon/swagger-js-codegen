@@ -8,10 +8,6 @@ import { makeStringTypeSpec, isString } from "./type-mappers/string";
 import { makeNumberTypeSpec, isNumber } from "./type-mappers/number";
 import { makeBooleanTypeSpec, isBoolean } from "./type-mappers/boolean";
 import { makeArrayTypeSpec, isArray } from "./type-mappers/array";
-import {
-  makeDictionaryTypeSpec,
-  isDictionary
-} from "./type-mappers/dictionary";
 import { makeAnyTypeSpec, isAnyTypeSpec } from "./type-mappers/any";
 import { isSchema } from "./type-mappers/schema";
 import { makeVoidTypeSpec, isVoidType } from "./type-mappers/void";
@@ -44,9 +40,6 @@ export function convertType(
     return makeBooleanTypeSpec(swaggerType);
   } else if (isArray(swaggerType)) {
     return makeArrayTypeSpec(swaggerType, swagger);
-  } else if (isDictionary(swaggerType)) {
-    // case where a it's a Dictionary<string, someType>
-    return makeDictionaryTypeSpec(swaggerType, swagger);
   } else if (isAnyTypeSpec(swaggerType)) {
     return makeAnyTypeSpec(swaggerType);
   } else if (isVoidType(swaggerType)) {

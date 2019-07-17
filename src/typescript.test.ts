@@ -183,7 +183,11 @@ describe("convertType", () => {
         description: "The description of a array property",
         required: false,
         type: "array",
-        items: makeSwaggerType({ type: "object", required: false })
+        items: makeSwaggerType({
+          type: "object",
+          required: false,
+          additionalProperties: false
+        })
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({
@@ -216,14 +220,16 @@ describe("convertType", () => {
 
       expect(convertType(swaggerType, swagger)).toEqual({
         ...emptyTypeSpecWithDefaults,
-        tsType: "{ [key: string]: number }",
+        tsType: "object",
         isAtomic: false,
-        isArray: false,
-        isDictionary: true,
-        elementType: {
+        isObject: true,
+        properties: [],
+        requiredPropertyNames: [],
+        hasAdditionalProperties: true,
+        additionalPropertiesType: {
           ...emptyTypeSpecWithDefaults,
-          tsType: "number",
-          isAtomic: true
+          isAtomic: true,
+          tsType: "number"
         }
       });
     });
@@ -239,16 +245,18 @@ describe("convertType", () => {
       expect(convertType(swaggerType, swagger)).toEqual({
         ...emptyTypeSpecWithDefaults,
         description: "The description of a dictionary property",
-        isRequired: false,
-        isNullable: true,
-        isArray: false,
-        isDictionary: true,
-        tsType: "{ [key: string]: number }",
+        tsType: "object",
         isAtomic: false,
-        elementType: {
+        isObject: true,
+        isNullable: true,
+        isRequired: false,
+        properties: [],
+        requiredPropertyNames: [],
+        hasAdditionalProperties: true,
+        additionalPropertiesType: {
           ...emptyTypeSpecWithDefaults,
-          tsType: "number",
-          isAtomic: true
+          isAtomic: true,
+          tsType: "number"
         }
       });
     });
@@ -292,7 +300,8 @@ describe("convertType", () => {
   describe("object", () => {
     it("correctly converts an object type", () => {
       swaggerType = makeSwaggerType({
-        type: "object"
+        type: "object",
+        additionalProperties: false
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({
@@ -321,7 +330,13 @@ describe("convertType", () => {
         isAtomic: false,
         isObject: true,
         properties: [],
-        requiredPropertyNames: []
+        requiredPropertyNames: [],
+        hasAdditionalProperties: true,
+        additionalPropertiesType: {
+          ...emptyTypeSpecWithDefaults,
+          isAtomic: true,
+          tsType: "any"
+        }
       });
     });
 
@@ -330,7 +345,8 @@ describe("convertType", () => {
         type: "object",
         properties: {
           age: makeSwaggerType({ type: "number" })
-        }
+        },
+        additionalProperties: false
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({
@@ -362,9 +378,54 @@ describe("convertType", () => {
         tsType: "object",
         isAtomic: false,
         isObject: true,
-        isDictionary: false,
         properties: [],
         requiredPropertyNames: []
+      });
+    });
+
+    it("correctly converts an object type with additionalProperties: true", () => {
+      swaggerType = makeSwaggerType({
+        type: "object",
+        additionalProperties: true
+      });
+
+      expect(convertType(swaggerType, swagger)).toEqual({
+        ...emptyTypeSpecWithDefaults,
+        tsType: "object",
+        isAtomic: false,
+        isObject: true,
+        properties: [],
+        requiredPropertyNames: [],
+        hasAdditionalProperties: true,
+        additionalPropertiesType: {
+          ...emptyTypeSpecWithDefaults,
+          isAtomic: true,
+          tsType: "any"
+        }
+      });
+    });
+
+    it("correctly converts an object type with a missing additionalProperties field", () => {
+      // this needs to be treated exactly the same as with "additionalProperties = true"
+      // see: https://support.reprezen.com/support/solutions/articles/6000162892-support-for-additionalproperties-in-swagger-2-0-schemas
+      swaggerType = makeSwaggerType({
+        type: "object",
+        additionalProperties: undefined
+      });
+
+      expect(convertType(swaggerType, swagger)).toEqual({
+        ...emptyTypeSpecWithDefaults,
+        tsType: "object",
+        isAtomic: false,
+        isObject: true,
+        properties: [],
+        requiredPropertyNames: [],
+        hasAdditionalProperties: true,
+        additionalPropertiesType: {
+          ...emptyTypeSpecWithDefaults,
+          isAtomic: true,
+          tsType: "any"
+        }
       });
     });
 
@@ -374,7 +435,8 @@ describe("convertType", () => {
         properties: {
           age: makeSwaggerType({ type: "number" })
         },
-        required: ["age"]
+        required: ["age"],
+        additionalProperties: false
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({
@@ -405,10 +467,12 @@ describe("convertType", () => {
             type: "object",
             properties: {
               age: makeSwaggerType({ type: "number" })
-            }
+            },
+            additionalProperties: false
           })
         ],
-        required: ["age"]
+        required: ["age"],
+        additionalProperties: false
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({
@@ -437,7 +501,8 @@ describe("convertType", () => {
             type: "object",
             properties: {
               age: makeSwaggerType({ type: "number" })
-            }
+            },
+            additionalProperties: false
           })
         }
       };
@@ -450,7 +515,8 @@ describe("convertType", () => {
             type: "reference"
           })
         ],
-        required: ["age"]
+        required: ["age"],
+        additionalProperties: false
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({
@@ -479,7 +545,8 @@ describe("convertType", () => {
             type: "object",
             properties: {
               age: makeSwaggerType({ type: "number" })
-            }
+            },
+            additionalProperties: false
           })
         }
       };
@@ -492,7 +559,8 @@ describe("convertType", () => {
             type: "reference"
           })
         ],
-        required: ["age"]
+        required: ["age"],
+        additionalProperties: false
       });
 
       expect(convertType(swaggerType, swagger)).toEqual({

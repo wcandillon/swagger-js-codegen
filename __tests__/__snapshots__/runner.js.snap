@@ -293,7 +293,7 @@ export class UberApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{id}', \`\${parameters['id']}\`);
+        path = path.replace('{id}', \`\${encodeURIComponent(parameters['id'].toString())}\`);
         if (parameters['latitude'] !== undefined) {
             queryParameters['latitude'] = parameters['latitude'];
         }
@@ -339,7 +339,7 @@ export class UberApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/json';
 
-            path = path.replace('{id}', \`\${parameters['id']}\`);
+            path = path.replace('{id}', \`\${encodeURIComponent(parameters['id'].toString())}\`);
 
             if (parameters['id'] === undefined) {
                 reject(new Error('Missing required  parameter: id'));
@@ -1148,7 +1148,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${parameters['petId']}\`);
+        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1183,7 +1183,7 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{petId}', \`\${parameters['petId']}\`);
+            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1213,7 +1213,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${parameters['petId']}\`);
+        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1255,7 +1255,7 @@ export class PetshopApi {
             headers['Accept'] = 'application/xml, application/json';
             headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
-            path = path.replace('{petId}', \`\${parameters['petId']}\`);
+            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1295,7 +1295,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${parameters['petId']}\`);
+        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1336,7 +1336,7 @@ export class PetshopApi {
                 headers['api_key'] = parameters['apiKey'];
             }
 
-            path = path.replace('{petId}', \`\${parameters['petId']}\`);
+            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1366,7 +1366,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${parameters['petId']}\`);
+        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1408,7 +1408,7 @@ export class PetshopApi {
             headers['Accept'] = 'application/json';
             headers['Content-Type'] = 'multipart/form-data';
 
-            path = path.replace('{petId}', \`\${parameters['petId']}\`);
+            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1564,7 +1564,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{orderId}', \`\${parameters['orderId']}\`);
+        path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1599,7 +1599,7 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{orderId}', \`\${parameters['orderId']}\`);
+            path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
 
             if (parameters['orderId'] === undefined) {
                 reject(new Error('Missing required  parameter: orderId'));
@@ -1627,7 +1627,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{orderId}', \`\${parameters['orderId']}\`);
+        path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1662,7 +1662,7 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{orderId}', \`\${parameters['orderId']}\`);
+            path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
 
             if (parameters['orderId'] === undefined) {
                 reject(new Error('Missing required  parameter: orderId'));
@@ -2030,7 +2030,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{username}', \`\${parameters['username']}\`);
+        path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2065,7 +2065,7 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{username}', \`\${parameters['username']}\`);
+            path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
 
             if (parameters['username'] === undefined) {
                 reject(new Error('Missing required  parameter: username'));
@@ -2094,7 +2094,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{username}', \`\${parameters['username']}\`);
+        path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2131,7 +2131,7 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{username}', \`\${parameters['username']}\`);
+            path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
 
             if (parameters['username'] === undefined) {
                 reject(new Error('Missing required  parameter: username'));
@@ -2168,7 +2168,7 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{username}', \`\${parameters['username']}\`);
+        path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2203,7 +2203,7 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{username}', \`\${parameters['username']}\`);
+            path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
 
             if (parameters['username'] === undefined) {
                 reject(new Error('Missing required  parameter: username'));
@@ -2385,7 +2385,7 @@ export class UsersApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{userId}', \`\${parameters['userId']}\`);
+        path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2419,7 +2419,7 @@ export class UsersApi {
         let form: any = {};
         return new Promise((resolve, reject) => {
 
-            path = path.replace('{userId}', \`\${parameters['userId']}\`);
+            path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
 
             if (parameters['userId'] === undefined) {
                 reject(new Error('Missing required  parameter: userId'));
@@ -2447,7 +2447,7 @@ export class UsersApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{userId}', \`\${parameters['userId']}\`);
+        path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2481,7 +2481,7 @@ export class UsersApi {
         let form: any = {};
         return new Promise((resolve, reject) => {
 
-            path = path.replace('{userId}', \`\${parameters['userId']}\`);
+            path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
 
             if (parameters['userId'] === undefined) {
                 reject(new Error('Missing required  parameter: userId'));

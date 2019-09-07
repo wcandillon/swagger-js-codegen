@@ -31,7 +31,7 @@
         {{/isQueryParameter}}
 
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
+            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${encodeURIComponent(parameters['{{&camelCaseName}}'].toString())}`);
         {{/isPathParameter}}
     {{/parameters}}
     
@@ -106,7 +106,7 @@
     {{/isQueryParameter}}
 
     {{#isPathParameter}}
-        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
+        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${encodeURIComponent(parameters['{{&camelCaseName}}'].toString())}`);
     {{/isPathParameter}}
 
     {{#isHeaderParameter}}

@@ -1,0 +1,8 @@
+{{! must use different delimiters to avoid ambiguities when delimiters directly follow a literal brace {. }}
+{{=<% %>=}}
+<%#simpleFlowType%><%&simpleFlowType%><%/simpleFlowType%><%!
+%><%#isObject%>{<%#properties%>
+<%name%><%#optional%>?<%/optional%>: <%>type%>,<%/properties%>
+}<%/isObject%><%!
+%><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%>
+<%={{ }}=%>

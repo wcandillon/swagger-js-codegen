@@ -1,7 +1,7 @@
 import { camelCase, isString } from "lodash/fp";
 import { convertType } from "../typescript";
 import { TypeSpec } from "../typespec";
-import { Swagger, Parameter } from "../swagger/Swagger";
+import { Swagger, Parameter, CollectionFormat } from "../swagger/Swagger";
 
 export interface TypeSpecParameter extends Parameter {
   readonly isBodyParameter: boolean;
@@ -121,6 +121,7 @@ function makePathParameter(
 
 interface QueryParameter extends TypeSpecParameter {
   readonly isQueryParameter: true;
+  readonly collectionFormat: CollectionFormat | undefined;
   readonly isPatternType: boolean;
   readonly pattern: string | undefined;
 }
@@ -132,6 +133,7 @@ function makeQueryParameter(
   return {
     ...makeTypespecParameterFromSwaggerParameter(parameter, swagger),
     isQueryParameter: true,
+    collectionFormat: parameter.collectionFormat,
     pattern: parameter["x-name-pattern"],
     isPatternType: parameter["x-name-pattern"] !== undefined
   };

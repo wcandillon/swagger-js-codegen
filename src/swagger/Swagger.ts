@@ -10,6 +10,8 @@ type SwaggerTypes =
   | "schema"
   | "reference";
 
+export type CollectionFormat = "csv" | "ssv" | "tsv" | "pipes" | "multi";
+
 export interface SwaggerType {
   readonly description?: string;
   readonly required: boolean | ReadonlyArray<string>;
@@ -27,6 +29,7 @@ export interface SwaggerType {
 export interface SwaggerArray extends SwaggerType {
   readonly type: "array";
   readonly items: SwaggerType;
+  readonly collectionFormat: CollectionFormat;
 }
 
 export interface SwaggerDictionary extends SwaggerType {
@@ -65,6 +68,7 @@ export interface Parameter extends SwaggerType {
   readonly "x-exclude-from-bindings"?: boolean;
   readonly "x-proxy-header"?: string;
   readonly "x-name-pattern"?: string;
+  readonly collectionFormat?: CollectionFormat;
   readonly $ref: string;
   readonly enum: ReadonlyArray<any>;
   readonly isSingleton: boolean;

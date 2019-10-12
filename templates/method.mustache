@@ -17,21 +17,33 @@
             {{^isSingleton}}
                 {{#isPatternType}}
                     Object.keys(parameters).forEach(function(parameterName) {
-                    if(new RegExp('{{&pattern}}').test(parameterName)){
-                    queryParameters[parameterName] = parameters[parameterName];
-                    }
+                        if(new RegExp('{{&pattern}}').test(parameterName)){
+                            queryParameters[parameterName] = this.convertParameterCollectionFormat(
+                                parameters[parameterName],
+                                '{{&collectionFormat}}'
+                            );
+                        }
                     });
                 {{/isPatternType}}
                 {{^isPatternType}}
-                    if(parameters['{{&camelCaseName}}'] !== undefined){
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                    if(parameters['{{&camelCaseName}}'] !== undefined) {
+                        queryParameters['{{&name}}'] = this.convertParameterCollectionFormat(
+                            parameters['{{&camelCaseName}}'],
+                            '{{&collectionFormat}}'
+                        );
                     }
                 {{/isPatternType}}
             {{/isSingleton}}
         {{/isQueryParameter}}
 
         {{#isPathParameter}}
-            path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${encodeURIComponent(parameters['{{&camelCaseName}}'].toString())}`);
+            path = path.replace(
+                '{{=<% %>=}}{<%&name%>}<%={{ }}=%>',
+                `${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['{{&camelCaseName}}'],
+                    '{{&collectionFormat}}'
+                ).toString())}`
+            );
         {{/isPathParameter}}
     {{/parameters}}
     
@@ -93,20 +105,32 @@
             {{#isPatternType}}
                 Object.keys(parameters).forEach(function(parameterName) {
                     if(new RegExp('{{&pattern}}').test(parameterName)){
-                        queryParameters[parameterName] = parameters[parameterName];
+                        queryParameters[parameterName] = this.convertParameterCollectionFormat(
+                            parameters[parameterName],
+                            '{{&collectionFormat}}'
+                        );
                     }
                 });
             {{/isPatternType}}
             {{^isPatternType}}
                 if(parameters['{{&camelCaseName}}'] !== undefined) {
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
+                    queryParameters['{{&name}}'] = this.convertParameterCollectionFormat(
+                        parameters['{{&camelCaseName}}'],
+                        '{{&collectionFormat}}'
+                    );
                 }
             {{/isPatternType}}
         {{/isSingleton}}
     {{/isQueryParameter}}
 
     {{#isPathParameter}}
-        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${encodeURIComponent(parameters['{{&camelCaseName}}'].toString())}`);
+        path = path.replace(
+            '{{=<% %>=}}{<%&name%>}<%={{ }}=%>',
+            `${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['{{&camelCaseName}}'],
+                '{{&collectionFormat}}'
+            ).toString())}`
+        );
     {{/isPathParameter}}
 
     {{#isHeaderParameter}}

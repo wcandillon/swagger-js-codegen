@@ -136,6 +136,25 @@ export class {{&className}} {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case "csv":
+                    return param.join(",");
+                case "ssv":
+                    return param.join(" ");
+                case "tsv":
+                    return param.join("\t");
+                case "pipes":
+                    return param.join("|");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
 {{#methods}}
     {{> method}}
 

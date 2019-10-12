@@ -198,6 +198,25 @@ export class UberApi {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
     getProductsURL(parameters: {
         'latitude': number,
         'longitude': number,
@@ -210,11 +229,17 @@ export class UberApi {
         }
 
         if (parameters['latitude'] !== undefined) {
-            queryParameters['latitude'] = parameters['latitude'];
+            queryParameters['latitude'] = this.convertParameterCollectionFormat(
+                parameters['latitude'],
+                ''
+            );
         }
 
         if (parameters['longitude'] !== undefined) {
-            queryParameters['longitude'] = parameters['longitude'];
+            queryParameters['longitude'] = this.convertParameterCollectionFormat(
+                parameters['longitude'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -253,7 +278,10 @@ export class UberApi {
             headers['Accept'] = 'application/json';
 
             if (parameters['latitude'] !== undefined) {
-                queryParameters['latitude'] = parameters['latitude'];
+                queryParameters['latitude'] = this.convertParameterCollectionFormat(
+                    parameters['latitude'],
+                    ''
+                );
             }
 
             if (parameters['latitude'] === undefined) {
@@ -262,7 +290,10 @@ export class UberApi {
             }
 
             if (parameters['longitude'] !== undefined) {
-                queryParameters['longitude'] = parameters['longitude'];
+                queryParameters['longitude'] = this.convertParameterCollectionFormat(
+                    parameters['longitude'],
+                    ''
+                );
             }
 
             if (parameters['longitude'] === undefined) {
@@ -293,13 +324,25 @@ export class UberApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{id}', \`\${encodeURIComponent(parameters['id'].toString())}\`);
+        path = path.replace(
+            '{id}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['id'],
+                    ''
+                ).toString())}\`
+        );
         if (parameters['latitude'] !== undefined) {
-            queryParameters['latitude'] = parameters['latitude'];
+            queryParameters['latitude'] = this.convertParameterCollectionFormat(
+                parameters['latitude'],
+                ''
+            );
         }
 
         if (parameters['longitude'] !== undefined) {
-            queryParameters['longitude'] = parameters['longitude'];
+            queryParameters['longitude'] = this.convertParameterCollectionFormat(
+                parameters['longitude'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -339,7 +382,13 @@ export class UberApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/json';
 
-            path = path.replace('{id}', \`\${encodeURIComponent(parameters['id'].toString())}\`);
+            path = path.replace(
+                '{id}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['id'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['id'] === undefined) {
                 reject(new Error('Missing required  parameter: id'));
@@ -347,7 +396,10 @@ export class UberApi {
             }
 
             if (parameters['latitude'] !== undefined) {
-                queryParameters['latitude'] = parameters['latitude'];
+                queryParameters['latitude'] = this.convertParameterCollectionFormat(
+                    parameters['latitude'],
+                    ''
+                );
             }
 
             if (parameters['latitude'] === undefined) {
@@ -356,7 +408,10 @@ export class UberApi {
             }
 
             if (parameters['longitude'] !== undefined) {
-                queryParameters['longitude'] = parameters['longitude'];
+                queryParameters['longitude'] = this.convertParameterCollectionFormat(
+                    parameters['longitude'],
+                    ''
+                );
             }
 
             if (parameters['longitude'] === undefined) {
@@ -389,19 +444,31 @@ export class UberApi {
         }
 
         if (parameters['startLatitude'] !== undefined) {
-            queryParameters['start_latitude'] = parameters['startLatitude'];
+            queryParameters['start_latitude'] = this.convertParameterCollectionFormat(
+                parameters['startLatitude'],
+                ''
+            );
         }
 
         if (parameters['startLongitude'] !== undefined) {
-            queryParameters['start_longitude'] = parameters['startLongitude'];
+            queryParameters['start_longitude'] = this.convertParameterCollectionFormat(
+                parameters['startLongitude'],
+                ''
+            );
         }
 
         if (parameters['endLatitude'] !== undefined) {
-            queryParameters['end_latitude'] = parameters['endLatitude'];
+            queryParameters['end_latitude'] = this.convertParameterCollectionFormat(
+                parameters['endLatitude'],
+                ''
+            );
         }
 
         if (parameters['endLongitude'] !== undefined) {
-            queryParameters['end_longitude'] = parameters['endLongitude'];
+            queryParameters['end_longitude'] = this.convertParameterCollectionFormat(
+                parameters['endLongitude'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -444,7 +511,10 @@ export class UberApi {
             headers['Accept'] = 'application/json';
 
             if (parameters['startLatitude'] !== undefined) {
-                queryParameters['start_latitude'] = parameters['startLatitude'];
+                queryParameters['start_latitude'] = this.convertParameterCollectionFormat(
+                    parameters['startLatitude'],
+                    ''
+                );
             }
 
             if (parameters['startLatitude'] === undefined) {
@@ -453,7 +523,10 @@ export class UberApi {
             }
 
             if (parameters['startLongitude'] !== undefined) {
-                queryParameters['start_longitude'] = parameters['startLongitude'];
+                queryParameters['start_longitude'] = this.convertParameterCollectionFormat(
+                    parameters['startLongitude'],
+                    ''
+                );
             }
 
             if (parameters['startLongitude'] === undefined) {
@@ -462,7 +535,10 @@ export class UberApi {
             }
 
             if (parameters['endLatitude'] !== undefined) {
-                queryParameters['end_latitude'] = parameters['endLatitude'];
+                queryParameters['end_latitude'] = this.convertParameterCollectionFormat(
+                    parameters['endLatitude'],
+                    ''
+                );
             }
 
             if (parameters['endLatitude'] === undefined) {
@@ -471,7 +547,10 @@ export class UberApi {
             }
 
             if (parameters['endLongitude'] !== undefined) {
-                queryParameters['end_longitude'] = parameters['endLongitude'];
+                queryParameters['end_longitude'] = this.convertParameterCollectionFormat(
+                    parameters['endLongitude'],
+                    ''
+                );
             }
 
             if (parameters['endLongitude'] === undefined) {
@@ -504,19 +583,31 @@ export class UberApi {
         }
 
         if (parameters['startLatitude'] !== undefined) {
-            queryParameters['start_latitude'] = parameters['startLatitude'];
+            queryParameters['start_latitude'] = this.convertParameterCollectionFormat(
+                parameters['startLatitude'],
+                ''
+            );
         }
 
         if (parameters['startLongitude'] !== undefined) {
-            queryParameters['start_longitude'] = parameters['startLongitude'];
+            queryParameters['start_longitude'] = this.convertParameterCollectionFormat(
+                parameters['startLongitude'],
+                ''
+            );
         }
 
         if (parameters['customerUuid'] !== undefined) {
-            queryParameters['customer_uuid'] = parameters['customerUuid'];
+            queryParameters['customer_uuid'] = this.convertParameterCollectionFormat(
+                parameters['customerUuid'],
+                ''
+            );
         }
 
         if (parameters['productId'] !== undefined) {
-            queryParameters['product_id'] = parameters['productId'];
+            queryParameters['product_id'] = this.convertParameterCollectionFormat(
+                parameters['productId'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -559,7 +650,10 @@ export class UberApi {
             headers['Accept'] = 'application/json';
 
             if (parameters['startLatitude'] !== undefined) {
-                queryParameters['start_latitude'] = parameters['startLatitude'];
+                queryParameters['start_latitude'] = this.convertParameterCollectionFormat(
+                    parameters['startLatitude'],
+                    ''
+                );
             }
 
             if (parameters['startLatitude'] === undefined) {
@@ -568,7 +662,10 @@ export class UberApi {
             }
 
             if (parameters['startLongitude'] !== undefined) {
-                queryParameters['start_longitude'] = parameters['startLongitude'];
+                queryParameters['start_longitude'] = this.convertParameterCollectionFormat(
+                    parameters['startLongitude'],
+                    ''
+                );
             }
 
             if (parameters['startLongitude'] === undefined) {
@@ -577,11 +674,17 @@ export class UberApi {
             }
 
             if (parameters['customerUuid'] !== undefined) {
-                queryParameters['customer_uuid'] = parameters['customerUuid'];
+                queryParameters['customer_uuid'] = this.convertParameterCollectionFormat(
+                    parameters['customerUuid'],
+                    ''
+                );
             }
 
             if (parameters['productId'] !== undefined) {
-                queryParameters['product_id'] = parameters['productId'];
+                queryParameters['product_id'] = this.convertParameterCollectionFormat(
+                    parameters['productId'],
+                    ''
+                );
             }
 
             if (parameters.$queryParameters) {
@@ -656,11 +759,17 @@ export class UberApi {
         }
 
         if (parameters['offset'] !== undefined) {
-            queryParameters['offset'] = parameters['offset'];
+            queryParameters['offset'] = this.convertParameterCollectionFormat(
+                parameters['offset'],
+                ''
+            );
         }
 
         if (parameters['limit'] !== undefined) {
-            queryParameters['limit'] = parameters['limit'];
+            queryParameters['limit'] = this.convertParameterCollectionFormat(
+                parameters['limit'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -699,11 +808,17 @@ export class UberApi {
             headers['Accept'] = 'application/json';
 
             if (parameters['offset'] !== undefined) {
-                queryParameters['offset'] = parameters['offset'];
+                queryParameters['offset'] = this.convertParameterCollectionFormat(
+                    parameters['offset'],
+                    ''
+                );
             }
 
             if (parameters['limit'] !== undefined) {
-                queryParameters['limit'] = parameters['limit'];
+                queryParameters['limit'] = this.convertParameterCollectionFormat(
+                    parameters['limit'],
+                    ''
+                );
             }
 
             if (parameters.$queryParameters) {
@@ -936,6 +1051,25 @@ export class PetshopApi {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
     addPetURL(parameters: {
         'body': Pet,
     } & CommonRequestOptions): string {
@@ -1081,7 +1215,10 @@ export class PetshopApi {
         }
 
         if (parameters['status'] !== undefined) {
-            queryParameters['status'] = parameters['status'];
+            queryParameters['status'] = this.convertParameterCollectionFormat(
+                parameters['status'],
+                'multi'
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -1119,7 +1256,10 @@ export class PetshopApi {
             headers['Accept'] = 'application/xml, application/json';
 
             if (parameters['status'] !== undefined) {
-                queryParameters['status'] = parameters['status'];
+                queryParameters['status'] = this.convertParameterCollectionFormat(
+                    parameters['status'],
+                    'multi'
+                );
             }
 
             if (parameters['status'] === undefined) {
@@ -1148,7 +1288,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+        path = path.replace(
+            '{petId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['petId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1183,7 +1329,13 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+            path = path.replace(
+                '{petId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['petId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1213,7 +1365,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+        path = path.replace(
+            '{petId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['petId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1255,7 +1413,13 @@ export class PetshopApi {
             headers['Accept'] = 'application/xml, application/json';
             headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
-            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+            path = path.replace(
+                '{petId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['petId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1295,7 +1459,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+        path = path.replace(
+            '{petId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['petId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1336,7 +1506,13 @@ export class PetshopApi {
                 headers['api_key'] = parameters['apiKey'];
             }
 
-            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+            path = path.replace(
+                '{petId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['petId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1366,7 +1542,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+        path = path.replace(
+            '{petId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['petId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1408,7 +1590,13 @@ export class PetshopApi {
             headers['Accept'] = 'application/json';
             headers['Content-Type'] = 'multipart/form-data';
 
-            path = path.replace('{petId}', \`\${encodeURIComponent(parameters['petId'].toString())}\`);
+            path = path.replace(
+                '{petId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['petId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['petId'] === undefined) {
                 reject(new Error('Missing required  parameter: petId'));
@@ -1564,7 +1752,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
+        path = path.replace(
+            '{orderId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['orderId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1599,7 +1793,13 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
+            path = path.replace(
+                '{orderId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['orderId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['orderId'] === undefined) {
                 reject(new Error('Missing required  parameter: orderId'));
@@ -1627,7 +1827,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
+        path = path.replace(
+            '{orderId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['orderId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -1662,7 +1868,13 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{orderId}', \`\${encodeURIComponent(parameters['orderId'].toString())}\`);
+            path = path.replace(
+                '{orderId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['orderId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['orderId'] === undefined) {
                 reject(new Error('Missing required  parameter: orderId'));
@@ -1900,11 +2112,17 @@ export class PetshopApi {
         }
 
         if (parameters['username'] !== undefined) {
-            queryParameters['username'] = parameters['username'];
+            queryParameters['username'] = this.convertParameterCollectionFormat(
+                parameters['username'],
+                ''
+            );
         }
 
         if (parameters['password'] !== undefined) {
-            queryParameters['password'] = parameters['password'];
+            queryParameters['password'] = this.convertParameterCollectionFormat(
+                parameters['password'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -1943,7 +2161,10 @@ export class PetshopApi {
             headers['Accept'] = 'application/xml, application/json';
 
             if (parameters['username'] !== undefined) {
-                queryParameters['username'] = parameters['username'];
+                queryParameters['username'] = this.convertParameterCollectionFormat(
+                    parameters['username'],
+                    ''
+                );
             }
 
             if (parameters['username'] === undefined) {
@@ -1952,7 +2173,10 @@ export class PetshopApi {
             }
 
             if (parameters['password'] !== undefined) {
-                queryParameters['password'] = parameters['password'];
+                queryParameters['password'] = this.convertParameterCollectionFormat(
+                    parameters['password'],
+                    ''
+                );
             }
 
             if (parameters['password'] === undefined) {
@@ -2030,7 +2254,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
+        path = path.replace(
+            '{username}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['username'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2065,7 +2295,13 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
+            path = path.replace(
+                '{username}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['username'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['username'] === undefined) {
                 reject(new Error('Missing required  parameter: username'));
@@ -2094,7 +2330,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
+        path = path.replace(
+            '{username}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['username'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2131,7 +2373,13 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
+            path = path.replace(
+                '{username}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['username'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['username'] === undefined) {
                 reject(new Error('Missing required  parameter: username'));
@@ -2168,7 +2416,13 @@ export class PetshopApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
+        path = path.replace(
+            '{username}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['username'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2203,7 +2457,13 @@ export class PetshopApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/xml, application/json';
 
-            path = path.replace('{username}', \`\${encodeURIComponent(parameters['username'].toString())}\`);
+            path = path.replace(
+                '{username}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['username'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['username'] === undefined) {
                 reject(new Error('Missing required  parameter: username'));
@@ -2375,6 +2635,25 @@ export class UsersApi {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
     findByIdURL(parameters: {
         'userId': string,
     } & CommonRequestOptions): string {
@@ -2385,7 +2664,13 @@ export class UsersApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
+        path = path.replace(
+            '{userId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['userId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2419,7 +2704,13 @@ export class UsersApi {
         let form: any = {};
         return new Promise((resolve, reject) => {
 
-            path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
+            path = path.replace(
+                '{userId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['userId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['userId'] === undefined) {
                 reject(new Error('Missing required  parameter: userId'));
@@ -2447,7 +2738,13 @@ export class UsersApi {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
         }
 
-        path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
+        path = path.replace(
+            '{userId}',
+            \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                    parameters['userId'],
+                    ''
+                ).toString())}\`
+        );
 
         if (parameters.$queryParameters) {
             queryParameters = {
@@ -2481,7 +2778,13 @@ export class UsersApi {
         let form: any = {};
         return new Promise((resolve, reject) => {
 
-            path = path.replace('{userId}', \`\${encodeURIComponent(parameters['userId'].toString())}\`);
+            path = path.replace(
+                '{userId}',
+                \`\${encodeURIComponent(this.convertParameterCollectionFormat(
+                parameters['userId'],
+                ''
+            ).toString())}\`
+            );
 
             if (parameters['userId'] === undefined) {
                 reject(new Error('Missing required  parameter: userId'));
@@ -2715,6 +3018,25 @@ export class AddpropsApi {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
     get_personURL(parameters: {} & CommonRequestOptions): string {
         let queryParameters: QueryParameters = {};
         const domain = parameters.$domain ? parameters.$domain : this.domain;
@@ -2766,6 +3088,341 @@ export class AddpropsApi {
 }
 
 export default AddpropsApi;"
+`;
+
+exports[`Should resolve collection format 1`] = `
+"// tslint:disable
+
+import * as request from \\"superagent\\";
+import {
+    SuperAgentStatic,
+    SuperAgentRequest,
+    Response
+} from \\"superagent\\";
+
+export type RequestHeaders = {
+    [header: string]: string;
+}
+export type RequestHeadersHandler = (headers: RequestHeaders) => RequestHeaders;
+
+export type ConfigureAgentHandler = (agent: SuperAgentStatic) => SuperAgentStatic;
+
+export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRequest;
+
+export type CallbackHandler = (err: any, res ? : request.Response) => void;
+
+export type Response_getDummy_200 = {
+    'name' ? : string;
+} & {
+    [key: string]: any;
+};
+
+export type Logger = {
+    log: (line: string) => any
+};
+
+export interface ResponseWithBody < S extends number, T > extends Response {
+    status: S;
+    body: T;
+}
+
+export type QueryParameters = {
+    [param: string]: any
+};
+
+export interface CommonRequestOptions {
+    $queryParameters ? : QueryParameters;
+    $domain ? : string;
+    $path ? : string | ((path: string) => string);
+    $retries ? : number; // number of retries; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#retrying-requests
+    $timeout ? : number; // request timeout in milliseconds; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#timeouts
+    $deadline ? : number; // request deadline in milliseconds; see: https://github.com/visionmedia/superagent/blob/master/docs/index.md#timeouts
+}
+
+/**
+ * 
+ * @class CollectionformatApi
+ * @param {(string)} [domainOrOptions] - The project domain.
+ */
+export class CollectionformatApi {
+
+    private domain: string = \\"\\";
+    private errorHandlers: CallbackHandler[] = [];
+    private requestHeadersHandler ? : RequestHeadersHandler;
+    private configureAgentHandler ? : ConfigureAgentHandler;
+    private configureRequestHandler ? : ConfigureRequestHandler;
+
+    constructor(domain ? : string, private logger ? : Logger) {
+        if (domain) {
+            this.domain = domain;
+        }
+    }
+
+    getDomain() {
+        return this.domain;
+    }
+
+    addErrorHandler(handler: CallbackHandler) {
+        this.errorHandlers.push(handler);
+    }
+
+    setRequestHeadersHandler(handler: RequestHeadersHandler) {
+        this.requestHeadersHandler = handler;
+    }
+
+    setConfigureAgentHandler(handler: ConfigureAgentHandler) {
+        this.configureAgentHandler = handler;
+    }
+
+    setConfigureRequestHandler(handler: ConfigureRequestHandler) {
+        this.configureRequestHandler = handler;
+    }
+
+    private request(method: string, url: string, body: any, headers: RequestHeaders, queryParameters: QueryParameters, form: any, reject: CallbackHandler, resolve: CallbackHandler, opts: CommonRequestOptions) {
+        if (this.logger) {
+            this.logger.log(\`Call \${method} \${url}\`);
+        }
+
+        const agent = this.configureAgentHandler ?
+            this.configureAgentHandler(request.default) :
+            request.default;
+
+        let req = agent(method, url);
+        if (this.configureRequestHandler) {
+            req = this.configureRequestHandler(req);
+        }
+
+        req = req.query(queryParameters);
+
+        if (body) {
+            req.send(body);
+
+            if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
+                headers['Content-Type'] = 'application/json';
+            }
+        }
+
+        if (Object.keys(form).length > 0) {
+            req.type('form');
+            req.send(form);
+        }
+
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
+        if (opts.$retries && opts.$retries > 0) {
+            req.retry(opts.$retries);
+        }
+
+        if (opts.$timeout && opts.$timeout > 0 || opts.$deadline && opts.$deadline > 0) {
+            req.timeout({
+                deadline: opts.$deadline,
+                response: opts.$timeout
+            });
+        }
+
+        req.end((error, response) => {
+            // an error will also be emitted for a 4xx and 5xx status code
+            // the error object will then have error.status and error.response fields
+            // see superagent error handling: https://github.com/visionmedia/superagent/blob/master/docs/index.md#error-handling
+            if (error) {
+                reject(error);
+                this.errorHandlers.forEach(handler => handler(error));
+            } else {
+                resolve(response);
+            }
+        });
+    }
+
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
+    getDummyURL(parameters: {
+        'stringParam' ? : string,
+        'csvParam' ? : Array < string >
+            ,
+        'ssvParam' ? : Array < string >
+            ,
+        'tsvParam' ? : Array < string >
+            ,
+        'pipesParam' ? : Array < string >
+            ,
+        'multiParam' ? : Array < string >
+            ,
+    } & CommonRequestOptions): string {
+        let queryParameters: QueryParameters = {};
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/collection-format';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        if (parameters['stringParam'] !== undefined) {
+            queryParameters['stringParam'] = this.convertParameterCollectionFormat(
+                parameters['stringParam'],
+                ''
+            );
+        }
+
+        if (parameters['csvParam'] !== undefined) {
+            queryParameters['csvParam'] = this.convertParameterCollectionFormat(
+                parameters['csvParam'],
+                'csv'
+            );
+        }
+
+        if (parameters['ssvParam'] !== undefined) {
+            queryParameters['ssvParam'] = this.convertParameterCollectionFormat(
+                parameters['ssvParam'],
+                'ssv'
+            );
+        }
+
+        if (parameters['tsvParam'] !== undefined) {
+            queryParameters['tsvParam'] = this.convertParameterCollectionFormat(
+                parameters['tsvParam'],
+                'tsv'
+            );
+        }
+
+        if (parameters['pipesParam'] !== undefined) {
+            queryParameters['pipesParam'] = this.convertParameterCollectionFormat(
+                parameters['pipesParam'],
+                'pipes'
+            );
+        }
+
+        if (parameters['multiParam'] !== undefined) {
+            queryParameters['multiParam'] = this.convertParameterCollectionFormat(
+                parameters['multiParam'],
+                'multi'
+            );
+        }
+
+        if (parameters.$queryParameters) {
+            queryParameters = {
+                ...queryParameters,
+                ...parameters.$queryParameters
+            };
+        }
+
+        let keys = Object.keys(queryParameters);
+        return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    }
+
+    /**
+     * simple dummy request with different collection formats
+     * @method
+     * @name CollectionformatApi#getDummy
+     * @param {string} stringParam - 
+     * @param {array} csvParam - 
+     * @param {array} ssvParam - 
+     * @param {array} tsvParam - 
+     * @param {array} pipesParam - 
+     * @param {array} multiParam - 
+     */
+    getDummy(parameters: {
+        'stringParam' ? : string,
+        'csvParam' ? : Array < string >
+            ,
+        'ssvParam' ? : Array < string >
+            ,
+        'tsvParam' ? : Array < string >
+            ,
+        'pipesParam' ? : Array < string >
+            ,
+        'multiParam' ? : Array < string >
+            ,
+    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_getDummy_200 >> {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/collection-format';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        let body: any;
+        let queryParameters: QueryParameters = {};
+        let headers: RequestHeaders = {};
+        let form: any = {};
+        return new Promise((resolve, reject) => {
+
+            if (parameters['stringParam'] !== undefined) {
+                queryParameters['stringParam'] = this.convertParameterCollectionFormat(
+                    parameters['stringParam'],
+                    ''
+                );
+            }
+
+            if (parameters['csvParam'] !== undefined) {
+                queryParameters['csvParam'] = this.convertParameterCollectionFormat(
+                    parameters['csvParam'],
+                    'csv'
+                );
+            }
+
+            if (parameters['ssvParam'] !== undefined) {
+                queryParameters['ssvParam'] = this.convertParameterCollectionFormat(
+                    parameters['ssvParam'],
+                    'ssv'
+                );
+            }
+
+            if (parameters['tsvParam'] !== undefined) {
+                queryParameters['tsvParam'] = this.convertParameterCollectionFormat(
+                    parameters['tsvParam'],
+                    'tsv'
+                );
+            }
+
+            if (parameters['pipesParam'] !== undefined) {
+                queryParameters['pipesParam'] = this.convertParameterCollectionFormat(
+                    parameters['pipesParam'],
+                    'pipes'
+                );
+            }
+
+            if (parameters['multiParam'] !== undefined) {
+                queryParameters['multiParam'] = this.convertParameterCollectionFormat(
+                    parameters['multiParam'],
+                    'multi'
+                );
+            }
+
+            if (parameters.$queryParameters) {
+                queryParameters = {
+                    ...queryParameters,
+                    ...parameters.$queryParameters
+                };
+            }
+
+            this.request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
+        });
+    }
+
+}
+
+export default CollectionformatApi;"
 `;
 
 exports[`Should resolve protected api 1`] = `
@@ -2928,6 +3585,25 @@ export class ProtectedApi {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
     authURL(parameters: {
         'grantType': \\"client_credentials\\" | \\"refresh_token\\",
         'email' ? : string,
@@ -2942,19 +3618,31 @@ export class ProtectedApi {
         }
 
         if (parameters['grantType'] !== undefined) {
-            queryParameters['grant_type'] = parameters['grantType'];
+            queryParameters['grant_type'] = this.convertParameterCollectionFormat(
+                parameters['grantType'],
+                ''
+            );
         }
 
         if (parameters['email'] !== undefined) {
-            queryParameters['email'] = parameters['email'];
+            queryParameters['email'] = this.convertParameterCollectionFormat(
+                parameters['email'],
+                ''
+            );
         }
 
         if (parameters['password'] !== undefined) {
-            queryParameters['password'] = parameters['password'];
+            queryParameters['password'] = this.convertParameterCollectionFormat(
+                parameters['password'],
+                ''
+            );
         }
 
         if (parameters['refreshToken'] !== undefined) {
-            queryParameters['refresh_token'] = parameters['refreshToken'];
+            queryParameters['refresh_token'] = this.convertParameterCollectionFormat(
+                parameters['refreshToken'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -2998,7 +3686,10 @@ export class ProtectedApi {
         return new Promise((resolve, reject) => {
 
             if (parameters['grantType'] !== undefined) {
-                queryParameters['grant_type'] = parameters['grantType'];
+                queryParameters['grant_type'] = this.convertParameterCollectionFormat(
+                    parameters['grantType'],
+                    ''
+                );
             }
 
             if (parameters['grantType'] === undefined) {
@@ -3007,15 +3698,24 @@ export class ProtectedApi {
             }
 
             if (parameters['email'] !== undefined) {
-                queryParameters['email'] = parameters['email'];
+                queryParameters['email'] = this.convertParameterCollectionFormat(
+                    parameters['email'],
+                    ''
+                );
             }
 
             if (parameters['password'] !== undefined) {
-                queryParameters['password'] = parameters['password'];
+                queryParameters['password'] = this.convertParameterCollectionFormat(
+                    parameters['password'],
+                    ''
+                );
             }
 
             if (parameters['refreshToken'] !== undefined) {
-                queryParameters['refresh_token'] = parameters['refreshToken'];
+                queryParameters['refresh_token'] = this.convertParameterCollectionFormat(
+                    parameters['refreshToken'],
+                    ''
+                );
             }
 
             if (parameters.$queryParameters) {
@@ -3043,7 +3743,10 @@ export class ProtectedApi {
         }
 
         if (parameters['token'] !== undefined) {
-            queryParameters['token'] = parameters['token'];
+            queryParameters['token'] = this.convertParameterCollectionFormat(
+                parameters['token'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -3079,7 +3782,10 @@ export class ProtectedApi {
         return new Promise((resolve, reject) => {
 
             if (parameters['token'] !== undefined) {
-                queryParameters['token'] = parameters['token'];
+                queryParameters['token'] = this.convertParameterCollectionFormat(
+                    parameters['token'],
+                    ''
+                );
             }
 
             if (parameters.$queryParameters) {
@@ -3247,6 +3953,25 @@ export class RefApi {
         });
     }
 
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
+    }
+
     getPersonsURL(parameters: {
         'id': string,
     } & CommonRequestOptions): string {
@@ -3258,7 +3983,10 @@ export class RefApi {
         }
 
         if (parameters['id'] !== undefined) {
-            queryParameters['id'] = parameters['id'];
+            queryParameters['id'] = this.convertParameterCollectionFormat(
+                parameters['id'],
+                ''
+            );
         }
 
         if (parameters.$queryParameters) {
@@ -3294,7 +4022,10 @@ export class RefApi {
         return new Promise((resolve, reject) => {
 
             if (parameters['id'] !== undefined) {
-                queryParameters['id'] = parameters['id'];
+                queryParameters['id'] = this.convertParameterCollectionFormat(
+                    parameters['id'],
+                    ''
+                );
             }
 
             if (parameters['id'] === undefined) {
@@ -3501,6 +4232,25 @@ export class ResponsesApi {
                 resolve(response);
             }
         });
+    }
+
+    private convertParameterCollectionFormat < T > (param: T, collectionFormat: string | undefined): T | string {
+        if (Array.isArray(param) && param.length >= 2) {
+            switch (collectionFormat) {
+                case \\"csv\\":
+                    return param.join(\\",\\");
+                case \\"ssv\\":
+                    return param.join(\\" \\");
+                case \\"tsv\\":
+                    return param.join(\\"\\\\t\\");
+                case \\"pipes\\":
+                    return param.join(\\"|\\");
+                default:
+                    return param;
+            }
+        }
+
+        return param;
     }
 
     get_personURL(parameters: {} & CommonRequestOptions): string {

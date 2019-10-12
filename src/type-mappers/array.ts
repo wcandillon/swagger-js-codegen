@@ -1,6 +1,10 @@
 import { convertType } from "../typescript";
 import { TypeSpec, makeTypeSpecFromSwaggerType } from "../typespec";
-import { SwaggerArray, SwaggerType } from "../swagger/Swagger";
+import {
+  CollectionFormat,
+  SwaggerArray,
+  SwaggerType
+} from "../swagger/Swagger";
 import { Swagger } from "../swagger/Swagger";
 
 export interface ArrayTypeSpec extends TypeSpec {
@@ -8,6 +12,7 @@ export interface ArrayTypeSpec extends TypeSpec {
   readonly isAtomic: false;
   readonly isArray: true;
   readonly elementType: TypeSpec;
+  readonly collectionFormat: CollectionFormat;
 }
 
 export function makeArrayTypeSpec(
@@ -23,7 +28,10 @@ export function makeArrayTypeSpec(
       elementTypeSpec.tsType ||
       "any"}>`,
     isArray: true,
-    isAtomic: false
+    isAtomic: false,
+    // Normally, the default value is "csv". To be backward compatible to older versions, the standard is set to multi.
+    // @todo set to csv for the next major version.
+    collectionFormat: swaggerType.collectionFormat || "multi"
   };
 }
 

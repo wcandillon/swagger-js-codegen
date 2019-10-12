@@ -185,6 +185,8 @@ methods:
             type: boolean
           isFormParameter:
             type: boolean
+          collectionFormat:
+            type: string
       successfulResponseType:
         type: string
         description: The type of a successful response. Defaults to any for non-parsable types or Swagger 1.0 spec files

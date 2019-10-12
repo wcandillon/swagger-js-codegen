@@ -32,6 +32,10 @@ var testCases = [
   {
     desc: "Real world: petshop",
     fixture: "petshop"
+  },
+  {
+    desc: "Should resolve collection format",
+    fixture: "collectionFormat"
   }
 ];
 

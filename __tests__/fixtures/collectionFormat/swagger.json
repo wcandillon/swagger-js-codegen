@@ -1,0 +1,80 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/collection-format": {
+            "get": {
+                "operationId": "getDummy",
+                "summary": "simple dummy request with different collection formats",
+                "parameters": [
+                    {
+                        "name": "stringParam",
+                        "type": "string",
+                        "in": "query"
+                    },
+                    {
+                        "name": "csvParam",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "collectionFormat": "csv"
+                    },
+                    {
+                        "name": "ssvParam",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "collectionFormat": "ssv"
+                    },
+                    {
+                        "name": "tsvParam",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "collectionFormat": "tsv"
+                    },
+                    {
+                        "name": "pipesParam",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "multiParam",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

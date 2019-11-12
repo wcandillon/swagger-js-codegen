@@ -170,6 +170,7 @@ describe("convertType", () => {
         tsType: "Array<number>",
         isAtomic: false,
         isArray: true,
+        collectionFormat: "multi",
         elementType: {
           ...emptyTypeSpecWithDefaults,
           tsType: "number",
@@ -183,6 +184,7 @@ describe("convertType", () => {
         description: "The description of a array property",
         required: false,
         type: "array",
+        collectionFormat: "csv",
         items: makeSwaggerType({
           type: "object",
           required: false,
@@ -196,6 +198,7 @@ describe("convertType", () => {
         isRequired: false,
         isNullable: true,
         isArray: true,
+        collectionFormat: "csv",
         tsType: "Array<object>",
         isAtomic: false,
         elementType: {

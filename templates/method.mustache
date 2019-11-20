@@ -13,7 +13,7 @@
     }
     {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} deferred = {{#isNode}}Q{{/isNode}}{{^isNode}}$q{{/isNode}}.defer();
     {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} domain = this.domain,  path = '{{&path}}';
-    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} body = {}, queryParameters = {}, headers = {}, form = {};
+    {{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} body, queryParameters = {}, headers = {}, form = {};
 
     {{#isSecure}}
         headers = this.setAuthHeaders(headers);

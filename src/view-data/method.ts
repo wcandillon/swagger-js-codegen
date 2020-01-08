@@ -113,9 +113,13 @@ function getPathToMethodName(httpVerb: string, path: string): string {
   });
 
   const result = camelCase(segments.join("-"));
-  return `${httpVerb.toLowerCase()}${result[0].toUpperCase()}${result.substring(
-    1
-  )}`;
+  if (result.length > 0) {
+    return `${httpVerb.toLowerCase()}${result[0].toUpperCase()}${result.substring(
+      1
+    )}`;
+  }
+  // handle case when "/" is passed as a path
+  return `${httpVerb.toLowerCase()}_root_`;
 }
 
 const groupMethodsByMethodName = (methods: Method[]): Method[][] =>

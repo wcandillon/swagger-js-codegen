@@ -10,6 +10,10 @@ var testCases = [
     fixture: "protected"
   },
   {
+    desc: "Should resolve root path without an error",
+    fixture: "rootPath"
+  },
+  {
     desc: "Should resolve references",
     fixture: "ref"
   },

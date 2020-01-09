@@ -112,10 +112,17 @@ function getPathToMethodName(httpVerb: string, path: string): string {
     result.push(segment);
   });
 
-  const result = camelCase(segments.join("-"));
-  return `${httpVerb.toLowerCase()}${result[0].toUpperCase()}${result.substring(
-    1
-  )}`;
+  const endpointName = camelCase(segments.join("-"));
+  const lowerCasedHttpVerb = httpVerb.toLowerCase();
+  if (endpointName.length > 0) {
+    const pascalCaseEndpointName = `${endpointName[0].toUpperCase()}${endpointName.substring(
+      1
+    )}`;
+    return `${lowerCasedHttpVerb}${pascalCaseEndpointName}`;
+  }
+
+  // handle case when "/" is passed as a path
+  return `rootEndpoint_${lowerCasedHttpVerb}`;
 }
 
 const groupMethodsByMethodName = (methods: Method[]): Method[][] =>

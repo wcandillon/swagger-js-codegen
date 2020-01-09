@@ -10,6 +10,10 @@ var testCases = [
     fixture: "protected"
   },
   {
+    desc: "Should resolve root path without an error",
+    fixture: "rootPath"
+  },
+  {
     desc: "Should resolve references",
     fixture: "ref"
   },
@@ -48,12 +52,6 @@ testCases.forEach(function(testCase) {
       "swagger.json"
     );
     var swagger = JSON.parse(fs.readFileSync(sourcePath, "UTF-8"));
-    var expectedPath = path.join(
-      __dirname,
-      "fixtures",
-      testCase.fixture,
-      "expected.ts"
-    );
 
     var actual = CodeGen.getTypescriptCode({
       moduleName: testCase.fixture,

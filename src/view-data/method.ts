@@ -115,13 +115,14 @@ function getPathToMethodName(httpVerb: string, path: string): string {
   const result = camelCase(segments.join("-"));
   const lowerCasedHttpVerb = httpVerb.toLowerCase();
   if (result.length > 0) {
-    return `${lowerCasedHttpVerb}${result[0].toUpperCase()}${result.substring(
+    const upperCamelCaseResult = `${result[0].toUpperCase()}${result.substring(
       1
     )}`;
+    return `${lowerCasedHttpVerb}${upperCamelCaseResult}`;
   }
 
   // handle case when "/" is passed as a path
-  return `RootEndpoint_${lowerCasedHttpVerb}`;
+  return `rootEndpoint_${lowerCasedHttpVerb}`;
 }
 
 const groupMethodsByMethodName = (methods: Method[]): Method[][] =>

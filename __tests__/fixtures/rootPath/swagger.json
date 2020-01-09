@@ -15,24 +15,51 @@
     },
     "paths": {
         "/": {
-            "parameters": [
-                {
-                    "$ref": "#/parameters/id"
-                }
-            ],
             "get": {
-                "description": "Gets `Person` object.",
+                "description": "Just root path",
                 "responses": {
                     "200": {
-                        "description": "Successful response",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                }
-                            }
-                        }
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/root": {
+            "get": {
+                "description": "Explicit root on path ",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/root/endpoint": {
+            "get": {
+                "description": "root and the endpoint",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/rootEndpoint": {
+            "get": {
+                "description": "root and endpoint in camelCase",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/getRootEndpoint": {
+            "get": {
+                "description": "root and endpoint with verb",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
                     }
                 }
             }

@@ -4327,12 +4327,6 @@ export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRe
 
 export type CallbackHandler = (err: any, res ? : request.Response) => void;
 
-export type Response_get_root__200 = {
-    'name' ? : string;
-} & {
-    [key: string]: any;
-};
-
 export type Logger = {
     log: (line: string) => any
 };
@@ -4474,21 +4468,12 @@ export class RootpathApi {
         return param;
     }
 
-    get_root_URL(parameters: {
-        'id': string,
-    } & CommonRequestOptions): string {
+    RootEndpoint_getURL(parameters: {} & CommonRequestOptions): string {
         let queryParameters: QueryParameters = {};
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/';
         if (parameters.$path) {
             path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
-        }
-
-        if (parameters['id'] !== undefined) {
-            queryParameters['id'] = this.convertParameterCollectionFormat(
-                parameters['id'],
-                ''
-            );
         }
 
         if (parameters.$queryParameters) {
@@ -4503,14 +4488,11 @@ export class RootpathApi {
     }
 
     /**
-     * Gets \`Person\` object.
+     * Just root path
      * @method
-     * @name RootpathApi#get_root_
-     * @param {string} id - id
+     * @name RootpathApi#RootEndpoint_get
      */
-    get_root_(parameters: {
-        'id': string,
-    } & CommonRequestOptions): Promise < ResponseWithBody < 200, Response_get_root__200 >> {
+    RootEndpoint_get(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, void >> {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         let path = '/';
         if (parameters.$path) {
@@ -4523,17 +4505,197 @@ export class RootpathApi {
         let form: any = {};
         return new Promise((resolve, reject) => {
 
-            if (parameters['id'] !== undefined) {
-                queryParameters['id'] = this.convertParameterCollectionFormat(
-                    parameters['id'],
-                    ''
-                );
+            if (parameters.$queryParameters) {
+                queryParameters = {
+                    ...queryParameters,
+                    ...parameters.$queryParameters
+                };
             }
 
-            if (parameters['id'] === undefined) {
-                reject(new Error('Missing required  parameter: id'));
-                return;
+            this.request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
+        });
+    }
+
+    getRootURL(parameters: {} & CommonRequestOptions): string {
+        let queryParameters: QueryParameters = {};
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/root';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        if (parameters.$queryParameters) {
+            queryParameters = {
+                ...queryParameters,
+                ...parameters.$queryParameters
+            };
+        }
+
+        let keys = Object.keys(queryParameters);
+        return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    }
+
+    /**
+     * Explicit root on path 
+     * @method
+     * @name RootpathApi#getRoot
+     */
+    getRoot(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, void >> {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/root';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        let body: any;
+        let queryParameters: QueryParameters = {};
+        let headers: RequestHeaders = {};
+        let form: any = {};
+        return new Promise((resolve, reject) => {
+
+            if (parameters.$queryParameters) {
+                queryParameters = {
+                    ...queryParameters,
+                    ...parameters.$queryParameters
+                };
             }
+
+            this.request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
+        });
+    }
+
+    getRootEndpointURL(parameters: {} & CommonRequestOptions): string {
+        let queryParameters: QueryParameters = {};
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/root/endpoint';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        if (parameters.$queryParameters) {
+            queryParameters = {
+                ...queryParameters,
+                ...parameters.$queryParameters
+            };
+        }
+
+        let keys = Object.keys(queryParameters);
+        return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    }
+
+    /**
+     * root and the endpoint
+     * @method
+     * @name RootpathApi#getRootEndpoint
+     */
+    getRootEndpoint(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, void >> {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/root/endpoint';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        let body: any;
+        let queryParameters: QueryParameters = {};
+        let headers: RequestHeaders = {};
+        let form: any = {};
+        return new Promise((resolve, reject) => {
+
+            if (parameters.$queryParameters) {
+                queryParameters = {
+                    ...queryParameters,
+                    ...parameters.$queryParameters
+                };
+            }
+
+            this.request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
+        });
+    }
+
+    getRootEndpointURL(parameters: {} & CommonRequestOptions): string {
+        let queryParameters: QueryParameters = {};
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/rootEndpoint';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        if (parameters.$queryParameters) {
+            queryParameters = {
+                ...queryParameters,
+                ...parameters.$queryParameters
+            };
+        }
+
+        let keys = Object.keys(queryParameters);
+        return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    }
+
+    /**
+     * root and endpoint in camelCase
+     * @method
+     * @name RootpathApi#getRootEndpoint
+     */
+    getRootEndpoint(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, void >> {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/rootEndpoint';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        let body: any;
+        let queryParameters: QueryParameters = {};
+        let headers: RequestHeaders = {};
+        let form: any = {};
+        return new Promise((resolve, reject) => {
+
+            if (parameters.$queryParameters) {
+                queryParameters = {
+                    ...queryParameters,
+                    ...parameters.$queryParameters
+                };
+            }
+
+            this.request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, parameters);
+        });
+    }
+
+    getGetRootEndpointURL(parameters: {} & CommonRequestOptions): string {
+        let queryParameters: QueryParameters = {};
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/getRootEndpoint';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        if (parameters.$queryParameters) {
+            queryParameters = {
+                ...queryParameters,
+                ...parameters.$queryParameters
+            };
+        }
+
+        let keys = Object.keys(queryParameters);
+        return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    }
+
+    /**
+     * root and endpoint with verb
+     * @method
+     * @name RootpathApi#getGetRootEndpoint
+     */
+    getGetRootEndpoint(parameters: {} & CommonRequestOptions): Promise < ResponseWithBody < 200, void >> {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        let path = '/getRootEndpoint';
+        if (parameters.$path) {
+            path = (typeof(parameters.$path) === 'function') ? parameters.$path(path) : parameters.$path;
+        }
+
+        let body: any;
+        let queryParameters: QueryParameters = {};
+        let headers: RequestHeaders = {};
+        let form: any = {};
+        return new Promise((resolve, reject) => {
 
             if (parameters.$queryParameters) {
                 queryParameters = {

@@ -40,7 +40,7 @@ class {{&className}} {
     protected token: string = '';
         {{/isSecureToken}}
         {{#isSecureApiKey}}
-            protected apiKey: string | null;
+            protected apiKey: string | null = null;
         {{/isSecureApiKey}}
     {{/isSecure}}
 

@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint:disable */
 import 'isomorphic-fetch';
 
 export type ThenArg<T> = T extends Promise<infer U>
@@ -39,7 +40,7 @@ class {{&className}} {
     protected token: string = '';
         {{/isSecureToken}}
         {{#isSecureApiKey}}
-            protected apiKey: string;
+            protected apiKey: string | null;
         {{/isSecureApiKey}}
     {{/isSecure}}
 

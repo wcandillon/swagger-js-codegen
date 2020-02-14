@@ -822,6 +822,7 @@ export default new Api();
 
 exports[`Generates TYPESCRIPT class from Open Api 3.0 spec 1`] = `
 "/* tslint:disable */
+/* eslint:disable */
 import 'isomorphic-fetch';
 
 export type ThenArg<T> = T extends Promise<infer U>

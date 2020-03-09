@@ -1,4 +1,5 @@
 import * as Mustache from "mustache";
+import { isObject, isString } from "lodash";
 import { Swagger } from "../swagger/Swagger";
 
 export interface TemplateLocations {
@@ -47,4 +48,21 @@ export function makeOptions(options: ProvidedCodeGenOptions): CodeGenOptions {
     ...DEFAULT_OPTIONS,
     ...options
   };
+}
+
+/**
+ * Validate that the options have required variables for custom generation.
+ */
+export function validOptions(options: ProvidedCodeGenOptions): void {
+  // TODO: Why do we not check for the existence of the type template?
+  if (
+    !options.template ||
+    !isObject(options.template) ||
+    !isString(options.template.class) ||
+    !isString(options.template.method)
+  ) {
+    throw new Error(
+      'Unprovided custom template. Please use the following template: template: { class: "...", method: "...", request: "..." }'
+    );
+  }
 }

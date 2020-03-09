@@ -1,61 +1,30 @@
-import { isObject, isString } from "lodash";
 import {
-  CodeGenOptions,
   ProvidedCodeGenOptions,
-  makeOptions
+  makeOptions,
+  validOptions
 } from "./options/options";
-import { getViewForSwagger2 } from "./getViewForSwagger2";
 import { transformToCodeWithMustache } from "./transform/transformToCodeWithMustache";
+import { Swagger2Gen } from "./generators/swagger2";
 import { enhanceCode } from "./enhance";
 
-function getCode(opts: CodeGenOptions): string {
-  verifyThatWeAreGeneratingForSwagger2(opts);
-
-  const data = getViewForSwagger2(opts);
-  return transformToCodeWithMustache(data, opts.template, opts.mustache);
-}
-
 export const CodeGen = {
-  transformToViewData: getViewForSwagger2,
+  transformToViewData: Swagger2Gen.getViewData,
   transformToCodeWithMustache,
   getTypescriptCode: function(opts: ProvidedCodeGenOptions) {
     const options = makeOptions(opts);
 
-    return enhanceCode(getCode(options), options);
+    return enhanceCode(Swagger2Gen.getCode(options), options);
   },
   getCustomCode: function(opts: ProvidedCodeGenOptions) {
-    verifyThatWeHaveRequiredTemplatesForCustomGenerationTarget(opts);
+    validOptions(opts);
 
     const options = makeOptions(opts);
 
-    return enhanceCode(getCode(options), options);
+    return enhanceCode(Swagger2Gen.getCode(options), options);
   },
   getDataAndOptionsForGeneration: function(opts: ProvidedCodeGenOptions) {
     const options = makeOptions(opts);
-    verifyThatWeAreGeneratingForSwagger2(options);
-    const data = getViewForSwagger2(options);
+    const data = Swagger2Gen.getViewData(options);
     return { data, options };
   }
 };
-
-function verifyThatWeHaveRequiredTemplatesForCustomGenerationTarget(
-  opts: ProvidedCodeGenOptions
-) {
-  // TODO: Why do we not check for the existence of the type template?
-  if (
-    !opts.template ||
-    !isObject(opts.template) ||
-    !isString(opts.template.class) ||
-    !isString(opts.template.method)
-  ) {
-    throw new Error(
-      'Unprovided custom template. Please use the following template: template: { class: "...", method: "...", request: "..." }'
-    );
-  }
-}
-
-function verifyThatWeAreGeneratingForSwagger2(opts: CodeGenOptions): void {
-  if (opts.swagger.swagger !== "2.0") {
-    throw new Error("Only Swagger 2 specs are supported");
-  }
-}

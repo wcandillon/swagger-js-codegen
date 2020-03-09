@@ -1,7 +1,7 @@
 import * as Mustache from "mustache";
 import { Swagger } from "../swagger/Swagger";
 
-export interface TemplateLocations {
+export interface OptionTemplates {
   readonly class: string;
   readonly method: string;
   readonly type: string;
@@ -13,7 +13,7 @@ interface Options {
   readonly includeDeprecated: boolean;
   readonly imports: ReadonlyArray<string>;
   readonly className: string;
-  readonly template: Partial<TemplateLocations>;
+  readonly template: Partial<OptionTemplates>;
   readonly mustache: typeof Mustache;
   readonly beautify: ((source: string) => string) | boolean;
   readonly beautifyOptions: JsBeautifyOptions;

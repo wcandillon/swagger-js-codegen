@@ -2,12 +2,12 @@ import { readFileSync } from "fs";
 import * as Mustache from "mustache";
 import {} from "mustache";
 import { assign, identity } from "lodash";
-import { TemplateLocations } from "../options/options";
+import { OptionTemplates } from "../options/options";
 import { join } from "path";
 
 export const DEFAULT_TEMPLATE_PATH = join(__dirname, "..", "..", "templates");
 
-export type Templates = Record<keyof TemplateLocations, string>;
+export type Templates = Record<keyof OptionTemplates, string>;
 
 type Renderer = {
   readonly render: (

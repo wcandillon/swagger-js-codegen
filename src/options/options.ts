@@ -35,13 +35,21 @@ const DEFAULT_OPTIONS: Options = {
   beautifyOptions: {}
 };
 
-// This is the internal interface we use to reference to the full Options object with defaults
+/**
+ * This is the internal interface we use to reference to the full Options object with defaults
+ */
 export interface CodeGenOptions extends Options, SwaggerOption {}
-// All options except the swagger object are optional when passing in options
+
+/**
+ * All options except the swagger object are optional when passing in options
+ */
 export interface ProvidedCodeGenOptions
   extends Partial<Options>,
     SwaggerOption {}
 
+/**
+ * Merge passed options with the default options.
+ */
 export function makeOptions(options: ProvidedCodeGenOptions): CodeGenOptions {
   return {
     ...DEFAULT_OPTIONS,

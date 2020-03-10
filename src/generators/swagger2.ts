@@ -1,11 +1,7 @@
 import { CodeGenOptions } from "../options/options";
 import { transformToCodeWithMustache } from "../transform/transformToCodeWithMustache";
 import { getViewForSwagger2, ViewData } from "../getViewForSwagger2";
-
-interface CodeGenerator {
-  getViewData(opts: CodeGenOptions): ViewData;
-  getCode(opts: CodeGenOptions): string;
-}
+import { CodeGenerator } from "./codeGenerator";
 
 function verifyThatWeAreGeneratingForSwagger2(opts: CodeGenOptions): void {
   if (opts.swagger.swagger !== "2.0") {

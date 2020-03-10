@@ -53,7 +53,7 @@ export function makeOptions(options: ProvidedCodeGenOptions): CodeGenOptions {
 /**
  * Validate that the options have required variables for custom generation.
  */
-export function validOptions(options: ProvidedCodeGenOptions): void {
+export function validateOptions(options: ProvidedCodeGenOptions): void {
   // TODO: Why do we not check for the existence of the type template?
   if (
     !options.template ||

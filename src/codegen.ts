@@ -1,7 +1,7 @@
 import {
   ProvidedCodeGenOptions,
   makeOptions,
-  validOptions
+  validateOptions
 } from "./options/options";
 import { transformToCodeWithMustache } from "./transform/transformToCodeWithMustache";
 import { Swagger2Gen } from "./generators/swagger2";
@@ -16,7 +16,7 @@ export const CodeGen = {
     return enhanceCode(Swagger2Gen.getCode(options), options);
   },
   getCustomCode: function(opts: ProvidedCodeGenOptions) {
-    validOptions(opts);
+    validateOptions(opts);
 
     const options = makeOptions(opts);
 

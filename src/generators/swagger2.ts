@@ -10,12 +10,12 @@ function verifyThatWeAreGeneratingForSwagger2(opts: CodeGenOptions): void {
 }
 
 export const Swagger2Gen: CodeGenerator = {
-  getViewData: function(opts: CodeGenOptions): ViewData {
+  getViewData: opts => {
     verifyThatWeAreGeneratingForSwagger2(opts);
 
     return getViewForSwagger2(opts);
   },
-  getCode: function(opts: CodeGenOptions): string {
+  getCode: opts => {
     const data = this.getViewData(opts);
     return transformToCodeWithMustache(data, opts.template, opts.mustache);
   }

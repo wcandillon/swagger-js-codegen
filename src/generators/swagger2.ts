@@ -1,6 +1,6 @@
 import { CodeGenOptions } from "../options/options";
 import { transformToCodeWithMustache } from "../transform/transformToCodeWithMustache";
-import { getViewForSwagger2, ViewData } from "../getViewForSwagger2";
+import { getViewForSwagger2 } from "../getViewForSwagger2";
 import { CodeGenerator } from "./codeGenerator";
 
 function verifyThatWeAreGeneratingForSwagger2(opts: CodeGenOptions): void {
@@ -16,7 +16,7 @@ export const Swagger2Gen: CodeGenerator = {
     return getViewForSwagger2(opts);
   },
   getCode: opts => {
-    const data = this.getViewData(opts);
+    const data = Swagger2Gen.getViewData(opts);
     return transformToCodeWithMustache(data, opts.template, opts.mustache);
   }
 };

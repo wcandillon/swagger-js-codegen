@@ -100,7 +100,7 @@ export class {{&className}} {
             req.send(body);
         
             if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 

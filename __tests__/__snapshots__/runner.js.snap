@@ -157,7 +157,7 @@ export class UberApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -275,7 +275,7 @@ export class UberApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             if (parameters['latitude'] !== undefined) {
                 queryParameters['latitude'] = this.convertParameterCollectionFormat(
@@ -380,7 +380,7 @@ export class UberApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             path = path.replace(
                 '{id}',
@@ -508,7 +508,7 @@ export class UberApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             if (parameters['startLatitude'] !== undefined) {
                 queryParameters['start_latitude'] = this.convertParameterCollectionFormat(
@@ -647,7 +647,7 @@ export class UberApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             if (parameters['startLatitude'] !== undefined) {
                 queryParameters['start_latitude'] = this.convertParameterCollectionFormat(
@@ -734,7 +734,7 @@ export class UberApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             if (parameters.$queryParameters) {
                 queryParameters = {
@@ -805,7 +805,7 @@ export class UberApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             if (parameters['offset'] !== undefined) {
                 queryParameters['offset'] = this.convertParameterCollectionFormat(
@@ -1010,7 +1010,7 @@ export class PetshopApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -1113,8 +1113,8 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
-            headers['Content-Type'] = 'application/json';
+            headers['accept'] = 'application/xml, application/json';
+            headers['content-type'] = 'application/json';
 
             if (parameters['body'] !== undefined) {
                 body = parameters['body'];
@@ -1180,8 +1180,8 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
-            headers['Content-Type'] = 'application/json';
+            headers['accept'] = 'application/xml, application/json';
+            headers['content-type'] = 'application/json';
 
             if (parameters['body'] !== undefined) {
                 body = parameters['body'];
@@ -1253,7 +1253,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['status'] !== undefined) {
                 queryParameters['status'] = this.convertParameterCollectionFormat(
@@ -1327,7 +1327,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             path = path.replace(
                 '{petId}',
@@ -1410,8 +1410,8 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
-            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            headers['accept'] = 'application/xml, application/json';
+            headers['content-type'] = 'application/x-www-form-urlencoded';
 
             path = path.replace(
                 '{petId}',
@@ -1500,7 +1500,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['apiKey'] !== undefined) {
                 headers['api_key'] = parameters['apiKey'];
@@ -1587,8 +1587,8 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
-            headers['Content-Type'] = 'multipart/form-data';
+            headers['accept'] = 'application/json';
+            headers['content-type'] = 'multipart/form-data';
 
             path = path.replace(
                 '{petId}',
@@ -1661,7 +1661,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/json';
+            headers['accept'] = 'application/json';
 
             if (parameters.$queryParameters) {
                 queryParameters = {
@@ -1717,7 +1717,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['body'] !== undefined) {
                 body = parameters['body'];
@@ -1791,7 +1791,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             path = path.replace(
                 '{orderId}',
@@ -1866,7 +1866,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             path = path.replace(
                 '{orderId}',
@@ -1935,7 +1935,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['body'] !== undefined) {
                 body = parameters['body'];
@@ -2005,7 +2005,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['body'] !== undefined) {
                 body = parameters['body'];
@@ -2075,7 +2075,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['body'] !== undefined) {
                 body = parameters['body'];
@@ -2158,7 +2158,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters['username'] !== undefined) {
                 queryParameters['username'] = this.convertParameterCollectionFormat(
@@ -2231,7 +2231,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             if (parameters.$queryParameters) {
                 queryParameters = {
@@ -2293,7 +2293,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             path = path.replace(
                 '{username}',
@@ -2371,7 +2371,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             path = path.replace(
                 '{username}',
@@ -2455,7 +2455,7 @@ export class PetshopApi {
         let headers: RequestHeaders = {};
         let form: any = {};
         return new Promise((resolve, reject) => {
-            headers['Accept'] = 'application/xml, application/json';
+            headers['accept'] = 'application/xml, application/json';
 
             path = path.replace(
                 '{username}',
@@ -2594,7 +2594,7 @@ export class UsersApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -2977,7 +2977,7 @@ export class AddpropsApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -3198,7 +3198,7 @@ export class CollectionformatApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -3544,7 +3544,7 @@ export class ProtectedApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -3912,7 +3912,7 @@ export class RefApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -4193,7 +4193,7 @@ export class ResponsesApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -4408,7 +4408,7 @@ export class RootpathApi {
             req.send(body);
 
             if (typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 

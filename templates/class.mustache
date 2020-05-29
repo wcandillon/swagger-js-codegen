@@ -96,6 +96,12 @@ export class {{&className}} {
      
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({...headers});
+        }
+
+        req.set(headers);
+
         if(body) {
             req.send(body);
         
@@ -108,12 +114,6 @@ export class {{&className}} {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({...headers});
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);

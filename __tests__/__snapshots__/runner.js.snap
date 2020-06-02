@@ -153,6 +153,14 @@ export class UberApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -165,14 +173,6 @@ export class UberApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -1006,6 +1006,14 @@ export class PetshopApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -1018,14 +1026,6 @@ export class PetshopApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -2590,6 +2590,14 @@ export class UsersApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -2602,14 +2610,6 @@ export class UsersApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -2973,6 +2973,14 @@ export class AddpropsApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -2985,14 +2993,6 @@ export class AddpropsApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -3194,6 +3194,14 @@ export class CollectionformatApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -3206,14 +3214,6 @@ export class CollectionformatApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -3540,6 +3540,14 @@ export class ProtectedApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -3552,14 +3560,6 @@ export class ProtectedApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -3908,6 +3908,14 @@ export class RefApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -3920,14 +3928,6 @@ export class RefApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -4189,6 +4189,14 @@ export class ResponsesApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -4201,14 +4209,6 @@ export class ResponsesApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);
@@ -4404,6 +4404,14 @@ export class RootpathApi {
 
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({
+                ...headers
+            });
+        }
+
+        req.set(headers);
+
         if (body) {
             req.send(body);
 
@@ -4416,14 +4424,6 @@ export class RootpathApi {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({
-                ...headers
-            });
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);

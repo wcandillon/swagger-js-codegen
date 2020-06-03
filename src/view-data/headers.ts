@@ -11,7 +11,7 @@ export function getHeadersForMethod(
 
   if (produces) {
     headers.push({
-      name: "Accept",
+      name: "accept",
       value: `'${produces.join(", ")}'`
     });
   }
@@ -19,7 +19,7 @@ export function getHeadersForMethod(
   const consumes = op.consumes || swagger.consumes;
   if (consumes) {
     const preferredContentType = consumes[0] || "";
-    headers.push({ name: "Content-Type", value: `'${preferredContentType}'` });
+    headers.push({ name: "content-type", value: `'${preferredContentType}'` });
   }
 
   return headers;

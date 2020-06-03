@@ -96,11 +96,17 @@ export class {{&className}} {
      
         req = req.query(queryParameters);
 
+        if (this.requestHeadersHandler) {
+            headers = this.requestHeadersHandler({...headers});
+        }
+
+        req.set(headers);
+
         if(body) {
             req.send(body);
         
             if(typeof(body) === 'object' && !(body.constructor.name === 'Buffer')) {
-                headers['Content-Type'] = 'application/json';
+                headers['content-type'] = 'application/json';
             }
         }
 
@@ -108,12 +114,6 @@ export class {{&className}} {
             req.type('form');
             req.send(form);
         }
-
-        if (this.requestHeadersHandler) {
-            headers = this.requestHeadersHandler({...headers});
-        }
-
-        req.set(headers);
 
         if (opts.$retries && opts.$retries > 0) {
             req.retry(opts.$retries);

@@ -1,7 +1,7 @@
 {
   "name": "swagger-typescript-codegen",
   "main": "./lib/codegen.js",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A Swagger Codegenerator tailored for typescript.",
   "scripts": {
     "pretest": "npm run build",
@@ -37,9 +37,9 @@
     "commander": "^2.19.0",
     "js-beautify": "^1.8.9",
     "jshint": "^2.9.7",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mustache": "^3.0.1",
-    "update-notifier": "^2.5.0"
+    "update-notifier": "^4.1.0"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",

@@ -79,20 +79,19 @@ describe("getViewForSwagger2", () => {
         }
       });
       const view = getViewForSwagger2(options);
-      console.log(JSON.stringify(view.definitions));
       expect(view.definitions.length).toEqual(1);
       expect(view.definitions[0].tsType).toEqual(
-        expect.objectContaining({ isRequired: true })
+        expect.objectContaining({ isRequired: true }) //this still confuses me
       );
       expect(view.definitions[0].tsType.properties).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             name: "anyProperty",
-            isRequired: false // should be true
+            isRequired: true
           }),
           expect.objectContaining({
             name: "anotherProperty",
-            isRequired: false // should be true
+            isRequired: true
           }),
           expect.objectContaining({
             name: "notRequiredProperty",

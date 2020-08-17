@@ -56,8 +56,10 @@ export function makeObjectTypeSpec(
   swagger: Swagger
 ): ObjectTypeSpec {
   // TODO: We threat everything that reaches this point as an object but not the required properties? (Removing the check for object makes the tests fail)
+  // NOTE: object might not be set, because everything without a type is treated as object.
   const requiredPropertyNames =
-    swaggerType.type === "object" && isArray(swaggerType.required)
+    (!swaggerType.type || swaggerType.type === "object") &&
+    isArray(swaggerType.required)
       ? swaggerType.required
       : [];
 

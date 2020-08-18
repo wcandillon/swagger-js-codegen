@@ -29,7 +29,7 @@ export function extractAdditionalPropertiesType(
   swaggerType: SwaggerType,
   swagger: Swagger
 ): TypeSpec | undefined {
-  if (swaggerType.type !== "object") {
+  if (swaggerType.type && swaggerType.type !== "object") {
     return undefined;
   }
   if (swaggerType.additionalProperties === false) {

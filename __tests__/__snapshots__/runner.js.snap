@@ -27,6 +27,8 @@ export type Product = {
     'display_name' ? : string;
     'capacity' ? : string;
     'image' ? : string;
+} & {
+    [key: string]: any;
 };
 
 export type PriceEstimate = {
@@ -37,6 +39,8 @@ export type PriceEstimate = {
     'low_estimate' ? : number;
     'high_estimate' ? : number;
     'surge_multiplier' ? : number;
+} & {
+    [key: string]: any;
 };
 
 export type Profile = {
@@ -45,10 +49,14 @@ export type Profile = {
     'email' ? : string;
     'picture' ? : string;
     'promo_code' ? : string;
+} & {
+    [key: string]: any;
 };
 
 export type Activity = {
     'uuid' ? : string;
+} & {
+    [key: string]: any;
 };
 
 export type Activities = {
@@ -56,12 +64,16 @@ export type Activities = {
     'limit' ? : number;
     'count' ? : number;
     'history' ? : Activity;
+} & {
+    [key: string]: any;
 };
 
 export type Error = {
     'code' ? : number;
     'message' ? : string;
     'fields' ? : string;
+} & {
+    [key: string]: any;
 };
 
 export type Response_getProducts_200 = Array < Product >
@@ -3447,20 +3459,24 @@ export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRe
 export type CallbackHandler = (err: any, res ? : request.Response) => void;
 
 export type Authentication = {
-    'token_type' ? : \\"bearer\\";
-    'expiration_date' ? : {};
-    'access_token' ? : string;
-    'refresh_token' ? : string;
-    'project_tokens' ? : {};
+    'token_type': \\"bearer\\";
+    'expiration_date': {};
+    'access_token': string;
+    'refresh_token': string;
+    'project_tokens': {};
+} & {
+    [key: string]: any;
 };
 
 export type Error = {
-    'code' ? : string;
-    'message' ? : string;
+    'code': string;
+    'message': string;
     'description' ? : string;
     'module' ? : string;
     'line-number' ? : string;
     'column-number' ? : string;
+} & {
+    [key: string]: any;
 };
 
 export type Logger = {

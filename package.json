@@ -6,6 +6,7 @@
   "scripts": {
     "pretest": "npm run build",
     "test": "grunt && jest",
+    "updateSnapshots": "grunt && jest --updateSnapshot",
     "clean": "rm -rf tmp-*",
     "build": "tsc --project tsconfig.json",
     "build:watch": "npm run build -- --watch",

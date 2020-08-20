@@ -54,6 +54,54 @@ describe("getViewForSwagger2", () => {
     expect(getViewForSwagger2(options)).toEqual(makeViewData({}));
   });
 
+  describe("should map objects correctly", () => {
+    it("can handle required properties", () => {
+      const options = makeOptions({
+        swagger: {
+          ...swagger,
+          definitions: {
+            typeWithRequiredProperties: {
+              minItems: 0,
+              required: ["anyProperty", "anotherProperty"],
+              properties: {
+                anyProperty: {
+                  type: "string"
+                },
+                anotherProperty: {
+                  type: "string"
+                },
+                notRequiredProperty: {
+                  type: "string"
+                }
+              }
+            }
+          } as any
+        }
+      });
+      const view = getViewForSwagger2(options);
+      expect(view.definitions.length).toEqual(1);
+      expect(view.definitions[0].tsType).toEqual(
+        expect.objectContaining({ isRequired: true }) //this still confuses me
+      );
+      expect(view.definitions[0].tsType.properties).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: "anyProperty",
+            isRequired: true
+          }),
+          expect.objectContaining({
+            name: "anotherProperty",
+            isRequired: true
+          }),
+          expect.objectContaining({
+            name: "notRequiredProperty",
+            isRequired: false
+          })
+        ])
+      );
+    });
+  });
+
   describe("should honor includeDeprecated option", () => {
     let deprecatedSwagger: Swagger;
 

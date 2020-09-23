@@ -8,6 +8,7 @@ export default class {{&className}} {
     method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH',
     query: {[string]: mixed},
     body?: {[string]: any} | string | Array<any>,
+    headers?: {[string]: any} | string | Array<any>,
   ) {
     throw new Error("Must be implemented");
   }

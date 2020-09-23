@@ -6,10 +6,11 @@ static async {{&methodName}}(
     {{/parameters}}
   }
 {{/hasParameters}}
-): Promise<{{#methodResponse}}"{{&methodResponse}}"{{/methodResponse}}{{#methodFlowType}}{{> type}}{{/methodFlowType}}> {
+): Promise<{{#methodResponse}}"{{&methodResponse}}"{{/methodResponse}}{{#methodFlowType}}{{> type}}{{/methodFlowType}}{{^methodResponse}}{{^methodFlowType}}any{{/methodFlowType}}{{/methodResponse}}> {
   let path = '{{&path}}';
   let body;
   let query = {};
+  let headers = {};
   {{#parameters}}
     {{#required}}
       if(parameters['{{&camelCaseName}}'] === undefined) {
@@ -20,6 +21,17 @@ static async {{&methodName}}(
     {{#isPathParameter}}
       path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
     {{/isPathParameter}}
+
+    {{#isHeaderParameter}}
+        {{#isSingleton}}
+            headers['{{&name}}'] = '{{&singleton}}';
+        {{/isSingleton}}
+        {{^isSingleton}}
+            if(parameters['{{&camelCaseName}}'] !== undefined) {
+                headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
+            }
+        {{/isSingleton}}
+    {{/isHeaderParameter}}
 
     {{#isBodyParameter}}
       if(parameters['{{&camelCaseName}}'] !== undefined) {
@@ -35,5 +47,5 @@ static async {{&methodName}}(
 
   {{/parameters}}
 
-  return await this.request(path, '{{method}}', query, body);
+  return await this.request(path, '{{method}}', query, body, headers);
 }

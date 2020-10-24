@@ -30,7 +30,7 @@ class Api {
   paramsToObject(params) {
     let query = params.substr(1);
     let result = {};
-    query.split('&').forEach(function(part) {
+    query.split('&').forEach(function (part) {
       let item = part.split('=');
       result[item[0]] = decodeURIComponent(item[1]);
     });
@@ -39,7 +39,9 @@ class Api {
 
   mergeQueryParams(parameters, queryParameters) {
     if (parameters.$queryParameters) {
-      Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+      Object.keys(parameters.$queryParameters).forEach(function (
+        parameterName,
+      ) {
         const parameter = parameters.$queryParameters[parameterName];
         queryParameters[parameterName] = parameter;
       });
@@ -104,7 +106,7 @@ class Api {
       headers,
       body,
     })
-      .then(response => {
+      .then((response) => {
         if (checkFor401) {
           if (response.status === 401) {
             if (typeof this._onResponseUnauthorized === 'function') {
@@ -134,8 +136,8 @@ class Api {
           throw error;
         }
       })
-      .catch(error => {
-        return error.response.json().then(error_details => {
+      .catch((error) => {
+        return error.response.json().then((error_details) => {
           error.details = error_details;
           throw error;
         });
@@ -459,7 +461,7 @@ class Api {
   paramsToObject(params) {
     let query = params.substr(1);
     let result = {};
-    query.split('&').forEach(function(part) {
+    query.split('&').forEach(function (part) {
       let item = part.split('=');
       result[item[0]] = decodeURIComponent(item[1]);
     });
@@ -468,7 +470,9 @@ class Api {
 
   mergeQueryParams(parameters, queryParameters) {
     if (parameters.$queryParameters) {
-      Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+      Object.keys(parameters.$queryParameters).forEach(function (
+        parameterName,
+      ) {
         const parameter = parameters.$queryParameters[parameterName];
         queryParameters[parameterName] = parameter;
       });
@@ -533,7 +537,7 @@ class Api {
       headers,
       body,
     })
-      .then(response => {
+      .then((response) => {
         if (checkFor401) {
           if (response.status === 401) {
             if (typeof this._onResponseUnauthorized === 'function') {
@@ -563,8 +567,8 @@ class Api {
           throw error;
         }
       })
-      .catch(error => {
-        return error.response.json().then(error_details => {
+      .catch((error) => {
+        return error.response.json().then((error_details) => {
           error.details = error_details;
           throw error;
         });
@@ -827,7 +831,9 @@ import 'isomorphic-fetch';
 
 export type ThenArg<T> = T extends Promise<infer U>
   ? U
-  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+  : T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T;
 
 type QueryParameters = {
   [key: string]:
@@ -1186,7 +1192,9 @@ import 'isomorphic-fetch';
 
 export type ThenArg<T> = T extends Promise<infer U>
   ? U
-  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+  : T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T;
 
 type QueryParameters = {
   [key: string]:

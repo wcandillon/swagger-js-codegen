@@ -112,6 +112,9 @@ class {{&className}} {
           else if (response.headers.get('Content-Type').includes('application/pdf')) {
             return response.blob();
           }
+          else if (response.headers.get('Content-Type').includes('text/plain')) {
+            return response.text();
+          }
           return {};
         } else {
           let error = new Error(response.statusText);
@@ -183,3 +186,4 @@ class {{&className}} {
 }
 
 export default new {{&className}}();
+export { {{&className}} };

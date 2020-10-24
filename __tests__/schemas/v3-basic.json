@@ -81,6 +81,20 @@
                           "_id": { "type": "string", "readOnly": true },
                           "name": { "type": "string", "readOnly": true },
                           "ttl": { "type": "integer" },
+                          "status_log": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "ips": {
+                                  "type": ["array", "null"],
+                                  "items": {
+                                    "type": ["string", "null"]
+                                  }
+                                }
+                              }
+                            }
+                          },
                           "date": {
                             "type": "string",
                             "format": "date-time"

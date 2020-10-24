@@ -95,6 +95,20 @@
                       },
                       "ttl": {
                         "type": "integer"
+                      },
+                      "status_log": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "ips": {
+                              "type": ["array", "null"],
+                              "items": {
+                                "type": ["string", "null"]
+                              }
+                            }
+                          }
+                        }
                       }
                     },
                     "type": "object"

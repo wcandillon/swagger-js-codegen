@@ -128,6 +128,10 @@ class Api {
             response.headers.get('Content-Type').includes('application/pdf')
           ) {
             return response.blob();
+          } else if (
+            response.headers.get('Content-Type').includes('text/plain')
+          ) {
+            return response.text();
           }
           return {};
         } else {
@@ -268,7 +272,7 @@ class Api {
    * @param {} pathParameter1 - Parameter 1
    * @param {} pathParameter2 - Parameter 2
    * @param {} pathParameter3 - Parameter 3
-   * @param {} parameters. -
+   * @param {} parameters.body -
    */
   simplePostOperation(
     pathParameter1,
@@ -293,8 +297,8 @@ class Api {
 
     path = path.replace('{path_parameter_3}', pathParameter3);
 
-    if (typeof parameters[''] !== 'undefined') {
-      body = parameters[''];
+    if (typeof parameters['body'] !== 'undefined') {
+      body = parameters['body'];
     }
 
     queryParameters = this.mergeQueryParams(parameters, queryParameters);
@@ -312,7 +316,7 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
-   * @param {} parameters. -
+   * @param {} parameters.body -
    */
   simpleUploadOperation(parameters = {}) {
     let path = '/upload';
@@ -325,8 +329,8 @@ class Api {
     headers.append('Content-Type', 'multipart/form-data');
     headers.append('Accept', 'application/json');
 
-    if (typeof parameters[''] !== 'undefined') {
-      form[''] = parameters[''];
+    if (typeof parameters['body'] !== 'undefined') {
+      form['body'] = parameters['body'];
     }
 
     queryParameters = this.mergeQueryParams(parameters, queryParameters);
@@ -428,6 +432,7 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;
 
@@ -559,6 +564,10 @@ class Api {
             response.headers.get('Content-Type').includes('application/pdf')
           ) {
             return response.blob();
+          } else if (
+            response.headers.get('Content-Type').includes('text/plain')
+          ) {
+            return response.text();
           }
           return {};
         } else {
@@ -821,6 +830,7 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;
 
@@ -941,7 +951,16 @@ class Api {
 
     const response = await fetch(urlWithParams, { method, headers, body });
     if (response.ok) {
-      return response.json();
+      if (response.headers.get('Content-Type').includes('application/json')) {
+        return response.json();
+      } else if (
+        response.headers.get('Content-Type').includes('application/pdf')
+      ) {
+        return response.blob();
+      } else if (response.headers.get('Content-Type').includes('text/plain')) {
+        return response.text();
+      }
+      return {};
     } else {
       const err = new ApiError(response.statusText);
       err.details = await response.json();
@@ -970,6 +989,10 @@ class Api {
       name?: string;
 
       ttl?: number;
+
+      status_log?: Array<{
+        ips?: Array<string | null> | null;
+      }>;
 
       date?: string;
     }>;
@@ -1183,6 +1206,7 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;
 
@@ -1302,7 +1326,16 @@ class Api {
 
     const response = await fetch(urlWithParams, { method, headers, body });
     if (response.ok) {
-      return response.json();
+      if (response.headers.get('Content-Type').includes('application/json')) {
+        return response.json();
+      } else if (
+        response.headers.get('Content-Type').includes('application/pdf')
+      ) {
+        return response.blob();
+      } else if (response.headers.get('Content-Type').includes('text/plain')) {
+        return response.text();
+      }
+      return {};
     } else {
       const err = new ApiError(response.statusText);
       err.details = await response.json();
@@ -1334,6 +1367,10 @@ class Api {
       name?: string;
 
       ttl?: number;
+
+      status_log?: Array<{
+        ips?: Array<string | null> | null;
+      }>;
     }>;
   }> {
     let path =
@@ -1493,5 +1530,6 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;

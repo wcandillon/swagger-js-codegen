@@ -122,7 +122,16 @@ class {{&className}} {
 
         const response = await fetch(urlWithParams, { method, headers, body });
         if(response.ok) {
-            return response.json();
+            if (response.headers.get('Content-Type').includes('application/json')) {
+              return response.json();
+            }
+            else if (response.headers.get('Content-Type').includes('application/pdf')) {
+              return response.blob();
+            }
+            else if (response.headers.get('Content-Type').includes('text/plain')) {
+              return response.text();
+            }
+            return {};
         } else {
             const err = new ApiError(response.statusText);
             err.details = await response.json();
@@ -137,3 +146,4 @@ class {{&className}} {
 }
 
 export default new {{&className}}();
+export { {{&className}} };

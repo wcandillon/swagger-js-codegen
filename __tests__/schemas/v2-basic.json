@@ -38,7 +38,9 @@
         }
       ],
       "get": {
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "required": true,
@@ -58,7 +60,10 @@
             "name": "query_param_3",
             "in": "query",
             "type": "string",
-            "enum": ["ACTIVE", "INACTIVE"],
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
             "default": "ACTIVE"
           },
           {
@@ -69,7 +74,15 @@
               "type": "string"
             },
             "collectionFormat": "pipes",
-            "default": [1, "Two", "Three", 4]
+            "default": [
+              1,
+              "Two",
+              "Three",
+              4
+            ]
+          },
+          {
+            "$ref": "#/parameters/QueryParam5"
           }
         ],
         "responses": {
@@ -95,6 +108,26 @@
                       },
                       "ttl": {
                         "type": "integer"
+                      },
+                      "status_log": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "ips": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            }
+                          }
+                        }
                       }
                     },
                     "type": "object"
@@ -125,7 +158,10 @@
                   "type": "string"
                 }
               },
-              "required": ["status", "name"],
+              "required": [
+                "status",
+                "name"
+              ],
               "type": "object"
             }
           }
@@ -134,11 +170,17 @@
       },
       "post": {
         "operationId": "simplePostOperation",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "security": [
           {
-            "securityUser": ["scope1"]
+            "securityUser": [
+              "scope1"
+            ]
           }
         ],
         "parameters": [
@@ -165,9 +207,15 @@
                   "type": "integer"
                 },
                 "ips": {
-                  "type": ["array", "null"],
+                  "type": [
+                    "array",
+                    "null"
+                  ],
                   "items": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   }
                 }
               },
@@ -179,14 +227,7 @@
           "201": {
             "description": "Something created",
             "schema": {
-              "additionalProperties": false,
-              "properties": {
-                "_id": {
-                  "readOnly": true,
-                  "type": "string"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/Something"
             }
           },
           "409": {
@@ -209,7 +250,10 @@
                   "type": "string"
                 }
               },
-              "required": ["status", "name"],
+              "required": [
+                "status",
+                "name"
+              ],
               "type": "object"
             }
           },
@@ -233,7 +277,10 @@
                   "type": "string"
                 }
               },
-              "required": ["status", "name"],
+              "required": [
+                "status",
+                "name"
+              ],
               "type": "object"
             }
           }
@@ -243,7 +290,9 @@
     },
     "/endpoint-without-ok-response": {
       "get": {
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "302": {
             "description": "Just simple get redirect operation",
@@ -258,11 +307,15 @@
     },
     "/upload": {
       "post": {
-        "tags": ["Upload"],
+        "tags": [
+          "Upload"
+        ],
         "operationId": "simpleUpload",
         "security": [
           {
-            "anySportnetUser": ["profile"]
+            "securityUser": [
+              "scope1"
+            ]
           }
         ],
         "description": "Upload new document",
@@ -275,7 +328,9 @@
             "description": "File to be uploaded"
           }
         ],
-        "consumes": ["multipart/form-data"],
+        "consumes": [
+          "multipart/form-data"
+        ],
         "responses": {
           "200": {
             "description": "Detail",
@@ -297,6 +352,25 @@
           }
         }
       }
+    }
+  },
+  "definitions": {
+    "Something": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "_id": {
+          "readOnly": true,
+          "type": "string"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "QueryParam5": {
+      "name": "queryParam5",
+      "type": "string",
+      "in": "query"
     }
   }
 }

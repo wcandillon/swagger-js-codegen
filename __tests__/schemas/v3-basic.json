@@ -1,10 +1,20 @@
 {
   "openapi": "3.0.1",
-  "info": { "version": "1.0.0", "title": "Simple OA3 API" },
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple OA3 API"
+  },
   "servers": [
     {
       "url": "/api/{version}",
-      "variables": { "version": { "enum": ["v1"], "default": "v1" } }
+      "variables": {
+        "version": {
+          "enum": [
+            "v1"
+          ],
+          "default": "v1"
+        }
+      }
     }
   ],
   "paths": {
@@ -16,21 +26,30 @@
           "name": "path_parameter_1",
           "description": "Parameter 1",
           "required": true,
-          "schema": { "type": "string", "minLength": 1 }
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         {
           "in": "path",
           "name": "path_parameter_2",
           "description": "Parameter 2",
           "required": true,
-          "schema": { "type": "string", "minLength": 1 }
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         {
           "in": "path",
           "name": "path_parameter_3",
           "description": "Parameter 3",
           "required": true,
-          "schema": { "type": "string", "minLength": 1 }
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       ],
       "get": {
@@ -59,9 +78,32 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["ACTIVE", "INACTIVE"],
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ],
               "default": "ACTIVE"
             }
+          },
+          {
+            "name": "queryParam4",
+            "in": "query",
+            "style": "pipeDelimited",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                1,
+                "Two",
+                "Three",
+                4
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/QueryParam5"
           }
         ],
         "responses": {
@@ -78,12 +120,40 @@
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
-                          "_id": { "type": "string", "readOnly": true },
-                          "name": { "type": "string", "readOnly": true },
-                          "ttl": { "type": "integer" },
-                          "date": {
+                          "_id": {
                             "type": "string",
-                            "format": "date-time"
+                            "readOnly": true
+                          },
+                          "date": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "readOnly": true
+                          },
+                          "ttl": {
+                            "type": "integer"
+                          },
+                          "status_log": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "ips": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  }
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -99,13 +169,26 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["status", "name"],
+                  "required": [
+                    "status",
+                    "name"
+                  ],
                   "properties": {
-                    "status": { "type": "integer" },
-                    "name": { "type": "string" },
-                    "description": { "type": "string" },
-                    "payload": { "type": "object" },
-                    "userinfo": { "type": "string" }
+                    "status": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "payload": {
+                      "type": "object"
+                    },
+                    "userinfo": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -115,7 +198,11 @@
       },
       "post": {
         "operationId": "simplePostOperation",
-        "security": [{ "securityUser": [] }],
+        "security": [
+          {
+            "securityUser": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -123,10 +210,33 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "_id": { "type": "string", "readOnly": true },
-                  "name": { "type": "string", "readOnly": true },
-                  "ttl": { "type": "integer" },
-                  "date": { "type": "string", "format": "date-time" }
+                  "_id": {
+                    "type": "string",
+                    "readOnly": true
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "name": {
+                    "type": "string",
+                    "readOnly": true
+                  },
+                  "ttl": {
+                    "type": "integer"
+                  },
+                  "ips": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
                 }
               }
             }
@@ -138,11 +248,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "_id": { "type": "string", "readOnly": true }
-                  }
+                  "$ref": "#/components/schemas/Something"
                 }
               }
             }
@@ -153,13 +259,26 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["status", "name"],
+                  "required": [
+                    "status",
+                    "name"
+                  ],
                   "properties": {
-                    "status": { "type": "integer" },
-                    "name": { "type": "string" },
-                    "description": { "type": "string" },
-                    "payload": { "type": "object" },
-                    "userinfo": { "type": "string" }
+                    "status": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "payload": {
+                      "type": "object"
+                    },
+                    "userinfo": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -171,13 +290,26 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["status", "name"],
+                  "required": [
+                    "status",
+                    "name"
+                  ],
                   "properties": {
-                    "status": { "type": "integer" },
-                    "name": { "type": "string" },
-                    "description": { "type": "string" },
-                    "payload": { "type": "object" },
-                    "userinfo": { "type": "string" }
+                    "status": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "payload": {
+                      "type": "object"
+                    },
+                    "userinfo": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -189,14 +321,23 @@
     "/upload": {
       "post": {
         "operationId": "simpleUploadOperation",
-        "security": [{ "securityUser": [] }],
+        "security": [
+          {
+            "securityUser": []
+          }
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
-                "required": ["upload"],
+                "required": [
+                  "upload"
+                ],
                 "properties": {
-                  "upload": { "type": "string", "format": "base64" }
+                  "upload": {
+                    "type": "string",
+                    "format": "base64"
+                  }
                 }
               }
             }
@@ -211,65 +352,9 @@
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
-                    "_id": { "type": "string", "readOnly": true }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/endpoint-with-query-parameter-delimited-by-pipe": {
-      "x-exegesis-controller": "controllers/ctrl2",
-      "get": {
-        "operationId": "adminGetSuitableAgeCategories",
-        "parameters": [
-          {
-            "name": "seasonIds",
-            "in": "query",
-            "explode": false,
-            "style": "pipeDelimited",
-            "required": false,
-            "schema": { "type": "array", "items": { "type": "string" } }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Get age categories by seasonId and appSpace sport",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["items"],
-                  "properties": {
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "_id": { "type": "string" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "default": {
-              "description": "Generic error response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "required": ["status", "name"],
-                    "properties": {
-                      "status": { "type": "integer" },
-                      "name": { "type": "string" },
-                      "description": { "type": "string" },
-                      "payload": { "type": "object" },
-                      "userinfo": { "type": "string" }
+                    "_id": {
+                      "type": "string",
+                      "readOnly": true
                     }
                   }
                 }
@@ -322,7 +407,9 @@
                         }
                       },
                       {
-                        "required": ["_id"]
+                        "required": [
+                          "_id"
+                        ]
                       }
                     ]
                   }
@@ -335,6 +422,27 @@
     }
   },
   "components": {
+    "schemas": {
+      "Something": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "_id": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      }
+    },
+    "parameters": {
+      "QueryParam5": {
+        "name": "queryParam5",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
     "securitySchemes": {
       "securityUser": {
         "type": "oauth2",

@@ -30,7 +30,7 @@ class Api {
   paramsToObject(params) {
     let query = params.substr(1);
     let result = {};
-    query.split('&').forEach(function(part) {
+    query.split('&').forEach(function (part) {
       let item = part.split('=');
       result[item[0]] = decodeURIComponent(item[1]);
     });
@@ -39,7 +39,9 @@ class Api {
 
   mergeQueryParams(parameters, queryParameters) {
     if (parameters.$queryParameters) {
-      Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+      Object.keys(parameters.$queryParameters).forEach(function (
+        parameterName,
+      ) {
         const parameter = parameters.$queryParameters[parameterName];
         queryParameters[parameterName] = parameter;
       });
@@ -104,7 +106,7 @@ class Api {
       headers,
       body,
     })
-      .then(response => {
+      .then((response) => {
         if (checkFor401) {
           if (response.status === 401) {
             if (typeof this._onResponseUnauthorized === 'function') {
@@ -118,14 +120,14 @@ class Api {
         }
 
         if (response.ok) {
-          if (
-            response.headers.get('Content-Type').includes('application/json')
-          ) {
+          const responseContentType =
+            (response.headers && response.headers.get('Content-Type')) || '';
+          if (responseContentType.includes('application/json')) {
             return response.json();
-          } else if (
-            response.headers.get('Content-Type').includes('application/pdf')
-          ) {
+          } else if (responseContentType.includes('application/pdf')) {
             return response.blob();
+          } else if (responseContentType.includes('text/plain')) {
+            return response.text();
           }
           return {};
         } else {
@@ -134,8 +136,8 @@ class Api {
           throw error;
         }
       })
-      .catch(error => {
-        return error.response.json().then(error_details => {
+      .catch((error) => {
+        return error.response.json().then((error_details) => {
           error.details = error_details;
           throw error;
         });
@@ -193,6 +195,8 @@ class Api {
    * @param {} parameters.queryParam1 -
    * @param {} parameters.queryParam2 -
    * @param {} parameters.queryParam3 -
+   * @param {} parameters.queryParam4 -
+   * @param {} parameters.queryParam5 -
    * @param {} pathParameter1 - Parameter 1
    * @param {} pathParameter2 - Parameter 2
    * @param {} pathParameter3 - Parameter 3
@@ -242,6 +246,25 @@ class Api {
       queryParameters['query_param_3'],
     );
 
+    queryParameters['queryParam4'] = [1, 'Two', 'Three', 4];
+
+    if (typeof parameters['queryParam4'] !== 'undefined') {
+      queryParameters['queryParam4'] = parameters['queryParam4'];
+    }
+
+    queryParameters['queryParam4'] = this.transformParameter(
+      queryParameters['queryParam4'],
+      'joinUsingPipes',
+    );
+
+    if (typeof parameters['queryParam5'] !== 'undefined') {
+      queryParameters['queryParam5'] = parameters['queryParam5'];
+    }
+
+    queryParameters['queryParam5'] = this.transformParameter(
+      queryParameters['queryParam5'],
+    );
+
     path = path.replace('{path_parameter_1}', pathParameter1);
 
     path = path.replace('{path_parameter_2}', pathParameter2);
@@ -266,7 +289,7 @@ class Api {
    * @param {} pathParameter1 - Parameter 1
    * @param {} pathParameter2 - Parameter 2
    * @param {} pathParameter3 - Parameter 3
-   * @param {} parameters. -
+   * @param {} parameters.body -
    */
   simplePostOperation(
     pathParameter1,
@@ -291,8 +314,8 @@ class Api {
 
     path = path.replace('{path_parameter_3}', pathParameter3);
 
-    if (typeof parameters[''] !== 'undefined') {
-      body = parameters[''];
+    if (typeof parameters['body'] !== 'undefined') {
+      body = parameters['body'];
     }
 
     queryParameters = this.mergeQueryParams(parameters, queryParameters);
@@ -310,7 +333,7 @@ class Api {
    *
    * @method
    * @param {object} parameters - method options and parameters
-   * @param {} parameters. -
+   * @param {} parameters.body -
    */
   simpleUploadOperation(parameters = {}) {
     let path = '/upload';
@@ -323,49 +346,14 @@ class Api {
     headers.append('Content-Type', 'multipart/form-data');
     headers.append('Accept', 'application/json');
 
-    if (typeof parameters[''] !== 'undefined') {
-      form[''] = parameters[''];
+    if (typeof parameters['body'] !== 'undefined') {
+      form['body'] = parameters['body'];
     }
 
     queryParameters = this.mergeQueryParams(parameters, queryParameters);
 
     return this.request(
       'POST',
-      \`\${this.baseUrl}\${path}\`,
-      body,
-      headers,
-      queryParameters,
-      form,
-    );
-  }
-  /**
-   *
-   * @method
-   * @param {object} parameters - method options and parameters
-   * @param {} parameters.seasonIds -
-   */
-  adminGetSuitableAgeCategories(parameters = {}) {
-    let path = '/endpoint-with-query-parameter-delimited-by-pipe';
-    let body = {};
-    let queryParameters = {};
-    let headers = new Headers();
-    let form = {};
-
-    headers.append('Accept', 'application/json');
-
-    if (typeof parameters['seasonIds'] !== 'undefined') {
-      queryParameters['seasonIds'] = parameters['seasonIds'];
-    }
-
-    queryParameters['seasonIds'] = this.transformParameter(
-      queryParameters['seasonIds'],
-      'joinUsingPipes',
-    );
-
-    queryParameters = this.mergeQueryParams(parameters, queryParameters);
-
-    return this.request(
-      'GET',
       \`\${this.baseUrl}\${path}\`,
       body,
       headers,
@@ -426,6 +414,7 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;
 
@@ -459,7 +448,7 @@ class Api {
   paramsToObject(params) {
     let query = params.substr(1);
     let result = {};
-    query.split('&').forEach(function(part) {
+    query.split('&').forEach(function (part) {
       let item = part.split('=');
       result[item[0]] = decodeURIComponent(item[1]);
     });
@@ -468,7 +457,9 @@ class Api {
 
   mergeQueryParams(parameters, queryParameters) {
     if (parameters.$queryParameters) {
-      Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+      Object.keys(parameters.$queryParameters).forEach(function (
+        parameterName,
+      ) {
         const parameter = parameters.$queryParameters[parameterName];
         queryParameters[parameterName] = parameter;
       });
@@ -533,7 +524,7 @@ class Api {
       headers,
       body,
     })
-      .then(response => {
+      .then((response) => {
         if (checkFor401) {
           if (response.status === 401) {
             if (typeof this._onResponseUnauthorized === 'function') {
@@ -547,14 +538,14 @@ class Api {
         }
 
         if (response.ok) {
-          if (
-            response.headers.get('Content-Type').includes('application/json')
-          ) {
+          const responseContentType =
+            (response.headers && response.headers.get('Content-Type')) || '';
+          if (responseContentType.includes('application/json')) {
             return response.json();
-          } else if (
-            response.headers.get('Content-Type').includes('application/pdf')
-          ) {
+          } else if (responseContentType.includes('application/pdf')) {
             return response.blob();
+          } else if (responseContentType.includes('text/plain')) {
+            return response.text();
           }
           return {};
         } else {
@@ -563,8 +554,8 @@ class Api {
           throw error;
         }
       })
-      .catch(error => {
-        return error.response.json().then(error_details => {
+      .catch((error) => {
+        return error.response.json().then((error_details) => {
           error.details = error_details;
           throw error;
         });
@@ -623,6 +614,7 @@ class Api {
    * @param {array} parameters.queryParam2 -
    * @param {string} parameters.queryParam3 -
    * @param {array} parameters.queryParam4 -
+   * @param {string} parameters.queryParam5 -
    * @param {string} pathParameter1 -
    * @param {string} pathParameter2 -
    * @param {string} pathParameter3 -
@@ -681,6 +673,14 @@ class Api {
     queryParameters['queryParam4'] = this.transformParameter(
       queryParameters['queryParam4'],
       'joinUsingPipes',
+    );
+
+    if (typeof parameters['queryParam5'] !== 'undefined') {
+      queryParameters['queryParam5'] = parameters['queryParam5'];
+    }
+
+    queryParameters['queryParam5'] = this.transformParameter(
+      queryParameters['queryParam5'],
     );
 
     path = path.replace('{path_parameter_1}', pathParameter1);
@@ -817,6 +817,7 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;
 
@@ -827,7 +828,9 @@ import 'isomorphic-fetch';
 
 export type ThenArg<T> = T extends Promise<infer U>
   ? U
-  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+  : T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T;
 
 type QueryParameters = {
   [key: string]:
@@ -838,6 +841,10 @@ type QueryParameters = {
     | boolean
     | boolean[]
     | undefined;
+};
+
+export type Something = {
+  _id?: string;
 };
 
 class ApiError {
@@ -935,7 +942,16 @@ class Api {
 
     const response = await fetch(urlWithParams, { method, headers, body });
     if (response.ok) {
-      return response.json();
+      const responseContentType =
+        (response.headers && response.headers.get('Content-Type')) || '';
+      if (responseContentType.includes('application/json')) {
+        return response.json();
+      } else if (responseContentType.includes('application/pdf')) {
+        return response.blob();
+      } else if (responseContentType.includes('text/plain')) {
+        return response.text();
+      }
+      return {};
     } else {
       const err = new ApiError(response.statusText);
       err.details = await response.json();
@@ -956,16 +972,22 @@ class Api {
       queryParam1: string;
       queryParam2?: Array<string>;
       queryParam3?: 'ACTIVE' | 'INACTIVE';
+      queryParam4?: Array<string>;
+      queryParam5?: string;
     },
   ): Promise<{
     items?: Array<{
       _id?: string;
 
+      date?: string;
+
       name?: string;
 
       ttl?: number;
 
-      date?: string;
+      status_log?: Array<{
+        ips?: Array<string | null> | null;
+      }>;
     }>;
   }> {
     let path =
@@ -1005,6 +1027,25 @@ class Api {
       queryParameters['query_param_3'],
     );
 
+    queryParameters['queryParam4'] = [1, 'Two', 'Three', 4];
+
+    if (typeof parameters['queryParam4'] !== 'undefined') {
+      queryParameters['queryParam4'] = parameters['queryParam4'];
+    }
+
+    queryParameters['queryParam4'] = this.transformParameter(
+      queryParameters['queryParam4'],
+      'joinUsingPipes',
+    );
+
+    if (typeof parameters['queryParam5'] !== 'undefined') {
+      queryParameters['queryParam5'] = parameters['queryParam5'];
+    }
+
+    queryParameters['queryParam5'] = this.transformParameter(
+      queryParameters['queryParam5'],
+    );
+
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
     path = path.replace('{path_parameter_2}', pathParameter2.toString());
@@ -1030,13 +1071,13 @@ class Api {
     pathParameter3: string,
     parameters: {} = {},
     body: {
+      date?: string;
+
       ttl?: number;
 
-      date?: string;
+      ips?: Array<string | null> | null;
     },
-  ): Promise<{
-    _id?: string;
-  }> {
+  ): Promise<Something> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
@@ -1092,43 +1133,6 @@ class Api {
   /**
    *
    * @method
-   * @name Api#adminGetSuitableAgeCategories
-   */
-  adminGetSuitableAgeCategories(
-    parameters: {
-      seasonIds?: Array<string>;
-    } = {},
-  ): Promise<{
-    items: Array<{
-      _id?: string;
-    }>;
-  }> {
-    let path = '/endpoint-with-query-parameter-delimited-by-pipe';
-    let headers: Headers = new Headers();
-    let queryParameters: QueryParameters = {};
-
-    headers.append('Accept', 'application/json');
-
-    if (typeof parameters['seasonIds'] !== 'undefined') {
-      queryParameters['seasonIds'] = parameters['seasonIds'];
-    }
-
-    queryParameters['seasonIds'] = this.transformParameter(
-      queryParameters['seasonIds'],
-      'joinUsingPipes',
-    );
-
-    return this.request(
-      'GET',
-      \`\${this.baseUrl}\${path}\`,
-      {},
-      headers,
-      queryParameters,
-    );
-  }
-  /**
-   *
-   * @method
    * @name Api#endpointWithoutOkResponse
    */
   endpointWithoutOkResponse(parameters: {} = {}): Promise<void> {
@@ -1177,6 +1181,7 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;
 
@@ -1186,7 +1191,9 @@ import 'isomorphic-fetch';
 
 export type ThenArg<T> = T extends Promise<infer U>
   ? U
-  : T extends (...args: any[]) => Promise<infer U> ? U : T;
+  : T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T;
 
 type QueryParameters = {
   [key: string]:
@@ -1197,6 +1204,10 @@ type QueryParameters = {
     | boolean
     | boolean[]
     | undefined;
+};
+
+export type Something = {
+  _id?: string;
 };
 
 class ApiError {
@@ -1294,7 +1305,16 @@ class Api {
 
     const response = await fetch(urlWithParams, { method, headers, body });
     if (response.ok) {
-      return response.json();
+      const responseContentType =
+        (response.headers && response.headers.get('Content-Type')) || '';
+      if (responseContentType.includes('application/json')) {
+        return response.json();
+      } else if (responseContentType.includes('application/pdf')) {
+        return response.blob();
+      } else if (responseContentType.includes('text/plain')) {
+        return response.text();
+      }
+      return {};
     } else {
       const err = new ApiError(response.statusText);
       err.details = await response.json();
@@ -1316,6 +1336,7 @@ class Api {
       queryParam2?: Array<string>;
       queryParam3?: 'ACTIVE' | 'INACTIVE';
       queryParam4?: Array<string>;
+      queryParam5?: string;
     },
   ): Promise<{
     items?: Array<{
@@ -1326,6 +1347,10 @@ class Api {
       name?: string;
 
       ttl?: number;
+
+      status_log?: Array<{
+        ips?: Array<string | null> | null;
+      }>;
     }>;
   }> {
     let path =
@@ -1376,6 +1401,14 @@ class Api {
       'joinUsingPipes',
     );
 
+    if (typeof parameters['queryParam5'] !== 'undefined') {
+      queryParameters['queryParam5'] = parameters['queryParam5'];
+    }
+
+    queryParameters['queryParam5'] = this.transformParameter(
+      queryParameters['queryParam5'],
+    );
+
     path = path.replace('{path_parameter_1}', pathParameter1.toString());
 
     path = path.replace('{path_parameter_2}', pathParameter2.toString());
@@ -1408,9 +1441,7 @@ class Api {
 
       ips?: Array<string | null> | null;
     },
-  ): Promise<{
-    _id?: string;
-  }> {
+  ): Promise<Something> {
     let path =
       '/path/{path_parameter_1}/segment/{path_parameter_2}/{path_parameter_3}';
     let headers: Headers = new Headers();
@@ -1485,5 +1516,6 @@ class Api {
 }
 
 export default new Api();
+export { Api };
 "
 `;

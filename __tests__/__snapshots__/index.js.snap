@@ -864,6 +864,7 @@ class ApiError {
 class Api {
   protected baseUrl: string = '';
   protected token: string = '';
+  protected _onResponseUnauthorized: () => void;
 
   serializeQueryParams(parameters: QueryParameters) {
     return Object.keys(parameters)
@@ -895,6 +896,10 @@ class Api {
     this.baseUrl = baseUrl;
   }
 
+  set onResponseUnauthorized(callback: () => void) {
+    this._onResponseUnauthorized = callback;
+  }
+
   public setToken(token: string) {
     this.token = token;
   }
@@ -913,6 +918,7 @@ class Api {
     body: any,
     headers: Headers = new Headers(),
     queryParameters: QueryParameters = {},
+    checkFor401 = true,
   ) {
     const queryParams =
       queryParameters && Object.keys(queryParameters).length
@@ -941,6 +947,18 @@ class Api {
     }
 
     const response = await fetch(urlWithParams, { method, headers, body });
+    if (checkFor401) {
+      if (response.status === 401) {
+        if (typeof this._onResponseUnauthorized === 'function') {
+          this._onResponseUnauthorized();
+        } else {
+          const err = new ApiError(response.statusText);
+          err.details = await response.json();
+          throw err;
+        }
+      }
+    }
+
     if (response.ok) {
       const responseContentType =
         (response.headers && response.headers.get('Content-Type')) || '';

@@ -115,6 +115,9 @@
         `${this.baseUrl}${path}`,
         {{#hasBody}}{{#isFormMethod}}form{{/isFormMethod}}{{^isFormMethod}}body{{/isFormMethod}}{{/hasBody}}{{^hasBody}}{}{{/hasBody}},
         headers,
-        queryParameters
+        queryParameters,
+        {{#skip401Callback}}
+        false
+        {{/skip401Callback}}
     );
 }

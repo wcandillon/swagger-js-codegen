@@ -43,6 +43,7 @@ class {{&className}} {
             protected apiKey: string | null = null;
         {{/isSecureApiKey}}
     {{/isSecure}}
+    protected _onResponseUnauthorized: () => void;
 
     serializeQueryParams(parameters: QueryParameters) {
         return Object.keys(parameters)
@@ -69,6 +70,10 @@ class {{&className}} {
 
     public setBaseUrl(baseUrl: string) {
         this.baseUrl = baseUrl;
+    }
+
+    set onResponseUnauthorized(callback: () => void) {
+      this._onResponseUnauthorized = callback;
     }
 
     {{#isSecure}}
@@ -100,7 +105,7 @@ class {{&className}} {
     }
     {{/isSecure}}
 
-    private async request(method: string, url: string, body: any, headers: Headers = new Headers(), queryParameters: QueryParameters = {}) {
+    private async request(method: string, url: string, body: any, headers: Headers = new Headers(), queryParameters: QueryParameters = {}, checkFor401 = true) {
         const queryParams = queryParameters && Object.keys(queryParameters).length ? this.serializeQueryParams(queryParameters) : null ;
         const urlWithParams = url + (queryParams ? '?' + queryParams : '');
 
@@ -121,6 +126,18 @@ class {{&className}} {
         }
 
         const response = await fetch(urlWithParams, { method, headers, body });
+        if (checkFor401) {
+          if (response.status === 401) {
+            if (typeof this._onResponseUnauthorized === 'function') {
+            this._onResponseUnauthorized();
+            } else {
+            const err = new ApiError(response.statusText);
+            err.details = await response.json();
+            throw err;
+            }
+          }
+        }
+
         if(response.ok) {
             const responseContentType =
                 (response.headers && response.headers.get('Content-Type')) || '';

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-var path = require('path');
-var fs = require('fs');
-var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
-var updateNotifier = require('update-notifier');
+const path = require('path');
+const fs = require('fs');
+const updateNotifier = require('update-notifier');
+const pkg = require('../package.json');
 
-//1. Update Notifier
-var pkg = require('../package.json');
+const lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
+
+// Update Notifier
 updateNotifier({packageName: pkg.name, packageVersion: pkg.version}).notify();
 
-//4. CLI Script
+// CLI Script
 require(lib + '/cli.js');

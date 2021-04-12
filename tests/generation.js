@@ -10,38 +10,38 @@ var tmp = require('tmp');
 var CodeGen = require('../lib/codegen').CodeGen;
 
 function compileString(testName, input) {
-    var tmpDir = tmp.dirSync({
+    const tmpDir = tmp.dirSync({
         dir: './',
         unsafeCleanup: true,
         keep: true
     });
-    var tmpFile = tmp.fileSync({
+    const tmpFile = tmp.fileSync({
         postfix: '.ts',
         dir: tmpDir.name,
         keep: true
     });
     fs.writeFileSync(tmpFile.fd, input);
 
-    var program = ts.createProgram([tmpFile.name], {
+    const program = ts.createProgram([tmpFile.name], {
         module: ts.ModuleKind.CommonJS,
         target: ts.ScriptTarget.ES2016, // Makes promises resolve
         moduleResolution: ts.ModuleResolutionKind.NodeJs // ensure we can use node_modules
     });
-    var emitResult = program.emit();
+    const emitResult = program.emit();
 
-    var allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
+    const allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
 
-    allDiagnostics.forEach(function(diagnostic) {
-        var lineAndCharacter = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-        var line = lineAndCharacter.line;
-        var character = lineAndCharacter.character;
-        var message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-        var outputLine = diagnostic.file.text.split('\n')[line];
-        console.log('\n' + testName + ': (' + (line + 1) + ',' + (character + 1) + '): ' + message);
-        console.log('     ERROR line: ' + outputLine.trim());
+    allDiagnostics.forEach(({file, start, messageText}) => {
+        const lineAndCharacter = file.getLineAndCharacterOfPosition(start);
+        const line = lineAndCharacter.line;
+        const character = lineAndCharacter.character;
+        const message = ts.flattenDiagnosticMessageText(messageText, '\n');
+        const outputLine = file.text.split('\n')[line];
+        console.log(`\n${testName}: (${line + 1},${character + 1}): ${message}`);
+        console.log(`     ERROR line: ${outputLine.trim()}`);
     });
 
-    var errorsSeen = allDiagnostics.length !== 0;
+    const errorsSeen = allDiagnostics.length !== 0;
     if (errorsSeen) {
         console.log('     ERRORS seen, generated code preserved in: ' + tmpFile.name);
     } else {
@@ -51,33 +51,33 @@ function compileString(testName, input) {
     return !errorsSeen;
 }
 
-var batch = {};
-var list = ffs.readdirSync('tests/apis');
-list.forEach(function(file){
-    file = 'tests/apis/' + file;
-    batch[file] = function(){
-        var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
-        var result = CodeGen.getNodeCode({
+const batch = {};
+const list = ffs.readdirSync('tests/apis');
+list.forEach(file => {
+    file = `tests/apis/${file}`;
+    batch[file] = () => {
+        const swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
+        let result = CodeGen.getNodeCode({
             className: 'Test',
-            swagger: swagger
+            swagger
         });
         assert(typeof(result), 'string');
         result = CodeGen.getReactCode({
 		moduleName: 'Test',
 		className: 'Test',
-	    	swagger: swagger
+	    	swagger
 	  	});
   	assert(typeof(result), 'string');
         result = CodeGen.getAngularCode({
             moduleName: 'Test',
             className: 'Test',
-            swagger: swagger
+            swagger
         });
         assert(typeof(result), 'string');
         result = CodeGen.getAngularCode({
             moduleName: 'Test',
             className: 'Test',
-            swagger: swagger,
+            swagger,
             lint: false,
             beautify: false
         });
@@ -87,7 +87,7 @@ list.forEach(function(file){
             result = CodeGen.getTypescriptCode({
                 moduleName: 'Test',
                 className: 'Test',
-                swagger: swagger,
+                swagger,
                 lint: false
             });
             assert(compileString('typescript generation: ' + file, result), 'typescript compilation failed');
@@ -96,7 +96,7 @@ list.forEach(function(file){
         result = CodeGen.getCustomCode({
             moduleName: 'Test',
             className: 'Test',
-            swagger: swagger,
+            swagger,
             template: {
                 class: fs.readFileSync(__dirname + '/../templates/angular-class.mustache', 'utf-8'),
                 method: fs.readFileSync(__dirname + '/../templates/method.mustache', 'utf-8')

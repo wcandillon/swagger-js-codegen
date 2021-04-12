@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 5.7.0
+    version: 14.16.0
 dependencies:
   post:
     - npm install grunt-cli -g

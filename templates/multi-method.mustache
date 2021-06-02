@@ -38,13 +38,15 @@
     {{^isSingleton}}{{/isSingleton}}
   {{/isFormParameter}}
 {{/parameters}}
-
     {{#query}}
     /*
       {{&query}}
       return res.code(results.Status).send(results);
     */
+
+      console.log('===> Executing generated route: {{&methodName}}');
     {{/query}}
+
     {{^query}}
     /*
       Method logic

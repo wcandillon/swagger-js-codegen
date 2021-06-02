@@ -43,7 +43,7 @@
       {{&query}}
       return res.code(results.Status).send(results);
     */
-      {{{ test }}}
+      console.log('===>Executing generated route: {{&methodName}}');
     {{/query}}
 
     {{^query}}
@@ -51,8 +51,6 @@
       Method logic
     */
     {{/query}}
-
-
 
     {{#responses}}
       {{#200}}{{{code}}}{{/200}}

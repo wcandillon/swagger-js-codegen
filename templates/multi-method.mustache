@@ -38,18 +38,21 @@
     {{^isSingleton}}{{/isSingleton}}
   {{/isFormParameter}}
 {{/parameters}}
-
     {{#query}}
     /*
       {{&query}}
       return res.code(results.Status).send(results);
     */
+      {{{ test }}}
     {{/query}}
+
     {{^query}}
     /*
       Method logic
     */
     {{/query}}
+
+
 
     {{#responses}}
       {{#200}}{{{code}}}{{/200}}

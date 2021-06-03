@@ -7,6 +7,8 @@
  */
 {{&className}}.prototype.{{&destination}}_{{&methodName}} = function(req, res) {
   try {
+    console.log('===> Executing generated route: {{&methodName}}');
+
 {{#parameters}}
   {{#isQueryParameter}}
     {{#x-AuthFieldType}}
@@ -41,10 +43,13 @@
     {{#query}}
     /*
       {{&query}}
-      return res.code(results.Status).send(results);
+      {{#parameters}}
+      {{#isBodyParameter}}
+      await {{tsType.target}}.validate();
+      res.code(results.Status).send(results);
+      {{/isBodyParameter}}
+      {{/parameters}}
     */
-
-      console.log('===> Executing generated route: {{&methodName}}');
     {{/query}}
 
     {{^query}}
@@ -56,9 +61,13 @@
     {{#responses}}
       {{#200}}{{{code}}}{{/200}}
     {{/responses}}
-  } catch (err) {
-    {{#responses}}
-      {{#400}}{{{code}}}{{/400}}
-    {{/responses}}
+  } catch (error) {
+    console.error(error);
+
+    res.code(500).send({
+        Status: 500,
+        Message: 'Error in {{&methodName}}',
+        Description: error.message,
+    });
   }
 };

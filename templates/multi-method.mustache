@@ -42,13 +42,13 @@
 {{/parameters}}
     {{#query}}
     /*
-      {{&query}}
       {{#parameters}}
       {{#isBodyParameter}}
       await {{tsType.target}}.validate();
-      res.code(results.Status).send(results);
       {{/isBodyParameter}}
       {{/parameters}}
+      {{&query}}
+      res.code(results.Status).send(results);
     */
     {{/query}}
 

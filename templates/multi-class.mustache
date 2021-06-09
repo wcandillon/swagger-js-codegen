@@ -1,0 +1,20 @@
+'use strict';
+
+/**
+* {{&description}}
+* @class {{&className}}
+*/
+{{#isES6}}let{{/isES6}}{{^isES6}}var{{/isES6}} {{&className}} = (function(){
+
+  function {{&className}}() {
+
+  }
+
+  {{#methods}}
+    {{> method}}
+  {{/methods}}
+
+  return {{&className}};
+})();
+
+exports.{{&className}} = {{&className}};

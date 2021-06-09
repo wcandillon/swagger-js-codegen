@@ -1,67 +1,66 @@
 /**
- * {{&summary}}
- * @method {{&methodName}}
- * @name {{&className}}#{{&methodName}}
- * @param {object} req - request object
- * @param {object} res - response object
- */
+* {{&summary}}
+* @method {{&methodName}}
+* @name {{&className}}#{{&methodName}}
+* @param {object} req - request object
+* @param {object} res - response object
+*/
 {{&className}}.prototype.{{&destination}}_{{&methodName}} = function(req, res) {
-  try {
-    console.log('===> Executing generated route: {{&methodName}}');
+try {
+console.log('===> Executing generated route: {{&methodName}}');
 
 {{#parameters}}
-  {{#isQueryParameter}}
-    {{#x-AuthFieldType}}
-      var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{&x-AuthFieldType.propertyName}}'], req, res);
-      if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
-    {{/x-AuthFieldType}}
-    var {{name}} = req.query['{{name}}'];
-  {{/isQueryParameter}}
-  {{#isPathParameter}}
-    {{#x-AuthFieldType}}
-      var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{&x-AuthFieldType.propertyName}}'], req, res);
-      if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
-    {{/x-AuthFieldType}}
-    var {{name}} = req.params['{{name}}'];
-  {{/isPathParameter}}
-  {{#isBodyParameter}}
-    {{#x-AuthFieldType}}
-      var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{&x-AuthFieldType.propertyName}}'], req, res);
-      if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
-    {{/x-AuthFieldType}}
-    var {{name}} = new global.classes['{{tsType.target}}'](req, res, req.body);
-  {{/isBodyParameter}}
-  {{#isHeaderParameter}}
-    {{#isSingleton}}{{/isSingleton}}
-    {{^isSingleton}}{{/isSingleton}}
-  {{/isHeaderParameter}}
-  {{#isFormParameter}}
-    {{#isSingleton}}{{/isSingleton}}
-    {{^isSingleton}}{{/isSingleton}}
-  {{/isFormParameter}}
+    {{#isQueryParameter}}
+        {{#x-AuthFieldType}}
+            var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.query['{{&x-AuthFieldType.propertyName}}'], req, res);
+            if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
+        {{/x-AuthFieldType}}
+        var {{name}} = req.query['{{name}}'];
+    {{/isQueryParameter}}
+    {{#isPathParameter}}
+        {{#x-AuthFieldType}}
+            var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.params['{{&x-AuthFieldType.propertyName}}'], req, res);
+            if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
+        {{/x-AuthFieldType}}
+        var {{name}} = req.params['{{name}}'];
+    {{/isPathParameter}}
+    {{#isBodyParameter}}
+        {{#x-AuthFieldType}}
+            var auth{{&x-AuthFieldType.propertyName}} = await_FieldValidator.validate('{{&x-AuthFieldType.value}}', req.body['{{&x-AuthFieldType.propertyName}}'], req, res);
+            if (!auth{{&x-AuthFieldType.propertyName}}) { return; }
+        {{/x-AuthFieldType}}
+        //const {{name}} = new global.classes['{{tsType.target}}'](req, res, req.body);
+    {{/isBodyParameter}}
+    {{#isHeaderParameter}}
+        {{#isSingleton}}{{/isSingleton}}
+        {{^isSingleton}}{{/isSingleton}}
+    {{/isHeaderParameter}}
+    {{#isFormParameter}}
+        {{#isSingleton}}{{/isSingleton}}
+        {{^isSingleton}}{{/isSingleton}}
+    {{/isFormParameter}}
 {{/parameters}}
-    {{#query}}
-    /*
-      {{#parameters}}
-      {{#isBodyParameter}}
-      await {{tsType.target}}.validate();
-      {{/isBodyParameter}}
-      {{/parameters}}
-      {{&query}}
-      res.code(results.Status).send(results);
-    */
-    {{/query}}
+{{#query}}
+    {{#parameters}}
+        {{#isBodyParameter}}
+            //await {{tsType.target}}.validate();
 
-    {{^query}}
-    /*
-      Method logic
-    */
-    {{/query}}
+        {{/isBodyParameter}}
+    {{/parameters}}
+    //{{&query}}
 
-    {{#responses}}
-      {{#200}}{{{code}}}{{/200}}
-    {{/responses}}
-  } catch (error) {
+    //res.code(results.Status).send(results);
+{{/query}}
+
+{{^query}}
+    /*
+    Method logic
+    */
+{{/query}}
+{{#responses}}
+    {{#200}}{{{code}}}{{/200}}
+{{/responses}}
+} catch (error) {
     console.error(error);
 
     res.code(500).send({
@@ -69,5 +68,5 @@
         Message: 'Error in {{&methodName}}',
         Description: error.message,
     });
-  }
+}
 };

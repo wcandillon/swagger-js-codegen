@@ -61,7 +61,7 @@ console.log('===> Executing generated route: {{&methodName}}');
     {{#200}}{{{code}}}{{/200}}
 {{/responses}}
 } catch (error) {
-    console.error(error);
+    console.error(`Error in {{&methodName}}: ${error.message}`);
 
     res.code(500).send({
         Status: 500,

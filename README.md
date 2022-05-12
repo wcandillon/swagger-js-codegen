@@ -4,7 +4,7 @@
 ## We are looking for a new maintainer
 
 This project is no longer actively maintained by its creator. Please let us know if you would like to become a maintainer.
-At the time we wrote this package, the swagger didn't have generators for JavaScript nor TypeScript. Now there are [great alternatives of this package available](https://github.com/swagger-api/swagger-codegen). 
+At the time we wrote this package, the swagger didn't have generators for JavaScript nor TypeScript. Now there are [great alternatives of this package available](https://github.com/swagger-api/swagger-codegen).
 
 This package generates a nodejs, reactjs or angularjs class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/wcandillon/swagger-js-codegen/tree/master/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
@@ -140,6 +140,9 @@ methods:
       summary:
         type: string
         description: Provided by the 'description' or 'summary' field in the schema
+      tags:
+        type: array
+        description: Provided by the 'tags' field in the schema
       externalDocs:
         type: object
         properties:
